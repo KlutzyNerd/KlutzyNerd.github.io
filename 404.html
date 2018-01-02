@@ -8,18 +8,18 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>核桃的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="error                      body{                 color: #555;             }             #error{                 margin:0 auto;                 width: 80%;                 heig">
+  <meta name="description" content="error                                  body{                 color: #555;             }             #error{                 margin:0 auto;                 width: 80%;">
 <meta property="og:type" content="website">
 <meta property="og:title" content="核桃的博客">
 <meta property="og:url" content="http://yoursite.com/404.html">
 <meta property="og:site_name" content="核桃的博客">
-<meta property="og:description" content="error                      body{                 color: #555;             }             #error{                 margin:0 auto;                 width: 80%;                 heig">
+<meta property="og:description" content="error                                  body{                 color: #555;             }             #error{                 margin:0 auto;                 width: 80%;">
 <meta property="og:locale" content="klutzynerd.dev@gmail.com">
 <meta property="og:image" content="http://yoursite.com/img/error.png">
-<meta property="og:updated_time" content="2018-01-02T14:38:03.018Z">
+<meta property="og:updated_time" content="2018-01-02T15:03:57.601Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="核桃的博客">
-<meta name="twitter:description" content="error                      body{                 color: #555;             }             #error{                 margin:0 auto;                 width: 80%;                 heig">
+<meta name="twitter:description" content="error                                  body{                 color: #555;             }             #error{                 margin:0 auto;                 width: 80%;">
 <meta name="twitter:image" content="http://yoursite.com/img/error.png">
   
     <link rel="alternative" href="/atom.xml" title="核桃的博客" type="application/atom+xml">
@@ -168,6 +168,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <title>error</title>
         <style>
+           
             body{
                 color: #555;
             }
@@ -178,22 +179,27 @@
             }
            
             #error_info{
-                margin-top: 8%;
+                padding-top: 15%;
                 float: right;
-                margin-right: 12%;
+                margin-right: 11%;
                 width: 36%;
-                height: 80%;
+                height: 49%;
             }
             #error_img{
-                margin-left: 12%;
+                margin-left: 11%;
                 width: 40%;
                 height: 80%;
             }
+            #error_back{
+                width: 100%;
+            }
             #error h1{
                 font-size: 4vw;
+                text-align: center;
             }
             #error h2{
-                font-size: 1.5vw;
+                text-align: center;
+                font-size: 2vw;
             }
            #error a{
                color: #666;
@@ -231,18 +237,17 @@
     <body onload="startTimes();">
         <div id="outer">
             <div id="error">
-                <div style="height: 10vmin">
-
-                </div>
+                <div style="height: 3%"></div>
                 <div id="error_info">
                     <h1>哎呀！<br>出错了...</h1>
                 </div>
                 <div id="error_img">
                     <img src="/img/error.png">
                 </div>
-                 <h2 id="error_back">遇到错误，&nbsp;<span id="secondes">5</span>&nbsp;秒后将自动跳转，立即跳转请点击&nbsp;
-                 <a href="javascript:resetTimer();" target="_blank" rel="noopener">返回</a>
-                 </h2>
+                <div id="error_back">
+                    <h2>遇到错误，&nbsp;<span id="secondes">5</span>&nbsp;秒后将自动跳转，立即跳转请点击&nbsp; <a href="javascript:resetTimer();" target="_blank" rel="noopener">返回</a></h2>
+                </div>
+                 
            </div>
         </div>
         
