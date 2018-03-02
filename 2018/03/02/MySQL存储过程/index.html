@@ -6,22 +6,22 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>MySQL存储过程 | 核桃的博客</title>
+  <title>MySQL 存储过程 | 核桃的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="MySql存储过程的一些知识点">
+  <meta name="description" content="MySQL存储过程的一些知识点">
 <meta name="keywords" content="MySQL,存储过程">
 <meta property="og:type" content="article">
-<meta property="og:title" content="MySQL存储过程">
+<meta property="og:title" content="MySQL 存储过程">
 <meta property="og:url" content="http://yoursite.com/2018/03/02/MySQL存储过程/index.html">
 <meta property="og:site_name" content="核桃的博客">
-<meta property="og:description" content="MySql存储过程的一些知识点">
+<meta property="og:description" content="MySQL存储过程的一些知识点">
 <meta property="og:locale" content="klutzynerd.dev@gmail.com">
 <meta property="og:image" content="http://yoursite.com/2018/03/02/MySQL存储过程/create_myproc.png">
 <meta property="og:image" content="http://yoursite.com/2018/03/02/MySQL存储过程/use_myproc.png">
 <meta property="og:updated_time" content="2018-03-02T15:09:43.667Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="MySQL存储过程">
-<meta name="twitter:description" content="MySql存储过程的一些知识点">
+<meta name="twitter:title" content="MySQL 存储过程">
+<meta name="twitter:description" content="MySQL存储过程的一些知识点">
 <meta name="twitter:image" content="http://yoursite.com/2018/03/02/MySQL存储过程/create_myproc.png">
   
     <link rel="alternative" href="/atom.xml" title="核桃的博客" type="application/atom+xml">
@@ -165,7 +165,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      MySQL存储过程
+      MySQL 存储过程
     </h1>
   
 
@@ -185,23 +185,23 @@
 <p> 存储过程（Stored Procedure）是在大型数据库系统中，一组为了完成特定功能的SQL 语句集，存储在数据库中，经过第一次编译后再次调用不需要再次编译，用户通过指定存储过程的名字并给出参数（如果该存储过程带有参数）来执行它。存储过程是数据库中的一个重要对象。</p>
 </blockquote>
 <p>简单来说，存储过程就是一组为了完成指定功能的SQL语句集，经过编译后存储在数据库中，用户可以通过存储过程的名称并给出参数来执行，也就是说，用户可以像调用一个方法那样调用存储过程。可以将存储过程看作对面向对象语言中方法的模拟。</p>
-<h1 id="2-为什么要采用存储过程？"><a href="#2-为什么要采用存储过程？" class="headerlink" title="2. 为什么要采用存储过程？"></a>2. 为什么要采用存储过程？</h1><h2 id="2-1-只需编译一次，后面的调用无需编译，提升了查询效率"><a href="#2-1-只需编译一次，后面的调用无需编译，提升了查询效率" class="headerlink" title="2.1 只需编译一次，后面的调用无需编译，提升了查询效率"></a>2.1 只需编译一次，后面的调用无需编译，提升了查询效率</h2><p>我们知道，MySql 服务器 在执行查询的时候，经过了以下步骤：</p>
+<h1 id="2-为什么要采用存储过程？"><a href="#2-为什么要采用存储过程？" class="headerlink" title="2. 为什么要采用存储过程？"></a>2. 为什么要采用存储过程？</h1><h2 id="2-1-只需编译一次，后面的调用无需编译，提升了查询效率"><a href="#2-1-只需编译一次，后面的调用无需编译，提升了查询效率" class="headerlink" title="2.1 只需编译一次，后面的调用无需编译，提升了查询效率"></a>2.1 只需编译一次，后面的调用无需编译，提升了查询效率</h2><p>我们知道，MySQL 服务器 在执行查询的时候，经过了以下步骤：</p>
 <ol>
 <li>先检查查询缓存，如果命中的缓存，则立刻返回存储在缓存中的结果，否则进入下一步。</li>
-<li>服务端进行 sql 解析、预处理，再由优化器生成对应的执行计划。</li>
+<li>服务端进行 SQL 解析、预处理，再由优化器生成对应的执行计划。</li>
 <li>根据生成的执行计划，调用存储引擎的API来执行查询。</li>
 </ol>
-<p>可见， MySql 在执行 sql 语句的时候，每次都需要编译 sql 语句，但是存储过程经过第一次执行调用编译，后面的调用就无需再进行编译，存储过程在创建的过程中，数据库已经对其进行了一次解析和优化，执行速度就会快很多。</p>
-<h2 id="2-2-简化了对-sql-的调用"><a href="#2-2-简化了对-sql-的调用" class="headerlink" title="2.2 简化了对 sql 的调用"></a>2.2 简化了对 sql 的调用</h2><p>将一些重复性很高的操作，封装到一个存储过程中，能够极大的简化用户对 sql 的调用。这一点与面向对象的语言中的方法有相似之处。</p>
-<h2 id="2-3-方便-DBA-优化"><a href="#2-3-方便-DBA-优化" class="headerlink" title="2.3 方便 DBA 优化"></a>2.3 方便 DBA 优化</h2><p>在一些有复杂业务逻辑的项目中，一个 sql 语句可能在很多的组件中都有一份，如果要对这些 sql 进行优化，需要逐份的修改，很容易出错。但是存储过程只是在数据库服务器上有一份，所以只需要修改存储过程就可以优化了。</p>
+<p>可见， MySQL 在执行 SQL 语句的时候，每次都需要编译 SQL 语句，但是存储过程经过第一次执行调用编译，后面的调用就无需再进行编译，存储过程在创建的过程中，数据库已经对其进行了一次解析和优化，执行速度就会快很多。</p>
+<h2 id="2-2-简化了对-SQL-的调用"><a href="#2-2-简化了对-SQL-的调用" class="headerlink" title="2.2 简化了对 SQL 的调用"></a>2.2 简化了对 SQL 的调用</h2><p>将一些重复性很高的操作，封装到一个存储过程中，能够极大的简化用户对 SQL 的调用。这一点与面向对象的语言中的方法有相似之处。</p>
+<h2 id="2-3-方便-DBA-优化"><a href="#2-3-方便-DBA-优化" class="headerlink" title="2.3 方便 DBA 优化"></a>2.3 方便 DBA 优化</h2><p>在一些有复杂业务逻辑的项目中，一个 SQL 语句可能在很多的组件中都有一份，如果要对这些 SQL 进行优化，需要逐份的修改，很容易出错。但是存储过程只是在数据库服务器上有一份，所以只需要修改存储过程就可以优化了。</p>
 <h2 id="2-4-可以在不重启服务器的情况下修改业务逻辑"><a href="#2-4-可以在不重启服务器的情况下修改业务逻辑" class="headerlink" title="2.4 可以在不重启服务器的情况下修改业务逻辑"></a>2.4 可以在不重启服务器的情况下修改业务逻辑</h2><p>在生产环境下，可以通过直接修改存储过程的方式修改业务逻辑（或bug），而不用重启服务器。</p>
 <h2 id="2-5-减少网络传输"><a href="#2-5-减少网络传输" class="headerlink" title="2.5 减少网络传输"></a>2.5 减少网络传输</h2><p>针对同一个数据库对象的操作，如果这一操作被组织进存储过程，那么当在客户计算机上调用该存储过程时，网络中传送的只是该调用语句与最总结果，从而大大减少网络流量并降低了网络负载。</p>
 <h2 id="2-6-更加安全"><a href="#2-6-更加安全" class="headerlink" title="2.6 更加安全"></a>2.6 更加安全</h2><p>通过对执行某一存储过程的权限进行限制，能够实现对相应的数据的访问权限的限制，避免了非授权用户对数据的访问，保证了数据的安全。</p>
 <h1 id="3-怎么使用存储过程？"><a href="#3-怎么使用存储过程？" class="headerlink" title="3. 怎么使用存储过程？"></a>3. 怎么使用存储过程？</h1><h2 id="3-1-怎么创建存储过程？"><a href="#3-1-怎么创建存储过程？" class="headerlink" title="3.1 怎么创建存储过程？"></a>3.1 怎么创建存储过程？</h2><p>创建语法如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">DELIMITER //</span><br><span class="line">  CREATE PROCEDURE myproc(arg1, arg2, arg3...)</span><br><span class="line">    BEGIN</span><br><span class="line">      -- insert your sql there --</span><br><span class="line">    END</span><br><span class="line">    //</span><br><span class="line">DELIMITER ;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">DELIMITER //</span><br><span class="line">  CREATE PROCEDURE myproc(arg1, arg2, arg3...)</span><br><span class="line">    BEGIN</span><br><span class="line">      -- insert your SQL there --</span><br><span class="line">    END</span><br><span class="line">    //</span><br><span class="line">DELIMITER ;</span><br></pre></td></tr></table></figure>
 <p>其中：</p>
 <ul>
-<li>DELIMITER //  —— 分隔符：MySQL默认以 “;” 为分隔符，也就是说，在命令行中 MySQL 遇到了分号就自动执行。但是存储过程一般有很多行 sql 语句，通过 delimiter 可以将分隔符换为 delimiter 之后的符号如 //，这样当 // 出现之后，MySql 解释器才会执行这段语句。</li>
+<li>DELIMITER //  —— 分隔符：MySQL默认以 “;” 为分隔符，也就是说，在命令行中 MySQL 遇到了分号就自动执行。但是存储过程一般有很多行 SQL 语句，通过 delimiter 可以将分隔符换为 delimiter 之后的符号如 //，这样当 // 出现之后，MySQL 解释器才会执行这段语句。</li>
 </ul>
 <ul>
 <li>arg —— 参数：存储过程根据需要可能会有输入、输出、输入输出参数，如果有多个参数用”,”分割开。参数的格式为：【参数类型 变量名 变量类型】，MySQL存储过程的参数用在存储过程的定义，共有三种参数类型,IN,OUT,INOUT:<ul>
@@ -214,10 +214,10 @@
 <ul>
 <li>BEGIN … END —— 过程体：过程体的开始与结束使用BEGIN与END进行标识</li>
 </ul>
-<p>执行以下 sql 语句创建存储过程：</p>
+<p>执行以下 SQL 语句创建存储过程：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">DELIMITER //</span><br><span class="line">  CREATE PROCEDURE myproc(IN p_in int, OUT p_out int, INOUT p_inout int)</span><br><span class="line">    BEGIN</span><br><span class="line">    	SELECT p_in;</span><br><span class="line">    	SELECT p_out;</span><br><span class="line">    	SELECT p_inout;</span><br><span class="line">    	</span><br><span class="line">    	SET p_in=2;</span><br><span class="line">    	SET p_out=2;</span><br><span class="line">    	SET p_inout=2;</span><br><span class="line">    END;</span><br><span class="line">    //</span><br><span class="line">DELIMITER ;</span><br></pre></td></tr></table></figure>
 <p><img src="/2018/03/02/MySQL存储过程/create_myproc.png" alt=""></p>
-<h2 id="3-2-怎么调用存储过程？"><a href="#3-2-怎么调用存储过程？" class="headerlink" title="3.2 怎么调用存储过程？"></a>3.2 怎么调用存储过程？</h2><p>调用以下 sql 则可以使用刚才创建的名为 myproc 的存储过程：</p>
+<h2 id="3-2-怎么调用存储过程？"><a href="#3-2-怎么调用存储过程？" class="headerlink" title="3.2 怎么调用存储过程？"></a>3.2 怎么调用存储过程？</h2><p>调用以下 SQL 则可以使用刚才创建的名为 myproc 的存储过程：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">DELIMITER //</span><br><span class="line">  SET @p_in=1;</span><br><span class="line">  SET @p_out=1;</span><br><span class="line">  SET @p_inout=1;</span><br><span class="line">  </span><br><span class="line">  CALL myproc(@p_in, @p_out, @p_inout);</span><br><span class="line">  </span><br><span class="line">   SELECT @p_in;</span><br><span class="line">   SELECT @p_out;</span><br><span class="line">   SELECT @p_inout;</span><br><span class="line">  //</span><br><span class="line">DELIMITER ;</span><br></pre></td></tr></table></figure>
 <p>意义为执行刚创建的 存储过程并显示返回的结果。因为存储过程实际上是一种函数，所以存储过程名后需要有 “()” 符号（即使不传递参数也需要）。</p>
 <blockquote>
@@ -501,19 +501,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">hello word</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">介绍</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">存储过程</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">hello word</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">介绍</a>
               </li>
             
             <div class="clearfix"></div>
