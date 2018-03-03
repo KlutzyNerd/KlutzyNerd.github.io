@@ -6,18 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives: 2018 | 核桃的博客</title>
+  <title>主流的几种 Java 虚拟机 | 核桃的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="非知名大学水货烟酒僧一枚">
-<meta property="og:type" content="website">
-<meta property="og:title" content="核桃的博客">
-<meta property="og:url" content="http://yoursite.com/archives/2018/index.html">
+  <meta name="description" content="最近闲来无事，准备复习下 Java 虚拟机的一些知识，可能要写一个 Java 虚拟机相关知识的好几篇博客吧。第一篇就先从主流 Java 虚拟机谈起吧。 谈到 Java 虚拟机，大家都非常熟悉，因为 Java 语言就是运行在 Java 虚拟机之上的，Java 虚拟机为程序员屏蔽了操作系统的差异性，使得 Java 能够“一次编译，到处运行”。">
+<meta name="keywords" content="Java虚拟机,介绍">
+<meta property="og:type" content="article">
+<meta property="og:title" content="主流的几种 Java 虚拟机">
+<meta property="og:url" content="http://yoursite.com/2018/03/03/主流的几种-Java-虚拟机/index.html">
 <meta property="og:site_name" content="核桃的博客">
-<meta property="og:description" content="非知名大学水货烟酒僧一枚">
+<meta property="og:description" content="最近闲来无事，准备复习下 Java 虚拟机的一些知识，可能要写一个 Java 虚拟机相关知识的好几篇博客吧。第一篇就先从主流 Java 虚拟机谈起吧。 谈到 Java 虚拟机，大家都非常熟悉，因为 Java 语言就是运行在 Java 虚拟机之上的，Java 虚拟机为程序员屏蔽了操作系统的差异性，使得 Java 能够“一次编译，到处运行”。">
 <meta property="og:locale" content="klutzynerd.dev@gmail.com">
+<meta property="og:updated_time" content="2018-03-03T05:46:24.963Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="核桃的博客">
-<meta name="twitter:description" content="非知名大学水货烟酒僧一枚">
+<meta name="twitter:title" content="主流的几种 Java 虚拟机">
+<meta name="twitter:description" content="最近闲来无事，准备复习下 Java 虚拟机的一些知识，可能要写一个 Java 虚拟机相关知识的好几篇博客吧。第一篇就先从主流 Java 虚拟机谈起吧。 谈到 Java 虚拟机，大家都非常熟悉，因为 Java 语言就是运行在 Java 虚拟机之上的，Java 虚拟机为程序员屏蔽了操作系统的差异性，使得 Java 能够“一次编译，到处运行”。">
   
     <link rel="alternative" href="/atom.xml" title="核桃的博客" type="application/atom+xml">
   
@@ -153,36 +155,70 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-主流的几种-Java-虚拟机" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2018" class="archive-year">2018</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/03/03/主流的几种-Java-虚拟机/" class="archive-article-date">
-  	<time datetime="2018-03-03T04:07:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-03</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/03/03/主流的几种-Java-虚拟机/">主流的几种 Java 虚拟机</a>
+    <h1 class="article-title" itemprop="name">
+      主流的几种 Java 虚拟机
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2018/03/03/主流的几种-Java-虚拟机/" class="archive-article-date">
+  	<time datetime="2018-03-03T04:07:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-03</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>最近闲来无事，准备复习下 Java 虚拟机的一些知识，可能要写一个 Java 虚拟机相关知识的好几篇博客吧。第一篇就先从主流 Java 虚拟机谈起吧。</p>
+<p>谈到 Java 虚拟机，大家都非常熟悉，因为 Java 语言就是运行在 Java 虚拟机之上的，Java 虚拟机为程序员屏蔽了操作系统的差异性，使得 Java 能够“一次编译，到处运行”。</p>
+<a id="more"></a>
+<h1 id="1-有那些主流的-Java-虚拟机？"><a href="#1-有那些主流的-Java-虚拟机？" class="headerlink" title="1 有那些主流的 Java 虚拟机？"></a>1 有那些主流的 Java 虚拟机？</h1><p>从 1996 年 Sun 公司发布的 JDK 1.0 中所包含的 Sun Classic VM 到今天，涌现了许多的 Java 虚拟机，它们中的大多数都湮灭了，经过这几十年的发展，目前的主流 Java 虚拟机大概有 HotSpot VM ， J9 VM 虚拟机。</p>
+<h1 id="2-HotSpot-VM"><a href="#2-HotSpot-VM" class="headerlink" title="2 HotSpot VM"></a>2 HotSpot VM</h1><p>HotSpot 大概是目前使用最多的 Java 虚拟机了，是 Sun JDK 与 Open JDK 中自带的 Java 虚拟机。以至于许多人将 Java 虚拟机等同于 HotSpot VM。</p>
+<p>当大家说起“Java性能如何如何”、“Java有多少种GC”、“JVM 如何调优”等的时候，经常默认说的就是特指 HotSpot VM。我们学习 Java 虚拟机也主要是学习 HotSpot 虚拟机。</p>
+<p>HotSpot VM 最令人称道的是其热点探测能力，可以通过执行计数器找到最具有编译价值的代码，然后通过 JIT 编译器以方法为单位进行编译。如果一个方法被频繁调用，或者方法中有效循环次数很多，将会分别触发标准编译和 OSR（栈上替换）编译动作。通过编译器和解释器恰当的协同工作，可以在最优化的程序响应事件与最佳执行性能中取得平衡，而且无需等待本地代码输出后才能执行程序，即时编译的时间压力也相对较小，这样有助于引入跟多的代码优化技术，输出质量更高的本地代码。</p>
+<p>Oracle 在收购了 SUN 和 BEA 公司后，JDK8 的 HotSpot VM 已经是以前的 HotSpot VM 与 JRockit VM 的合并版。合并方式是把 JRockit VM一些有价值的功能在HotSpot里重新实现一遍。移除 PermGen、Java Flight Recorder、jcmd 等都属于合并项目的一部分。</p>
+<h1 id="3-J9-VM"><a href="#3-J9-VM" class="headerlink" title="3 J9 VM"></a>3 J9 VM</h1><p>HotSpot 虚拟机已经足够的优秀了，其他的虚拟机如果没有比 HotSpot 更占有优势的地方自然无法生存。Oracle 提供的“官方版”JDK除少量商用功能外都可以免费使用，而众多 Java 库和框架都是在它上面开发与运行的，除非有什么特别有说服力的理由，谁要用别的 JDK 版本呢？受益于 IBM 的独占平台，J9 VM 就是生存下来的的主流  Java  虚拟机。</p>
+<p>J9 是 IBM 开发的一个高度模块化的 JVM。不但可以部署在桌面或服务器上，还可以部署到嵌入式环境中，例如CLDC（有限连接设备配置） 级别的环境；这些环境用的是同一个 J9 核心 VM，搭配上适用于具体环境的 GC 和 JIT 编译器。</p>
+<p>J9 VM 的性能水平大致跟 HotSpot VM 是一个档次的。有时 HotSpot 快些，有时 J9 快些。一般情况下使用 IBM 自己的软件或者服务器，可以考虑用 J9，因为 J9 本身就是为 IBM 自己的系统做专门优化的。</p>
+<p>参考资料：</p>
+<p>《深入理解 Java 虚拟机》</p>
+<p><a href="https://www.zhihu.com/question/39780313?sort=created" target="_blank" rel="noopener">https://www.zhihu.com/question/39780313?sort=created</a></p>
+<p><a href="https://www.zhihu.com/question/29265430?sort=created" target="_blank" rel="noopener">https://www.zhihu.com/question/29265430?sort=created</a></p>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢大爷勒，大爷有空常来玩儿呀。<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -198,7 +234,7 @@
 		</ul>
 	</div>
 
-          
+      
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
@@ -211,123 +247,120 @@
 	</div>
 
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2018/03/03/主流的几种-Java-虚拟机/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/03/02/MySQL存储过程/" class="archive-article-date">
-  	<time datetime="2018-03-02T08:41:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-02</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2018/03/02/MySQL存储过程/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">MySQL 存储过程</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/03/02/MySQL存储过程/">MySQL 存储过程</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">存储过程</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/数据库//" class="article-tag-list-link color4">数据库</a>
-        		</li>
-      		
-		</ul>
-	</div>
+        
+        
+    </div>
+</aside>
 
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/01/03/博客介绍/" class="archive-article-date">
-  	<time datetime="2018-01-03T14:30:15.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-03</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/01/03/博客介绍/">博客介绍</a>
-    </h1>
-  
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">介绍</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">hello word</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/杂谈//" class="article-tag-list-link color3">杂谈</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
   
   
-    </div></section>
   
 
-    
+  
+
+  
+
+  
+  <div id="gitment-ctn"></div> 
+<link rel="stylesheet" href="//imsun.github.io/gitment/style/default.css">
+<script src="//imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script>
+var gitment = new Gitment({
+  id: "http://yoursite.com/2018/03/03/主流的几种-Java-虚拟机/",
+  owner: 'KlutzyNerd',
+  repo: 'GitmentRepo',
+  oauth: {
+    client_id: 'a9a4865b484b39b0c93b',
+    client_secret: 'ca2efec482dc7aec0c98bba032f0572168519216',
+  },
+})
+gitment.render('gitment-ctn')
+</script>
+  
 
 
           </div>
@@ -350,8 +383,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
