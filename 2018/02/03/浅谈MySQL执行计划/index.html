@@ -6,18 +6,24 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Tag: Java虚拟机 | 核桃的博客</title>
+  <title>浅谈 MySQL 执行计划 | 核桃的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="非知名大学水货烟酒僧一枚">
-<meta property="og:type" content="website">
-<meta property="og:title" content="核桃的博客">
-<meta property="og:url" content="http://yoursite.com/tags/Java虚拟机/index.html">
+  <meta name="description" content="MySQL执行计划的一些知识点">
+<meta name="keywords" content="MySQL,执行计划">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浅谈 MySQL 执行计划">
+<meta property="og:url" content="http://yoursite.com/2018/02/03/浅谈MySQL执行计划/index.html">
 <meta property="og:site_name" content="核桃的博客">
-<meta property="og:description" content="非知名大学水货烟酒僧一枚">
+<meta property="og:description" content="MySQL执行计划的一些知识点">
 <meta property="og:locale" content="klutzynerd.dev@gmail.com">
+<meta property="og:image" content="http://yoursite.com/2018/02/03/浅谈MySQL执行计划/SQL执行过程.png">
+<meta property="og:image" content="http://yoursite.com/2018/02/03/浅谈MySQL执行计划/3.1.1.png">
+<meta property="og:image" content="http://yoursite.com/2018/02/03/浅谈MySQL执行计划/3.2.1.png">
+<meta property="og:updated_time" content="2018-03-04T05:15:52.969Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="核桃的博客">
-<meta name="twitter:description" content="非知名大学水货烟酒僧一枚">
+<meta name="twitter:title" content="浅谈 MySQL 执行计划">
+<meta name="twitter:description" content="MySQL执行计划的一些知识点">
+<meta name="twitter:image" content="http://yoursite.com/2018/02/03/浅谈MySQL执行计划/SQL执行过程.png">
   
     <link rel="alternative" href="/atom.xml" title="核桃的博客" type="application/atom+xml">
   
@@ -153,75 +159,370 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-浅谈MySQL执行计划" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2018" class="archive-year">2018</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/03/03/主流的几种-Java-虚拟机/" class="archive-article-date">
-  	<time datetime="2018-03-03T04:07:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-03</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/03/03/主流的几种-Java-虚拟机/">主流的几种 Java 虚拟机</a>
+    <h1 class="article-title" itemprop="name">
+      浅谈 MySQL 执行计划
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2018/02/03/浅谈MySQL执行计划/" class="archive-article-date">
+  	<time datetime="2018-02-03T08:35:39.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-02-03</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>当我们用 SQL 语句查询的时候，如果查询结果比较慢，我们要怎么找到查询慢在哪里呢？这个时候可能就需要用到 MySQL 的执行计划了。执行计划是我们优化 SQL 语句的基础，只有弄懂执行计划，才能够找到查询性能的瓶颈。才能针对瓶颈做出有意义的优化。</p>
+<p>本文是复习 MySQL 的笔记，会聊到什么是执行计划，为什么要了解执行计划，怎么理解执行计划。 </p>
+<a id="more"></a>
+<h1 id="1-执行计划是什么？"><a href="#1-执行计划是什么？" class="headerlink" title="1 执行计划是什么？"></a>1 执行计划是什么？</h1><p>数据库服务器在执行 SQL 语句的时候，会准备几套方案，最后选择消耗资源最小的那个方案。这个方案就是执行计划。</p>
+<p>换句话说服务器在收到 SQL 语句后会先检查语法错误，没有问题才会解析执行。在这个过程中，他会考虑是执行整张表，还是根据索引，服务器会比较所有可能的方法所好的资源，最终 SQL 语句被物理性执行的计划叫做执行计划。</p>
+<h1 id="2-为什么要了解执行计划？"><a href="#2-为什么要了解执行计划？" class="headerlink" title="2 为什么要了解执行计划？"></a>2 为什么要了解执行计划？</h1><h2 id="2-1-MySQL-执行-SQL-的过程。"><a href="#2-1-MySQL-执行-SQL-的过程。" class="headerlink" title="2.1 MySQL 执行 SQL 的过程。"></a>2.1 MySQL 执行 SQL 的过程。</h2><p>我们首先看一下 MySQL 执行 SQL 的过程：</p>
+<ol>
+<li>客户端发送一条查询给服务器 </li>
+<li>服务器先检查查询缓存，如果命中缓存则立刻返回存储在缓存中的结果，否则进入下一阶段。 </li>
+<li>服务器端进行SQL解析、预处理，再由优化器生成对应的执行计划。 </li>
+<li>MySQL根据优化器生成的执行计划调用存储引擎的 API 来执行查询 </li>
+<li>将结果返回给客户端</li>
+</ol>
+<p>具体如下：</p>
+<p><img src="/2018/02/03/浅谈MySQL执行计划/SQL执行过程.png" alt=""></p>
+<p>对于 MySQL 来说，底层的存储引擎主要的工作就是对数据的磁盘文件进行操作，上层的 SQL 解析等操作主要放在服务器层，服务器层根据 SQL 进行优化和解析生成执行计划，最后存储引擎根据执行计划来调用数据。</p>
+<h2 id="2-2-自动生成的执行计划的缺陷"><a href="#2-2-自动生成的执行计划的缺陷" class="headerlink" title="2.2 自动生成的执行计划的缺陷"></a>2.2 自动生成的执行计划的缺陷</h2><p>很多情况下都会导致优化器选择了错误的执行计划，并不能获得最好的性能：</p>
+<ul>
+<li><p>统计信息不准确，MySQL 依赖存储引擎提供的统计信息来评估成本，但是有的存储引擎提供的信息是准确的，有的不准确</p>
+</li>
+<li><p>执行计划中的成本估算不等同于实际执行的成本，因为 MySQL 层面并不知道那些页面在内存和磁盘上所以到底需要多少次物理IO未知。</p>
+</li>
+<li>MySQL 的最优化和你的最优化并不一样（目标不同，可能你希望最少时间，MySQL 优化目标是最大吞吐量）</li>
+<li>MySQL 不考虑并发查询</li>
+<li>MySQL 并不是任何时候都基于成本优化</li>
+<li>MySQL 不会考虑不受其控制的操作的成本</li>
+</ul>
+<h2 id="2-3-执行计划可以告诉我们什么？"><a href="#2-3-执行计划可以告诉我们什么？" class="headerlink" title="2.3 执行计划可以告诉我们什么？"></a>2.3 执行计划可以告诉我们什么？</h2><p>一般来说，执行计划中包含了 SQL 在数据库中执行是的表现情况，包括是否使用了索引，预计要扫描多少条语句等。</p>
+<h1 id="3-怎么理解执行计划？"><a href="#3-怎么理解执行计划？" class="headerlink" title="3 怎么理解执行计划？"></a>3 怎么理解执行计划？</h1><h2 id="3-1-MySQL-怎么查看执行计划？"><a href="#3-1-MySQL-怎么查看执行计划？" class="headerlink" title="3.1 MySQL 怎么查看执行计划？"></a>3.1 MySQL 怎么查看执行计划？</h2><p>MySQL 中，可以通过 explain 来查看执行计划：</p>
+<p>比如，我们要查看以下 SQL 的执行计划：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">select * from city </span><br><span class="line">where name=&apos;Paris&apos;;</span><br></pre></td></tr></table></figure>
+<p>可以使用如下 SQL 语句：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">explain select * from city</span><br><span class="line">  where name=&apos;Paris&apos;;</span><br></pre></td></tr></table></figure>
+<p>结果如下：</p>
+<p><img src="/2018/02/03/浅谈MySQL执行计划/3.1.1.png" alt=""></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">id</th>
+<th style="text-align:center">select_type</th>
+<th style="text-align:center">table</th>
+<th style="text-align:center">partitions</th>
+<th style="text-align:center">type</th>
+<th style="text-align:center">possible_keys</th>
+<th style="text-align:center">key</th>
+<th style="text-align:center">key_len</th>
+<th style="text-align:center">ref</th>
+<th style="text-align:center">rows</th>
+<th style="text-align:center">filtered</th>
+<th style="text-align:center">Extra</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">SIMPLE</td>
+<td style="text-align:center">city</td>
+<td style="text-align:center">NULL</td>
+<td style="text-align:center">ALL</td>
+<td style="text-align:center">NULL</td>
+<td style="text-align:center">NULL</td>
+<td style="text-align:center">NULL</td>
+<td style="text-align:center">NULL</td>
+<td style="text-align:center">4188</td>
+<td style="text-align:center">10.00</td>
+<td style="text-align:center">Using where</td>
+</tr>
+</tbody>
+</table>
+<p>上面的执行计划是什么意思呢？</p>
+<p>上面这个执行计划给出的信息是：这个结果通过一个全表扫描（type： ALL），扫描了4188行（rows： 4188），使用 where 条件（Extra： Using where）在 city 表中选出来的。</p>
+<h2 id="3-2-读懂执行计划"><a href="#3-2-读懂执行计划" class="headerlink" title="3.2 读懂执行计划"></a>3.2 读懂执行计划</h2><p>通过上面的例子，我们看到了一个执行计划返回的结果，但是这些结果是什么意义呢，每一个属性代表着什么呢？</p>
+<p>通过上面的例子，我们看到，一个执行计划返回的结果中有如下属性：</p>
+<p> id | select_type | table | partitions | type | possible_keys | key  | key_len | ref  | rows | filtered | Extra</p>
+<p>我们来一一介绍这些属性是什么意思，并给出每个属性的可选值，以及可选值的意义。</p>
+<ul>
+<li><p><strong>id</strong><br>表示查询中select操作表的顺序,按顺序从大到依次执行。</p>
+</li>
+<li><p><strong>select_type :</strong><br>该表示选择的类型,可选值有: SIMPLE：简单查询(不适用union和子查询的)，PRIMARY: 最外层的查询，UNION: UNION中的第二个或者后面的SELECT语句, DEPENDENT UNION: UNION中的第二个或者后面的SELECT语句，依赖于外部查询, UNION RESULT: UNION结果，SUBQUERY: 子查询中的第一个SELECT语句，DERIVED： 派生表的SELECT(FROM子句的子查询)。</p>
+</li>
+<li><p><strong>table :</strong><br>表示该语句查询的表。</p>
+</li>
+<li><p><strong>partitions：</strong></p>
+<p>分区中的记录将被查询相匹配。显示此列仅在使用分区关键字。该值为NULL对于非分区表。</p>
+</li>
+<li><p><strong>type :</strong><br>该属性表示访问类型,有很多种访问类型。<br>最常见的其中包括以下几种: ALL(全表扫描), index(索引扫描),range(范围扫描),ref (非唯一索引扫描),eq_ref(唯一索引扫描,),(const)常数引用, 访问速度依次由慢到快。</p>
+<blockquote>
+<p>其中 : range(范围)常见与 between and …, 大于 and 小于这种情况。</p>
+<p>提示 : 慢 SQL 是否走索引,走了什么索引,也就可以通过该属性查看</p>
+</blockquote>
+</li>
+</ul>
+<ul>
+<li><p><strong>possible_keys :</strong><br>顾名思义,该属性给出了,该查询语句,可能走的索引,(如某些字段上索引的名字)这里提供的只是参考,而不是实际走的索引,也就导致会有 possible_Keys 不为 null, key 为空的现象。</p>
+</li>
+<li><p><strong>key :</strong> </p>
+<p>显示MySQL实际使用的索引,其中就包括主键索引(PRIMARY),或者自建索引的名字。</p>
+</li>
+<li><p><strong>key_len :</strong></p>
+<p> 表示索引所使用的字节数。</p>
+</li>
+<li><p><strong>ref :</strong><br>连接匹配条件,如果走主键索引的话,该值为: const, 全表扫描的话,为null值。</p>
+</li>
+<li><p><strong>rows :</strong><br>扫描行数,也就是说，需要扫描多少行,采能获取目标行数,一般情况下会大于返回行数。通常情况下,rows越小,效率越高, 也就有大部分SQL优化，都是在减少这个值的大小。</p>
+<blockquote>
+<p>注意: 理想情况下扫描的行数与实际返回行数理论上是一致的,但这种情况及其少,如关联查询,扫描的行数就会比返回行数大大增加)</p>
+</blockquote>
+</li>
+</ul>
+<ul>
+<li><p><strong>filtered：</strong></p>
+<p>它指返回结果的行占需要读到的行(rows列的值)的百分比。filtered是个非常有用的值，因为对于join操作，前一个表的结果集大小直接影响了循环的次数。</p>
+</li>
+<li><p><strong>Extra：</strong> </p>
+<p> 这个属性非常重要,该属性中包括执行SQL时的真实情况信息,如上面所属,使用到的是”using where”，表示使用where筛选得到的值,常用的有: “Using temporary”: 使用临时表 “using filesort”: 使用文件排序。</p>
+</li>
+</ul>
+<p>看到这里,我们应该已经发现,在第一步中,我们的这条 SQL</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">select * from city </span><br><span class="line">where name=&apos;Paris&apos;;</span><br></pre></td></tr></table></figure>
+<p>是没有走索引的,而且还是全表扫描,在数据量少的情况下,问题还不会特别突出,如果数据量比较大,这可是个会造成生产事故的慢查询。如果使用索引又是怎么样的呢？</p>
+<p>我们知道 city 表中，id 为主键，主键为特殊的索引，所以我们查看用 id 来查找这条记录的执行计划。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">explain select * from city</span><br><span class="line">         where id=2974;</span><br></pre></td></tr></table></figure>
+<p>结果如下：</p>
+<p><img src="/2018/02/03/浅谈MySQL执行计划/3.2.1.png" alt=""></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">id</th>
+<th style="text-align:center">select_type</th>
+<th style="text-align:center">table</th>
+<th style="text-align:center">partitions</th>
+<th style="text-align:center">type</th>
+<th style="text-align:center">possible_keys</th>
+<th style="text-align:center">key</th>
+<th style="text-align:center">key_len</th>
+<th style="text-align:center">ref</th>
+<th style="text-align:center">rows</th>
+<th style="text-align:center">filtered</th>
+<th style="text-align:center">Extra</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">SIMPLE</td>
+<td style="text-align:center">city</td>
+<td style="text-align:center">NULL</td>
+<td style="text-align:center">const</td>
+<td style="text-align:center">PRIMARY</td>
+<td style="text-align:center">PRIMARY</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">const</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">100.00</td>
+<td style="text-align:center">NULL</td>
+</tr>
+</tbody>
+</table>
+<p>可以看到，预估的扫描行数从4188变成了1，极大的提高了查询效率。</p>
+<p>参考资料：</p>
+<p>《高性能 MySQL》</p>
+<p><a href="http://blog.csdn.net/mr253727942/article/details/51201222" target="_blank" rel="noopener">http://blog.csdn.net/mr253727942/article/details/51201222</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/30827046?utm_source=com.tencent.tim&amp;utm_medium=social" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/30827046?utm_source=com.tencent.tim&amp;utm_medium=social</a></p>
+<p><a href="https://www.cnblogs.com/galengao/p/5780958.html" target="_blank" rel="noopener">https://www.cnblogs.com/galengao/p/5780958.html</a></p>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢大爷勒，大爷有空常来玩儿呀。<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Java虚拟机</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">介绍</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">执行计划</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Java-虚拟机//" class="article-tag-list-link color4">Java 虚拟机</a>
+        			<a href="/categories/数据库//" class="article-tag-list-link color4">数据库</a>
         		</li>
       		
 		</ul>
 	</div>
 
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2018/02/03/浅谈MySQL执行计划/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/2018/03/02/MySQL存储过程/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          MySQL 存储过程
+        
+      </div>
+    </a>
   
   
-    </div></section>
+    <a href="/2018/01/03/博客介绍/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">博客介绍</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
+  
   
 
-    
+  
+
+  
+
+  
+  <div id="gitment-ctn"></div> 
+<link rel="stylesheet" href="//imsun.github.io/gitment/style/default.css">
+<script src="//imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script>
+var gitment = new Gitment({
+  id: "http://yoursite.com/2018/02/03/浅谈MySQL执行计划/",
+  owner: 'KlutzyNerd',
+  repo: 'GitmentRepo',
+  oauth: {
+    client_id: 'a9a4865b484b39b0c93b',
+    client_secret: 'ca2efec482dc7aec0c98bba032f0572168519216',
+  },
+})
+gitment.render('gitment-ctn')
+</script>
+  
 
 
           </div>
@@ -244,9 +545,9 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: false,
 		toc_hide_index: true,
