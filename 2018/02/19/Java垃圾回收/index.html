@@ -8,21 +8,21 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>Java 垃圾回收 | 核桃的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="能够自动进行垃圾回收，这是 Java 的一大优势，通过垃圾回收，虚拟机可以将堆上的对象自动回收以供下次分配，而不需要在代码中进行显示销毁对象。 本文试图介绍 Java 将要回收那些哪些对象、回收的时机、垃圾回收的算法。">
+  <meta name="description" content="能够自动进行垃圾回收，这是 Java 的一大优势，通过垃圾回收，虚拟机可以将堆上的对象自动回收以供下次分配，而不需要在代码中进行显示销毁对象。 本文是《深入理解 Java 虚拟机》的复习笔记，记录了 Java 将要回收那些哪些对象、回收的时机、垃圾回收的算法。">
 <meta name="keywords" content="垃圾回收">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java 垃圾回收">
 <meta property="og:url" content="http://yoursite.com/2018/02/19/Java垃圾回收/index.html">
 <meta property="og:site_name" content="核桃的博客">
-<meta property="og:description" content="能够自动进行垃圾回收，这是 Java 的一大优势，通过垃圾回收，虚拟机可以将堆上的对象自动回收以供下次分配，而不需要在代码中进行显示销毁对象。 本文试图介绍 Java 将要回收那些哪些对象、回收的时机、垃圾回收的算法。">
+<meta property="og:description" content="能够自动进行垃圾回收，这是 Java 的一大优势，通过垃圾回收，虚拟机可以将堆上的对象自动回收以供下次分配，而不需要在代码中进行显示销毁对象。 本文是《深入理解 Java 虚拟机》的复习笔记，记录了 Java 将要回收那些哪些对象、回收的时机、垃圾回收的算法。">
 <meta property="og:locale" content="klutzynerd.dev@gmail.com">
 <meta property="og:image" content="http://yoursite.com/2018/02/19/Java垃圾回收/2.1.1.1.jpg">
 <meta property="og:image" content="http://yoursite.com/2018/02/19/Java垃圾回收/2.2.1.1.jpg">
 <meta property="og:image" content="http://yoursite.com/2018/02/19/Java垃圾回收/2.3.1.1.jpg">
-<meta property="og:updated_time" content="2018-03-05T03:11:51.498Z">
+<meta property="og:updated_time" content="2018-03-05T03:14:35.650Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java 垃圾回收">
-<meta name="twitter:description" content="能够自动进行垃圾回收，这是 Java 的一大优势，通过垃圾回收，虚拟机可以将堆上的对象自动回收以供下次分配，而不需要在代码中进行显示销毁对象。 本文试图介绍 Java 将要回收那些哪些对象、回收的时机、垃圾回收的算法。">
+<meta name="twitter:description" content="能够自动进行垃圾回收，这是 Java 的一大优势，通过垃圾回收，虚拟机可以将堆上的对象自动回收以供下次分配，而不需要在代码中进行显示销毁对象。 本文是《深入理解 Java 虚拟机》的复习笔记，记录了 Java 将要回收那些哪些对象、回收的时机、垃圾回收的算法。">
 <meta name="twitter:image" content="http://yoursite.com/2018/02/19/Java垃圾回收/2.1.1.1.jpg">
   
     <link rel="alternative" href="/atom.xml" title="核桃的博客" type="application/atom+xml">
@@ -180,7 +180,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>能够自动进行垃圾回收，这是 Java 的一大优势，通过垃圾回收，虚拟机可以将堆上的对象自动回收以供下次分配，而不需要在代码中进行显示销毁对象。</p>
-<p>本文试图介绍 Java 将要回收那些哪些对象、回收的时机、垃圾回收的算法。</p>
+<p>本文是《深入理解 Java 虚拟机》的复习笔记，记录了 Java 将要回收那些哪些对象、回收的时机、垃圾回收的算法。</p>
 <a id="more"></a>
 <h1 id="1-怎么判断对象是否回收？"><a href="#1-怎么判断对象是否回收？" class="headerlink" title="1 怎么判断对象是否回收？"></a>1 怎么判断对象是否回收？</h1><p>堆里放着 Java 中几乎所有的对象实例，垃圾收集器在对堆进行回收之前，第一件事就是要确定这些对象中哪些还“活着”，哪些已经“死去”。具体来说，需要采用某种算法判断哪些对象已经不可能再被任何对象使用了。</p>
 <h2 id="1-1-引用计数算法"><a href="#1-1-引用计数算法" class="headerlink" title="1.1 引用计数算法"></a>1.1 引用计数算法</h2><p>引用计数是一种很简单的判断对象是否不能被使用的算法，具体的方法是：给对象添加一个引用计数器，每当一个地方引用它的时候，计数器值就加一；当引用失效时，计数器值就减一；任何时候计数器为 0 的对象就是不可能再被使用的。</p>
@@ -509,14 +509,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">存储过程</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Java虚拟机</a>
               </li>
              
@@ -525,15 +517,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">存储过程</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">hello word</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">存储引擎</a>
+                <a href="javascript:void(0)" class="js-tag color5">执行计划</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">执行计划</a>
+                <a href="javascript:void(0)" class="js-tag color5">存储引擎</a>
               </li>
             
             <div class="clearfix"></div>
