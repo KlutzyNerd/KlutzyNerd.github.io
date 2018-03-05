@@ -24,7 +24,7 @@
 <meta property="og:image" content="http://yoursite.com/2018/02/26/Java垃圾收集器/5.1.1.jpg">
 <meta property="og:image" content="http://yoursite.com/2018/02/26/Java垃圾收集器/8.1.1.jpg">
 <meta property="og:image" content="http://yoursite.com/2018/02/26/Java垃圾收集器/9.2.1.jpg">
-<meta property="og:updated_time" content="2018-03-04T14:42:07.027Z">
+<meta property="og:updated_time" content="2018-03-04T14:43:45.411Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java 垃圾收集器">
 <meta name="twitter:description" content="作为 Java 程序员，我们是幸运的，因为我们不需要时刻考虑内存的回收，以免发生内存泄漏。Java 平台一个最大的优势是在于它的自动内存管理，这样可以使得 Java 的开发者不用自己去编写代码来进行内存的管理，从而从复杂的内存管理的工作抽身出来专注于业务逻辑的开发。Java 强大的垃圾收集器能够自动的帮助我们回收内存，而不需要我们显示的在代码中释放内存，我们需要做的就是把这一切交给垃圾收集器自动进">
@@ -233,16 +233,18 @@
 <p><img src="/2018/02/26/Java垃圾收集器/5.1.1.jpg" alt=""></p>
 <h2 id="5-2-应用场景："><a href="#5-2-应用场景：" class="headerlink" title="5.2 应用场景："></a>5.2 应用场景：</h2><p>停顿时间越短就越适合需要与用户交互的程序，良好的响应速度能提升用户体验，而高吞吐量则可以高效率地利用CPU时间，尽快完成程序的运算任务，主要适合在后台运算而不需要太多交互的任务。</p>
 <h2 id="5-3-对比分析："><a href="#5-3-对比分析：" class="headerlink" title="5.3 对比分析："></a>5.3 对比分析：</h2><ul>
-<li><p><strong>Parallel Scavenge 收集器  VS CMS 等收集器：</strong></p>
+<li><strong>Parallel Scavenge 收集器  VS CMS 等收集器：</strong></li>
+</ul>
 <p>Parallel Scavenge 收集器的特点是它的关注点与其他收集器不同，CMS 等收集器的关注点是尽可能地缩短垃圾收集时用户线程的停顿时间，而 Parallel Scavenge 收集器的目标则是达到一个<strong>可控制的吞吐量</strong>（Throughput）。</p>
 <p>由于与吞吐量关系密切，Parallel Scavenge收集器也经常称为“吞吐量优先”收集器。</p>
-</li>
-<li><p><strong>Parallel Scavenge 收集器  VS ParNew 收集器：</strong></p>
-<p>Parallel Scavenge收集器与 ParNew 收集器的一个重要区别是它具有自适应调节策略。</p>
-<p><strong>GC自适应的调节策略</strong>：</p>
-<p>Parallel Scavenge 收集器有一个参数-XX: +UseAdaptiveSizePolicy。当这个参数打开之后，就不需要手工指定新生代的大小、Eden 与 Survivor 区的比例、晋升老年代对象年龄等细节参数了，虚拟机会根据当前系统的运行情况收集性能监控信息，动态调整这些参数以提供最合适的停顿时间或者最大的吞吐量，这种调节方式称为 GC 自适应的调节策略（GC Ergonomics）。</p>
-</li>
+<ul>
+<li><strong>Parallel Scavenge 收集器  VS ParNew 收集器：</strong></li>
 </ul>
+<p>Parallel Scavenge收集器与 ParNew 收集器的一个重要区别是它具有自适应调节策略。</p>
+<ul>
+<li><strong>GC自适应的调节策略</strong>：</li>
+</ul>
+<p>Parallel Scavenge 收集器有一个参数-XX: +UseAdaptiveSizePolicy。当这个参数打开之后，就不需要手工指定新生代的大小、Eden 与 Survivor 区的比例、晋升老年代对象年龄等细节参数了，虚拟机会根据当前系统的运行情况收集性能监控信息，动态调整这些参数以提供最合适的停顿时间或者最大的吞吐量，这种调节方式称为 GC 自适应的调节策略（GC Ergonomics）。</p>
 <h1 id="6-Serial-Old-收集器"><a href="#6-Serial-Old-收集器" class="headerlink" title="6 Serial Old 收集器"></a>6 Serial Old 收集器</h1><h2 id="6-1-特性："><a href="#6-1-特性：" class="headerlink" title="6.1 特性："></a>6.1 特性：</h2><p>Serial Old是Serial收集器的<strong>老年代版本</strong>，它同样是一个<strong>单线程收集器</strong>，使用<strong>标记－整理</strong>算法。</p>
 <p>运行过程如下：</p>
 <p><img src="/2018/02/26/Java垃圾收集器/3.1.1.jpg" alt=""></p>
@@ -537,8 +539,8 @@
     </a>
   
   
-    <a href="/2018/02/13/谈谈MySQL的几种常用储存引擎/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">谈谈 MySQL 的几种常用储存引擎</div>
+    <a href="/2018/02/19/Java垃圾回收/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Java 垃圾回收</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -676,11 +678,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Java虚拟机</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">介绍</a>
+                <a href="javascript:void(0)" class="js-tag color5">垃圾回收</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -689,6 +687,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">存储过程</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Java虚拟机</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">介绍</a>
               </li>
              
               <li class="article-tag-list-item">
