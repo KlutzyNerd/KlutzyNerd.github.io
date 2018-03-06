@@ -24,7 +24,7 @@
 <meta property="og:image" content="http://yoursite.com/2018/02/26/Java垃圾收集器/5.1.1.jpg">
 <meta property="og:image" content="http://yoursite.com/2018/02/26/Java垃圾收集器/8.1.1.jpg">
 <meta property="og:image" content="http://yoursite.com/2018/02/26/Java垃圾收集器/9.2.1.jpg">
-<meta property="og:updated_time" content="2018-03-04T14:43:45.411Z">
+<meta property="og:updated_time" content="2018-03-06T07:00:02.393Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java 垃圾收集器">
 <meta name="twitter:description" content="作为 Java 程序员，我们是幸运的，因为我们不需要时刻考虑内存的回收，以免发生内存泄漏。Java 平台一个最大的优势是在于它的自动内存管理，这样可以使得 Java 的开发者不用自己去编写代码来进行内存的管理，从而从复杂的内存管理的工作抽身出来专注于业务逻辑的开发。Java 强大的垃圾收集器能够自动的帮助我们回收内存，而不需要我们显示的在代码中释放内存，我们需要做的就是把这一切交给垃圾收集器自动进">
@@ -337,6 +337,7 @@
 <p>筛选回收阶段首先对各个Region的回收价值和成本进行排序，根据用户所期望的GC停顿时间来制定回收计划，这个阶段其实也可以做到与用户程序一起并发执行，但是因为只回收一部分Region，时间是用户可控制的，而且停顿用户线程将大幅提高收集效率。</p>
 <p>具体来说，如图所示：</p>
 <p><img src="/2018/02/26/Java垃圾收集器/9.2.1.jpg" alt=""></p>
+<h2 id="9-3-使用场景"><a href="#9-3-使用场景" class="headerlink" title="9.3 使用场景"></a>9.3 使用场景</h2><p>JDK 1.9 中的默认垃圾收集器。</p>
 <h1 id="10-垃圾收集器参数总结"><a href="#10-垃圾收集器参数总结" class="headerlink" title="10 垃圾收集器参数总结"></a>10 垃圾收集器参数总结</h1><table>
 <thead>
 <tr>
@@ -674,15 +675,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">垃圾回收</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">存储过程</a>
+                <a href="javascript:void(0)" class="js-tag color3">内存回收与分配</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -690,11 +683,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">hello word</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">介绍</a>
+                <a href="javascript:void(0)" class="js-tag color5">垃圾回收</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -702,7 +691,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">介绍</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">hello word</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">执行计划</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">存储过程</a>
               </li>
              
               <li class="article-tag-list-item">
