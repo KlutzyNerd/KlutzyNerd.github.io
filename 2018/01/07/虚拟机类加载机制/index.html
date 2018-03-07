@@ -6,18 +6,22 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives | 核桃的博客</title>
+  <title>虚拟机类加载机制 | 核桃的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="非知名大学水货烟酒僧一枚">
-<meta property="og:type" content="website">
-<meta property="og:title" content="核桃的博客">
-<meta property="og:url" content="http://yoursite.com/archives/index.html">
+  <meta name="description" content="最近在《深入分析 Java Web 技术内幕》看到了虚拟机的类加载器解析，发现跟以前看到的《深入理解 Java 虚拟机》中所说的不一致，今天正好有空，再把这一部分的内容看看吧。 我们知道 Java 语言，最终会被编译成为 Class 文件，Class 文件最终都需要加载到虚拟机中之后才能运行和使用。那么虚拟机如何加载这些 Class 文件？Class 文件中的信息进入到虚拟机后会发生什么变化？这些">
+<meta name="keywords" content="类加载">
+<meta property="og:type" content="article">
+<meta property="og:title" content="虚拟机类加载机制">
+<meta property="og:url" content="http://yoursite.com/2018/01/07/虚拟机类加载机制/index.html">
 <meta property="og:site_name" content="核桃的博客">
-<meta property="og:description" content="非知名大学水货烟酒僧一枚">
+<meta property="og:description" content="最近在《深入分析 Java Web 技术内幕》看到了虚拟机的类加载器解析，发现跟以前看到的《深入理解 Java 虚拟机》中所说的不一致，今天正好有空，再把这一部分的内容看看吧。 我们知道 Java 语言，最终会被编译成为 Class 文件，Class 文件最终都需要加载到虚拟机中之后才能运行和使用。那么虚拟机如何加载这些 Class 文件？Class 文件中的信息进入到虚拟机后会发生什么变化？这些">
 <meta property="og:locale" content="klutzynerd.dev@gmail.com">
+<meta property="og:image" content="http://yoursite.com/2018/01/07/虚拟机类加载机制/1.1.jpg">
+<meta property="og:updated_time" content="2018-03-07T16:40:35.448Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="核桃的博客">
-<meta name="twitter:description" content="非知名大学水货烟酒僧一枚">
+<meta name="twitter:title" content="虚拟机类加载机制">
+<meta name="twitter:description" content="最近在《深入分析 Java Web 技术内幕》看到了虚拟机的类加载器解析，发现跟以前看到的《深入理解 Java 虚拟机》中所说的不一致，今天正好有空，再把这一部分的内容看看吧。 我们知道 Java 语言，最终会被编译成为 Class 文件，Class 文件最终都需要加载到虚拟机中之后才能运行和使用。那么虚拟机如何加载这些 Class 文件？Class 文件中的信息进入到虚拟机后会发生什么变化？这些">
+<meta name="twitter:image" content="http://yoursite.com/2018/01/07/虚拟机类加载机制/1.1.jpg">
   
     <link rel="alternative" href="/atom.xml" title="核桃的博客" type="application/atom+xml">
   
@@ -153,395 +157,106 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-虚拟机类加载机制" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2018" class="archive-year">2018</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/03/03/主流的几种-Java-虚拟机/" class="archive-article-date">
-  	<time datetime="2018-03-03T04:07:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-03</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/03/03/主流的几种-Java-虚拟机/">主流的几种 Java 虚拟机</a>
+    <h1 class="article-title" itemprop="name">
+      虚拟机类加载机制
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Java虚拟机</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">介绍</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java-虚拟机//" class="article-tag-list-link color4">Java 虚拟机</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/03/02/MySQL存储过程/" class="archive-article-date">
-  	<time datetime="2018-03-02T08:41:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-02</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/03/02/MySQL存储过程/">MySQL 存储过程</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">存储过程</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/数据库//" class="article-tag-list-link color4">数据库</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/02/26/Java垃圾收集器/" class="archive-article-date">
-  	<time datetime="2018-02-26T09:31:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-02-26</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/02/26/Java垃圾收集器/">Java 垃圾收集器</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">垃圾收集器</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java-虚拟机//" class="article-tag-list-link color4">Java 虚拟机</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/02/19/Java垃圾回收/" class="archive-article-date">
-  	<time datetime="2018-02-19T05:02:23.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-02-19</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/02/19/Java垃圾回收/">Java 垃圾回收</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">垃圾回收</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java-虚拟机//" class="article-tag-list-link color4">Java 虚拟机</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/02/13/谈谈MySQL的几种常用储存引擎/" class="archive-article-date">
-  	<time datetime="2018-02-13T05:28:12.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-02-13</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/02/13/谈谈MySQL的几种常用储存引擎/">谈谈 MySQL 的几种常用储存引擎</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">存储引擎</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/数据库//" class="article-tag-list-link color4">数据库</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/02/03/浅谈MySQL执行计划/" class="archive-article-date">
-  	<time datetime="2018-02-03T08:35:39.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-02-03</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/02/03/浅谈MySQL执行计划/">浅谈 MySQL 执行计划</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">执行计划</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/数据库//" class="article-tag-list-link color4">数据库</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/01/26/Java内存分配与回收策略/" class="archive-article-date">
-  	<time datetime="2018-01-26T01:11:30.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-26</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/01/26/Java内存分配与回收策略/">Java 内存分配与回收策略</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">内存回收与分配</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java-虚拟机//" class="article-tag-list-link color4">Java 虚拟机</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/01/07/虚拟机类加载机制/" class="archive-article-date">
+        
+        <a href="/2018/01/07/虚拟机类加载机制/" class="archive-article-date">
   	<time datetime="2018-01-07T09:20:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-07</time>
 </a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/01/07/虚拟机类加载机制/">虚拟机类加载机制</a>
-    </h1>
-  
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>最近在《深入分析 Java Web 技术内幕》看到了虚拟机的类加载器解析，发现跟以前看到的《深入理解 Java 虚拟机》中所说的不一致，今天正好有空，再把这一部分的内容看看吧。</p>
+<p>我们知道 Java 语言，最终会被编译成为 Class 文件，Class 文件最终都需要加载到虚拟机中之后才能运行和使用。那么虚拟机如何加载这些 Class 文件？Class 文件中的信息进入到虚拟机后会发生什么变化？这些都需要了解到虚拟机类加载机制之后才能回答。</p>
+<a id="more"></a>
+<h1 id="1-类加载的时机"><a href="#1-类加载的时机" class="headerlink" title="1 类加载的时机"></a>1 类加载的时机</h1><p>类从被加载到虚拟机内存中开始，到卸载出内存为止，它的整个生命周期包括：加载、验证、准备、解析、初始化、使用和卸载 7 个阶段。其中验证、准备、解析 3 个部分统称为连接，发生的顺序如图所示：</p>
+<p><img src="/2018/01/07/虚拟机类加载机制/1.1.jpg" alt=""></p>
+<p>其中，加载、验证、准备、初始化和卸载这几个阶段的顺序是确定的，类的加载过程必须按照这种顺序按部就班地开始，而解析阶段就不一定了，在某些情况下可以在初始化阶段之后再开始。注意，只是按部就班的开始，但是这些阶段都是相互混合地进行的，通常在一个阶段执行的过程中会调用、激活另一阶段。</p>
+<p>虚拟机规范之中，规定了有且仅有以下 5 种情况必须立即对类进行“初始化”（当然，加载验证，准备自然需要在此之前开始）。</p>
+<ol>
+<li>遇到 new、getstatic、putstatic 或者 invokestatic 这四条字节码指令时，相关类没有初始化。</li>
+<li>使用 java.lang.reflect 包的方法对类进行反射调用的时候，相关类没有初始化。</li>
+<li>初始化一个类的时候，如果发现其父类还没有进行过初始化。JDK8 中如果一个接口申明了一个 non-abstract, not-static 方法，当实现了这个接口的类初始化时也会触发这个接口的初始化。</li>
+<li>主类（包含 main（）方法的那个类）没有初始化。</li>
+<li>JDK7 中使用动态语言支持时，如果一个 java.lang.invoke.MethodHandle 实例正好是对 REF_getStatic, REF_putStatic, REF_invokeStatic 进行方法句柄解析的结果时。JDK8 中使用动态语言支持时，如果一个 java.lang.invoke.MethodHandle 实例是REF_newInvokeSpecial 的方法句柄解析结果时，也会触发类的初始化；</li>
+</ol>
+<p>在虚拟机中，这 5 种场景中的行为称为对一个类进行主动引用。除此之外，所有引用类的方式都不会触发初始化，称为被动引用。请看下面的代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SuperClass</span></span>&#123;</span><br><span class="line"> <span class="keyword">static</span>&#123;</span><br><span class="line">  System.out.println(<span class="string">"SuperClass init!"</span>);</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> value=<span class="number">123</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SubClass</span> <span class="keyword">extends</span> <span class="title">SuperClass</span></span>&#123;</span><br><span class="line"> <span class="keyword">static</span>&#123;</span><br><span class="line">  System.out.println(<span class="string">"SubClass init！"</span>);</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ConstClass</span></span>&#123;</span><br><span class="line"> <span class="keyword">static</span> &#123;</span><br><span class="line">  System.out.println(<span class="string">"ConstClass init"</span>);</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String HELLOWORD=<span class="string">"Hello world"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NotInitialization</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">  <span class="comment">/*</span></span><br><span class="line"><span class="comment">		 * 被动使用类字段演示一：</span></span><br><span class="line"><span class="comment">		 * 通过数组定义引用类，不会触发此类的初始化</span></span><br><span class="line"><span class="comment">		 */</span></span><br><span class="line">  System.out.println(<span class="string">"***************通过数组定义引用类**********"</span>);</span><br><span class="line">  SuperClass[] sca = <span class="keyword">new</span> SuperClass[<span class="number">10</span>];</span><br><span class="line">  System.out.println(sca.getClass());</span><br><span class="line">  <span class="comment">/*</span></span><br><span class="line"><span class="comment">		 * 被动使用类字段演示二：</span></span><br><span class="line"><span class="comment">		 * 通过子类引用父类的静态字段，不会导致初始化</span></span><br><span class="line"><span class="comment">		 */</span></span><br><span class="line">  System.out.println(<span class="string">"***************通过子类引用父类静态字段**********"</span>);</span><br><span class="line">  System.out.println(SubClass.value);</span><br><span class="line">  <span class="comment">/*</span></span><br><span class="line"><span class="comment">		 * 被动使用类字段延时三：</span></span><br><span class="line"><span class="comment">		 * 常量在编译阶段会存入调用类的常量池中，</span></span><br><span class="line"><span class="comment">		 * 本质上并没有直接引用到定义常量的类，因此不会触发定义常量类的初始化</span></span><br><span class="line"><span class="comment">		 */</span></span><br><span class="line">  System.out.println(<span class="string">"***************通过类引用常量***************"</span>);</span><br><span class="line">  System.out.println(ConstClass.HELLOWORD);</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>执行结果为：</p>
+<blockquote>
+<p><strong><strong><strong><em>*</em></strong></strong></strong>通过数组定义引用类<strong><strong>**</strong></strong><br>class [Lclassloading.SuperClass;<br><strong><strong><strong><em>*</em></strong></strong></strong>通过子类引用父类静态字段<strong><strong>**</strong></strong><br>SuperClass init!<br>123<br><strong><strong><strong><em>*</em></strong></strong></strong>通过类引用常量<strong><strong><strong><em>*</em></strong></strong></strong><br>Hello world</p>
+</blockquote>
+<h1 id="2-类加载的过程"><a href="#2-类加载的过程" class="headerlink" title="2 类加载的过程"></a>2 类加载的过程</h1><p>上一节中说过，虚拟机加载类的全过程为，加载、验证、准备、解析和初始化。下面了解下这 5 个阶段的具体动作。</p>
+<h2 id="2-1-加载"><a href="#2-1-加载" class="headerlink" title="2.1 加载"></a>2.1 加载</h2><p>加载是虚拟机加载类的第一个阶段。在加载阶段，虚拟机要完成以下 3 件事情：</p>
+<ol>
+<li>通过一个类的全限定名来获取定义此类的二进制字节流。</li>
+<li>将这个字节流所代表的静态存储结构转化为方法区的运行时数据结构。</li>
+<li>在内存中生成一个代表这个类的 java.lang.Class 对象，作为方法区这个类的各种数据结构的访问入口。</li>
+</ol>
+<p>注意：Class 对象封装了类在方法区内的数据结构，并且向 Java 程序员提供了访问方法区内数据结构的接口，HotSpot 虚拟i家的 Class 对象虽然是对象，但是存储在方法区。</p>
+<h2 id="2-2-验证"><a href="#2-2-验证" class="headerlink" title="2.2 验证"></a>2.2 验证</h2><p>验证是连接阶段的第一步，这一阶段的目的是为了确保 Class 文件的字节流中包含的信息符合当前虚拟机的要求，并且不会危害到虚拟机自身的安全。包括文件格式验证、元数据验证、字节码验证、符号引用验证。</p>
+<h2 id="2-3-准备"><a href="#2-3-准备" class="headerlink" title="2.3 准备"></a>2.3 准备</h2><p>为类变量分配内存并设置类变量初始值（各数据类型的零值）的阶段，这些内存将在方法区中分配。有以下两点需要注意：</p>
+<ol>
+<li>这时候进行内存分配的仅仅包括类变量（被 static 修饰的变量），而不包括实例变量，实例变量将会在对象实例化时随着对象一起分配在 Java 堆中。</li>
+<li>通常情况下，准备阶段过后，类对象的初始值为 0 值，如下代码：</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> value=<span class="number">123</span>;</span><br></pre></td></tr></table></figure>
+<p>value 在准备阶段过后的初始值是 0 而不是 123 ，因为为 value 复制的指令是在构造器中，所以将 value 赋值为 123 的动作将在初始化阶段才会执行。</p>
+<p>但是如果类字段的字段属性表中存在 ConstantValue 属性，那在准备阶段变量值就会初始化为 ConstantValue 属性指定的值。如下代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> value = <span class="number">123</span>;</span><br></pre></td></tr></table></figure>
+<p>编译时候，Javac 会将 value 生成 ConstantValue 属性，在准备阶段虚拟机就会根据 ConstantValue 的设置将 value 设置为 123 ，也就是说，常量的赋值是在初始化阶段进行的。</p>
+<h2 id="2-4-解析"><a href="#2-4-解析" class="headerlink" title="2.4 解析"></a>2.4 解析</h2><p>解析阶段虚拟机将常量池内的符号引用替换为直接引用。</p>
+<ul>
+<li>符号引用：符号引用以一组符号来描述所引用的目标，符号可以是任何形式的字面量，只要使用时候能武器已地定位到目标即可。符号引用与虚拟机实现的布局无关，引用的目标并不一定已经加载到内存中。</li>
+<li>直接引用：直接引用可以是直接指向目标的指针、相对偏移量或者一个能间接定位到目标的句柄。如果有了直接引用，那么引用的目标必定已经在内存中存在。</li>
+</ul>
+<h2 id="2-5-初始化"><a href="#2-5-初始化" class="headerlink" title="2.5 初始化"></a>2.5 初始化</h2><p>执行类构造器 \<clinit>() 方法的过程，这一阶段才真正意义上的执行 Java 代码。</clinit></p>
+<ul>
+<li>\<clinit>() 方法是由编译器自动收集类中的所有类变量的复制动作和静态语句块（static｛｝块）中的语句合并生成的。静态语句块中只能访问到定义在静态语句块之前的变量，定义在它之后的变量，在前面的静态语句块中可以赋值，但是不能访问。</clinit></li>
+<li>\<clinit>() 方法是类的构造器，与类的构造函数不同，不需要显示调用父类构造器，虚拟机会保证子类的 \<clinit>() 方法执行之前，父类的 \<clinit> 方法已经执行完毕。</clinit></clinit></clinit></li>
+<li>由于父类的 \<clinit>() 先执行，也就意味着父类定义的静态语句块要优先于子类的变量赋值操作。</clinit></li>
+<li>\<clinit>() 对于类或者接口来说不是必须的。</clinit></li>
+</ul>
 
-        <div class="article-info info-on-right">
-          
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢大爷勒，大爷有空常来玩儿呀。<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -553,7 +268,7 @@
 		</ul>
 	</div>
 
-          
+      
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
@@ -566,70 +281,129 @@
 	</div>
 
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2018/01/07/虚拟机类加载机制/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/01/03/博客介绍/" class="archive-article-date">
-  	<time datetime="2018-01-03T14:30:15.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-03</time>
-</a>
+<nav id="article-nav">
+  
+    <a href="/2018/01/26/Java内存分配与回收策略/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          Java 内存分配与回收策略
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/01/03/博客介绍/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">博客介绍</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/01/03/博客介绍/">博客介绍</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">介绍</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">hello word</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/杂谈//" class="article-tag-list-link color3">杂谈</a>
-        		</li>
-      		
-		</ul>
-	</div>
+        
+        
+    </div>
+</aside>
 
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
+
   
   
-    </div></section>
   
 
-    
+  
+
+  
+
+  
+  <div id="gitment-ctn"></div> 
+<link rel="stylesheet" href="//imsun.github.io/gitment/style/default.css">
+<script src="//imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script>
+var gitment = new Gitment({
+  id: "http://yoursite.com/2018/01/07/虚拟机类加载机制/",
+  owner: 'KlutzyNerd',
+  repo: 'GitmentRepo',
+  oauth: {
+    client_id: 'a9a4865b484b39b0c93b',
+    client_secret: 'ca2efec482dc7aec0c98bba032f0572168519216',
+  },
+})
+gitment.render('gitment-ctn')
+</script>
+  
 
 
           </div>
@@ -652,8 +426,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
