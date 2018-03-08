@@ -6,23 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>MySQL 存储过程 | 核桃的博客</title>
+  <title>一次 Http 请求经历的过程[转载] | 核桃的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="MySQL存储过程的一些知识点">
-<meta name="keywords" content="MySQL,存储过程">
+  <meta name="description" content="TPC/IP协议是传输层协议，主要解决数据如何在网络中传输，而HTTP是应用层协议，主要解决如何包装数据。 HTTP通信机制是在一次完整的HTTP通信过程中，Web浏览器与Web服务器之间将完成下列7个步骤： 1. 建立TCP连接在HTTP工作开始之前，Web浏览器首先要通过网络与Web服务器建立连接，该连接是通过TCP来完成的，该协议与IP协议共同构建Internet，即著名的TCP/IP协议">
+<meta name="keywords" content="Http协议,过程">
 <meta property="og:type" content="article">
-<meta property="og:title" content="MySQL 存储过程">
-<meta property="og:url" content="http://yoursite.com/2018/03/02/MySQL存储过程/index.html">
+<meta property="og:title" content="一次 Http 请求经历的过程[转载]">
+<meta property="og:url" content="http://yoursite.com/2018/03/07/一次Http请求经历的过程/index.html">
 <meta property="og:site_name" content="核桃的博客">
-<meta property="og:description" content="MySQL存储过程的一些知识点">
+<meta property="og:description" content="TPC/IP协议是传输层协议，主要解决数据如何在网络中传输，而HTTP是应用层协议，主要解决如何包装数据。 HTTP通信机制是在一次完整的HTTP通信过程中，Web浏览器与Web服务器之间将完成下列7个步骤： 1. 建立TCP连接在HTTP工作开始之前，Web浏览器首先要通过网络与Web服务器建立连接，该连接是通过TCP来完成的，该协议与IP协议共同构建Internet，即著名的TCP/IP协议">
 <meta property="og:locale" content="klutzynerd.dev@gmail.com">
-<meta property="og:image" content="http://yoursite.com/2018/03/02/MySQL存储过程/create_myproc.png">
-<meta property="og:image" content="http://yoursite.com/2018/03/02/MySQL存储过程/use_myproc.png">
-<meta property="og:updated_time" content="2018-03-03T05:53:56.450Z">
+<meta property="og:updated_time" content="2018-03-08T01:20:55.735Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="MySQL 存储过程">
-<meta name="twitter:description" content="MySQL存储过程的一些知识点">
-<meta name="twitter:image" content="http://yoursite.com/2018/03/02/MySQL存储过程/create_myproc.png">
+<meta name="twitter:title" content="一次 Http 请求经历的过程[转载]">
+<meta name="twitter:description" content="TPC/IP协议是传输层协议，主要解决数据如何在网络中传输，而HTTP是应用层协议，主要解决如何包装数据。 HTTP通信机制是在一次完整的HTTP通信过程中，Web浏览器与Web服务器之间将完成下列7个步骤： 1. 建立TCP连接在HTTP工作开始之前，Web浏览器首先要通过网络与Web服务器建立连接，该连接是通过TCP来完成的，该协议与IP协议共同构建Internet，即著名的TCP/IP协议">
   
     <link rel="alternative" href="/atom.xml" title="核桃的博客" type="application/atom+xml">
   
@@ -158,97 +155,40 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-MySQL存储过程" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-一次Http请求经历的过程" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      MySQL 存储过程
+      一次 Http 请求经历的过程[转载]
     </h1>
   
 
         
-        <a href="/2018/03/02/MySQL存储过程/" class="archive-article-date">
-  	<time datetime="2018-03-02T08:41:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-02</time>
+        <a href="/2018/03/07/一次Http请求经历的过程/" class="archive-article-date">
+  	<time datetime="2018-03-07T12:50:52.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-07</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>今天被问到了 MySQL 的存储过程，才发现自己在这一块儿都忘记的差不多了，今天正好有空，就记录下 MySQL 存储过程的一些知识点吧。</p>
-<p>本文就什么是存储过程，为什么要使用存储过程，怎么使用存储过程，存储过程有那些缺陷，什么时候应该使用存储过程谈谈自己的理解。一家之言，如有错误，还望指出。</p>
-<a id="more"></a>
-<h1 id="1-什么是存储过程？"><a href="#1-什么是存储过程？" class="headerlink" title="1. 什么是存储过程？"></a>1. 什么是存储过程？</h1><blockquote>
-<p> 存储过程（Stored Procedure）是在大型数据库系统中，一组为了完成特定功能的SQL 语句集，存储在数据库中，经过第一次编译后再次调用不需要再次编译，用户通过指定存储过程的名字并给出参数（如果该存储过程带有参数）来执行它。存储过程是数据库中的一个重要对象。</p>
-</blockquote>
-<p>简单来说，存储过程就是一组为了完成指定功能的SQL语句集，经过编译后存储在数据库中，用户可以通过存储过程的名称并给出参数来执行，也就是说，用户可以像调用一个方法那样调用存储过程。可以将存储过程看作对面向对象语言中方法的模拟。</p>
-<h1 id="2-为什么要采用存储过程？"><a href="#2-为什么要采用存储过程？" class="headerlink" title="2. 为什么要采用存储过程？"></a>2. 为什么要采用存储过程？</h1><h2 id="2-1-只需编译一次，后面的调用无需编译，提升了查询效率"><a href="#2-1-只需编译一次，后面的调用无需编译，提升了查询效率" class="headerlink" title="2.1 只需编译一次，后面的调用无需编译，提升了查询效率"></a>2.1 只需编译一次，后面的调用无需编译，提升了查询效率</h2><p>我们知道，MySQL 服务器 在执行查询的时候，经过了以下步骤：</p>
-<ol>
-<li>先检查查询缓存，如果命中的缓存，则立刻返回存储在缓存中的结果，否则进入下一步。</li>
-<li>服务端进行 SQL 解析、预处理，再由优化器生成对应的执行计划。</li>
-<li>根据生成的执行计划，调用存储引擎的API来执行查询。</li>
-</ol>
-<p>可见， MySQL 在执行 SQL 语句的时候，每次都需要编译 SQL 语句，但是存储过程经过第一次执行调用编译，后面的调用就无需再进行编译，存储过程在创建的过程中，数据库已经对其进行了一次解析和优化，执行速度就会快很多。</p>
-<h2 id="2-2-简化了对-SQL-的调用"><a href="#2-2-简化了对-SQL-的调用" class="headerlink" title="2.2 简化了对 SQL 的调用"></a>2.2 简化了对 SQL 的调用</h2><p>将一些重复性很高的操作，封装到一个存储过程中，能够极大的简化用户对 SQL 的调用。这一点与面向对象的语言中的方法有相似之处。</p>
-<h2 id="2-3-方便-DBA-优化"><a href="#2-3-方便-DBA-优化" class="headerlink" title="2.3 方便 DBA 优化"></a>2.3 方便 DBA 优化</h2><p>在一些有复杂业务逻辑的项目中，一个 SQL 语句可能在很多的组件中都有一份，如果要对这些 SQL 进行优化，需要逐份的修改，很容易出错。但是存储过程只是在数据库服务器上有一份，所以只需要修改存储过程就可以优化了。</p>
-<h2 id="2-4-可以在不重启服务器的情况下修改业务逻辑"><a href="#2-4-可以在不重启服务器的情况下修改业务逻辑" class="headerlink" title="2.4 可以在不重启服务器的情况下修改业务逻辑"></a>2.4 可以在不重启服务器的情况下修改业务逻辑</h2><p>在生产环境下，可以通过直接修改存储过程的方式修改业务逻辑（或bug），而不用重启服务器。</p>
-<h2 id="2-5-减少网络传输"><a href="#2-5-减少网络传输" class="headerlink" title="2.5 减少网络传输"></a>2.5 减少网络传输</h2><p>针对同一个数据库对象的操作，如果这一操作被组织进存储过程，那么当在客户计算机上调用该存储过程时，网络中传送的只是该调用语句与最总结果，从而大大减少网络流量并降低了网络负载。</p>
-<h2 id="2-6-更加安全"><a href="#2-6-更加安全" class="headerlink" title="2.6 更加安全"></a>2.6 更加安全</h2><p>通过对执行某一存储过程的权限进行限制，能够实现对相应的数据的访问权限的限制，避免了非授权用户对数据的访问，保证了数据的安全。</p>
-<h1 id="3-怎么使用存储过程？"><a href="#3-怎么使用存储过程？" class="headerlink" title="3. 怎么使用存储过程？"></a>3. 怎么使用存储过程？</h1><h2 id="3-1-怎么创建存储过程？"><a href="#3-1-怎么创建存储过程？" class="headerlink" title="3.1 怎么创建存储过程？"></a>3.1 怎么创建存储过程？</h2><p>创建语法如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">DELIMITER //</span><br><span class="line">  CREATE PROCEDURE myproc(arg1, arg2, arg3...)</span><br><span class="line">    BEGIN</span><br><span class="line">      -- insert your SQL there --</span><br><span class="line">    END</span><br><span class="line">    //</span><br><span class="line">DELIMITER ;</span><br></pre></td></tr></table></figure>
-<p>其中：</p>
-<ul>
-<li>DELIMITER //  —— 分隔符：MySQL默认以 “;” 为分隔符，也就是说，在命令行中 MySQL 遇到了分号就自动执行。但是存储过程一般有很多行 SQL 语句，通过 delimiter 可以将分隔符换为 delimiter 之后的符号如 //，这样当 // 出现之后，MySQL 解释器才会执行这段语句。</li>
-</ul>
-<ul>
-<li>arg —— 参数：存储过程根据需要可能会有输入、输出、输入输出参数，如果有多个参数用”,”分割开。参数的格式为：【参数类型 变量名 变量类型】，MySQL存储过程的参数用在存储过程的定义，共有三种参数类型,IN,OUT,INOUT:<ul>
-<li><strong>IN：</strong>表示调用者向过程传入值（传入值可以是字面量或变量）</li>
-<li><strong>OUT：</strong>表示过程向调用者传出值(可以返回多个值)（传出值只能是变量）</li>
-<li><strong>INOUT：</strong>既表示调用者向过程传入值，又表示过程向调用者传出值（值只能是变量）</li>
-</ul>
-</li>
-</ul>
-<ul>
-<li>BEGIN … END —— 过程体：过程体的开始与结束使用BEGIN与END进行标识</li>
-</ul>
-<p>执行以下 SQL 语句创建存储过程：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">DELIMITER //</span><br><span class="line">  CREATE PROCEDURE myproc(IN p_in int, OUT p_out int, INOUT p_inout int)</span><br><span class="line">    BEGIN</span><br><span class="line">    	SELECT p_in;</span><br><span class="line">    	SELECT p_out;</span><br><span class="line">    	SELECT p_inout;</span><br><span class="line">    	</span><br><span class="line">    	SET p_in=2;</span><br><span class="line">    	SET p_out=2;</span><br><span class="line">    	SET p_inout=2;</span><br><span class="line">    END;</span><br><span class="line">    //</span><br><span class="line">DELIMITER ;</span><br></pre></td></tr></table></figure>
-<p><img src="/2018/03/02/MySQL存储过程/create_myproc.png" alt=""></p>
-<h2 id="3-2-怎么调用存储过程？"><a href="#3-2-怎么调用存储过程？" class="headerlink" title="3.2 怎么调用存储过程？"></a>3.2 怎么调用存储过程？</h2><p>调用以下 SQL 则可以使用刚才创建的名为 myproc 的存储过程：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">DELIMITER //</span><br><span class="line">  SET @p_in=1;</span><br><span class="line">  SET @p_out=1;</span><br><span class="line">  SET @p_inout=1;</span><br><span class="line">  </span><br><span class="line">  CALL myproc(@p_in, @p_out, @p_inout);</span><br><span class="line">  </span><br><span class="line">   SELECT @p_in;</span><br><span class="line">   SELECT @p_out;</span><br><span class="line">   SELECT @p_inout;</span><br><span class="line">  //</span><br><span class="line">DELIMITER ;</span><br></pre></td></tr></table></figure>
-<p>意义为执行刚创建的 存储过程并显示返回的结果。因为存储过程实际上是一种函数，所以存储过程名后需要有 “()” 符号（即使不传递参数也需要）。</p>
-<blockquote>
-<p>注意：</p>
-<ul>
-<li>参数个数必须与存储过程指定的一致</li>
-<li>确保参数的名字不等于列的名字，否则在过程体中，参数名被当做列名来处理</li>
-</ul>
-</blockquote>
-<p>结果如下：</p>
-<p><img src="/2018/03/02/MySQL存储过程/use_myproc.png" alt=""></p>
-<h2 id="3-3-怎么删除存储过程？"><a href="#3-3-怎么删除存储过程？" class="headerlink" title="3.3 怎么删除存储过程？"></a>3.3 怎么删除存储过程？</h2><p>存储过程在创建之后，被保存在服务器上以供使用，直至被删除。删除上面创建的 myproc 存储过程的语句如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DROP PROCEDURE myproc;</span><br></pre></td></tr></table></figure>
-<h1 id="4-有那些缺陷？"><a href="#4-有那些缺陷？" class="headerlink" title="4. 有那些缺陷？"></a>4. 有那些缺陷？</h1><p>存储过程虽然有许多的好处，但是也还是有一些缺点，需要我们在使用存储过程的时候仔细分辨是否适用存储过程。</p>
-<ul>
-<li>SQL本身是一种结构化查询语言，加上了一些控制（赋值、循环和异常处理等），但不是OO的，本质上还是过程化的，面对复杂的业务逻辑，过程化的处理会很吃力。</li>
-</ul>
-<ul>
-<li>优化器无法使用关键字 DETERMINISTIC 来优化单个查询中多次调用存储函数的情况。</li>
-</ul>
-<ul>
-<li>优化器无法评估存储函数的执行成本。</li>
-</ul>
-<ul>
-<li>每个连接都有独立的存储过程的执行计划缓存。如果有多个连接需要调用同一个存储过程，将会浪费缓存空间反复缓存同样的执行计划。</li>
-</ul>
-<h1 id="5-什么时候使用存储过程？"><a href="#5-什么时候使用存储过程？" class="headerlink" title="5. 什么时候使用存储过程？"></a>5. 什么时候使用存储过程？</h1><p>一般我们希望存储程序越小，越简单越好，复杂的处理逻辑交给上层的应用。这样能够使得代码更加灵活，也更加易读，易维护。</p>
-<p>根据 《高性能 MySQL》的建议，在一个存储过程能够代替很多小查询的时候使用存储过程。因为如果查询很小，相比较与这个查询的执行成本，解析和网络的开销会非常明显。</p>
-<p>参考资料：</p>
-<p>《MySQL 必知必会》</p>
-<p>《高性能 MySQL》</p>
+        <p> <strong>TPC/IP协议是传输层协议，主要解决数据如何在网络中传输，而HTTP是应用层协议，主要解决如何包装数据。</strong></p>
+<p>HTTP通信机制是在一次完整的HTTP通信过程中，Web浏览器与Web服务器之间将完成下列7个步骤：</p>
+<p><strong>1. 建立TCP连接</strong><br>在HTTP工作开始之前，Web浏览器首先要通过网络与Web服务器建立连接，该连接是通过TCP来完成的，该协议与IP协议共同构建Internet，即著名的TCP/IP协议族，因此Internet又被称作是TCP/IP网络。HTTP是比TCP更高层次的应用层协议，根据规则，只有低层协议建立之后才能进行更高层协议的连接，因此，首先要建立TCP连接，一般TCP连接的端口号是80。当输入一个请求时，首先建立一个socket连接，因为socket是通过ip和端口建立的，所以，之前则还有一个DNS解析过程。如把<a href="http://www.baidu.com/" target="_blank" rel="noopener">www.baidu.com</a>变成一个ip，如果url不包含端口号，则会使用该协议的默认端口号，HTTP协议的默认端口号为80。</p>
+<p><strong>2. Web浏览器向Web服务器发送请求命令</strong><br>一旦建立了TCP连接，Web浏览器就会向Web服务器发送请求命令。例如：GET/sample/hello.jsp HTTP/1.1。</p>
+<p><strong>3. Web浏览器发送请求头信息</strong><br>浏览器发送其请求命令之后，还要以头信息的形式向Web服务器发送一些别的信息，之后浏览器发送了一空白行来通知服务器，它已经结束了该头信息的发送。</p>
+<p><strong>4. Web服务器应答</strong><br>客户机向服务器发出请求后，服务器会客户机回送应答， HTTP/1.1 200 OK ，应答的第一部分是协议的版本号和应答状态码。</p>
+<p><strong>5. Web服务器发送应答头信息</strong><br>正如客户端会随同请求发送关于自身的信息一样，服务器也会随同应答向用户发送关于它自己的数据及被请求的文档。</p>
+<p><strong>6. Web服务器向浏览器发送数据</strong><br>Web服务器向浏览器发送头信息后，它会发送一个空白行来表示头信息的发送到此为结束，接着，它就以Content-Type应答头信息所描述的格式发送用户所请求的实际数据。</p>
+<p><strong>7. Web服务器关闭TCP连接</strong><br>一般情况下，一旦Web服务器向浏览器发送了请求数据，它就要关闭TCP连接，然后如果浏览器或者服务器在其头信息加入了这行代码：Connection:keep-alive</p>
+<p>TCP连接在发送后将仍然保持打开状态，于是，浏览器可以继续通过相同的连接发送请求。保持连接节省了为每个请求建立新连接所需的时间，还节约了网络带宽。</p>
+<p>浏览器访问网页结束后，为什么要断开与服务器的TCP？</p>
+<p>如果每个人访问网页结束后，服务器不断开与你的连接的话，那么如果同时有100万人访问这个服务器的话，会怎样？</p>
+<p>服务器TCP是有最大连接数的，如果不断开占用的话，访问用户过多会导致服务器tcp端口堵塞，无法访问的情况</p>
+<p>原文链接：<a href="https://www.cnblogs.com/BlingSun/p/7680916.html" target="_blank" rel="noopener">https://www.cnblogs.com/BlingSun/p/7680916.html</a></p>
 
       
 
@@ -283,11 +223,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Http协议</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">存储过程</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">过程</a>
         		</li>
       		
 		</ul>
@@ -299,7 +239,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/数据库//" class="article-tag-list-link color4">数据库</a>
+        			<a href="/categories/计算机网络//" class="article-tag-list-link color1">计算机网络</a>
         		</li>
       		
 		</ul>
@@ -354,7 +294,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2018/03/02/MySQL存储过程/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2018/03/07/一次Http请求经历的过程/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -368,18 +308,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2018/03/03/主流的几种-Java-虚拟机/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          主流的几种 Java 虚拟机
-        
-      </div>
-    </a>
   
-  
-    <a href="/2018/02/26/Java垃圾收集器/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Java 垃圾收集器</div>
+    <a href="/2018/03/03/主流的几种-Java-虚拟机/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">主流的几种 Java 虚拟机</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -418,7 +349,7 @@
 <script src="//imsun.github.io/gitment/dist/gitment.browser.js"></script>
 <script>
 var gitment = new Gitment({
-  id: "http://yoursite.com/2018/03/02/MySQL存储过程/",
+  id: "http://yoursite.com/2018/03/07/一次Http请求经历的过程/",
   owner: 'KlutzyNerd',
   repo: 'GitmentRepo',
   oauth: {
