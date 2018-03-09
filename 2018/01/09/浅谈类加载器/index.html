@@ -6,18 +6,22 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives: 2018 | 核桃的博客</title>
+  <title>浅谈类加载器 | 核桃的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="非知名大学水货烟酒僧一枚">
-<meta property="og:type" content="website">
-<meta property="og:title" content="核桃的博客">
-<meta property="og:url" content="http://yoursite.com/archives/2018/index.html">
+  <meta name="description" content="在上一篇中谈到了 Java 类加载机制，这些机制是通过什么来实现的呢，就是类加载器，可见类加载器在虚拟机类加载中的重要地位。 本文就从类加载器是什么，双亲委派模型，类加载器的用法等浅谈虚拟机类加载器。">
+<meta name="keywords" content="类加载，类加载器">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浅谈类加载器">
+<meta property="og:url" content="http://yoursite.com/2018/01/09/浅谈类加载器/index.html">
 <meta property="og:site_name" content="核桃的博客">
-<meta property="og:description" content="非知名大学水货烟酒僧一枚">
+<meta property="og:description" content="在上一篇中谈到了 Java 类加载机制，这些机制是通过什么来实现的呢，就是类加载器，可见类加载器在虚拟机类加载中的重要地位。 本文就从类加载器是什么，双亲委派模型，类加载器的用法等浅谈虚拟机类加载器。">
 <meta property="og:locale" content="klutzynerd.dev@gmail.com">
+<meta property="og:image" content="http://yoursite.com/2018/01/09/浅谈类加载器/2.1.jpg">
+<meta property="og:updated_time" content="2018-03-09T08:20:47.861Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="核桃的博客">
-<meta name="twitter:description" content="非知名大学水货烟酒僧一枚">
+<meta name="twitter:title" content="浅谈类加载器">
+<meta name="twitter:description" content="在上一篇中谈到了 Java 类加载机制，这些机制是通过什么来实现的呢，就是类加载器，可见类加载器在虚拟机类加载中的重要地位。 本文就从类加载器是什么，双亲委派模型，类加载器的用法等浅谈虚拟机类加载器。">
+<meta name="twitter:image" content="http://yoursite.com/2018/01/09/浅谈类加载器/2.1.jpg">
   
     <link rel="alternative" href="/atom.xml" title="核桃的博客" type="application/atom+xml">
   
@@ -153,448 +157,95 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-浅谈类加载器" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2018" class="archive-year">2018</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/03/07/一次Http请求经历的过程/" class="archive-article-date">
-  	<time datetime="2018-03-07T12:50:52.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-07</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/03/07/一次Http请求经历的过程/">一次 Http 请求经历的过程[转载]</a>
+    <h1 class="article-title" itemprop="name">
+      浅谈类加载器
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Http协议</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">过程</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/计算机网络//" class="article-tag-list-link color1">计算机网络</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/03/03/主流的几种-Java-虚拟机/" class="archive-article-date">
-  	<time datetime="2018-03-03T04:07:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-03</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/03/03/主流的几种-Java-虚拟机/">主流的几种 Java 虚拟机</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">介绍</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Java虚拟机</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java-虚拟机//" class="article-tag-list-link color4">Java 虚拟机</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/03/02/MySQL存储过程/" class="archive-article-date">
-  	<time datetime="2018-03-02T08:41:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-02</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/03/02/MySQL存储过程/">MySQL 存储过程</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">存储过程</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/数据库//" class="article-tag-list-link color4">数据库</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/02/26/Java垃圾收集器/" class="archive-article-date">
-  	<time datetime="2018-02-26T09:31:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-02-26</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/02/26/Java垃圾收集器/">Java 垃圾收集器</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">垃圾收集器</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java-虚拟机//" class="article-tag-list-link color4">Java 虚拟机</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/02/19/Java垃圾回收/" class="archive-article-date">
-  	<time datetime="2018-02-19T05:02:23.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-02-19</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/02/19/Java垃圾回收/">Java 垃圾回收</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">垃圾回收</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java-虚拟机//" class="article-tag-list-link color4">Java 虚拟机</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/02/13/谈谈MySQL的几种常用储存引擎/" class="archive-article-date">
-  	<time datetime="2018-02-13T05:28:12.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-02-13</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/02/13/谈谈MySQL的几种常用储存引擎/">谈谈 MySQL 的几种常用储存引擎</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">存储引擎</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/数据库//" class="article-tag-list-link color4">数据库</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/02/03/浅谈MySQL执行计划/" class="archive-article-date">
-  	<time datetime="2018-02-03T08:35:39.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-02-03</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/02/03/浅谈MySQL执行计划/">浅谈 MySQL 执行计划</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">执行计划</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/数据库//" class="article-tag-list-link color4">数据库</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/01/26/Java内存分配与回收策略/" class="archive-article-date">
-  	<time datetime="2018-01-26T01:11:30.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-26</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/01/26/Java内存分配与回收策略/">Java 内存分配与回收策略</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">内存回收与分配</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java-虚拟机//" class="article-tag-list-link color4">Java 虚拟机</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/01/09/浅谈类加载器/" class="archive-article-date">
+        
+        <a href="/2018/01/09/浅谈类加载器/" class="archive-article-date">
   	<time datetime="2018-01-09T04:06:13.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-09</time>
 </a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/01/09/浅谈类加载器/">浅谈类加载器</a>
-    </h1>
-  
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在上一篇中谈到了 Java 类加载机制，这些机制是通过什么来实现的呢，就是类加载器，可见类加载器在虚拟机类加载中的重要地位。</p>
+<p>本文就从类加载器是什么，双亲委派模型，类加载器的用法等浅谈虚拟机类加载器。</p>
+<a id="more"></a>
+<h1 id="1-类和类加载器"><a href="#1-类和类加载器" class="headerlink" title="1 类和类加载器"></a>1 类和类加载器</h1><p>简单来说，虚拟机类加载器就是一个实现类的加载动作的机制，但是在 Java 中起到的作用远不止于此。还至少有以下作用。</p>
+<ol>
+<li>Java 虚拟机确定一个类唯一性的前提，只有两个类是由同一类加载器加载的前提下，比较两个类是否是同一个类才有意义。</li>
+<li>方法区回收一个类的前提之一，虚拟机要回收一个类，只有当加载该类的 ClassLoader 已经被回收后才会进行。</li>
+</ol>
+<p>在虚拟机中，所有的类加载器都直接或者间接扩展自 ClassLoader。整个 JVM 平台提供了三层 ClassLoader。都是 sun.misc.Launcher 的内部类。可以分为两类，第一类是用于服务 JVM 自身的类加载器，第二类是用于服务用户类的类加载器，分别如下：</p>
+<ol>
+<li><strong>启动类加载器(Bootstrap ClassLoader)：</strong> 这个 ClassLoader 是用于加载 JVM 自身工作需要的类。主要是加载 \<java_home>\lib 目录中的，或者是被 -Xbootclasspath 参数指定路径中的，并且是虚拟机识别的（仅按文件名识别，比如：rt.jar，名字不符合的即使放在 lib 中也不会被加载）。这个过程由 JVM 自己控制，需要加载那一个类，怎么加载都由 JVM 自己控制，别人也访问不到这个类，所以这个加载器不遵循类加载器的加载规则，仅仅是一个类的加载工具，既没有更高一级的父加载器，也没有子加载器。在 Hotspot 虚拟机中，这个加载器由 C++ 实现。</java_home></li>
+<li><strong>扩展类加载器(Extendsion ClassLoader)：</strong> 这个加载器负责加载 \<java_home>\lib\ext 目录中的，或者被 java.ext.dirs 系统变量所指定的路径中的所有类库，开发者可以直接使用扩展类加载器。</java_home></li>
+<li><strong>应用程序类加载器(Application ClassLoader)：</strong> 这个类加载器是 ClassLoader 中的 getSystemClassLoader() 方法的返回值，所以一般称为系统加载类。负责加载用户类路径（ClassPath）上所指定的类库，如果应用程序没有自定义过自己的类加载器，一般情况下这个就是程序中默认的类加载器。如果我们要实现自己的了加载器，不管采用何种方法，它的父类加载器都是这个加载器。</li>
+</ol>
+<h1 id="2-双亲委派模型"><a href="#2-双亲委派模型" class="headerlink" title="2 双亲委派模型"></a>2 双亲委派模型</h1><p>双亲委派模式是在Java 1.2后引入的，其工作原理的是，如果一个类加载器收到了类加载请求，它并不会自己先去加载，而是把这个请求委托给父类的加载器去执行，如果父类加载器还存在其父类加载器，则进一步向上委托，依次递归，请求最终将到达顶层的启动类加载器，如果父类加载器可以完成类加载任务，就成功返回，倘若父类加载器无法完成此加载任务，子加载器才会尝试自己去加载，这就是双亲委派模式。</p>
+<p>通常一个应用中类加载器的等级结构如下：</p>
+<p><img src="/2018/01/09/浅谈类加载器/2.1.jpg" alt=""></p>
+<p>这里没有把 Bootstrap ClassLoader 算在内，其实它并不属于 JVM 的类等级层次，因为它没有遵循 ClassLoader 的加载规则。另外 Bootstrap ClassLoader 并没有子类，ExtClassLoader 并没有父类，我们在应用中能取到的顶层父类是 ExtClassLoader。</p>
+<h2 id="2-1-双亲委派模式的好处"><a href="#2-1-双亲委派模式的好处" class="headerlink" title="2.1 双亲委派模式的好处"></a>2.1 双亲委派模式的好处</h2><p>Java 类随着它的类加载器一起具备了带有优先级的层次关系.这是十分必要的，比如 java.langObject，它存放在 \jre\lib\rt.jar 中，它是所有 Java 类的父类,因此无论哪个类加载都要加载这个类,最终所有的加载请求都汇总到顶层的启动类加载器中,因此 Object 类会由启动类加载器来加载,所以加载的都是同一个类,如果不使用双亲委派模型,由各个类加载器自行去加载的话,系统中就会出现不止一个 Object 类,应用程序就会全乱了。</p>
+<h2 id="2-2-双亲委派模式的实现"><a href="#2-2-双亲委派模式的实现" class="headerlink" title="2.2 双亲委派模式的实现"></a>2.2 双亲委派模式的实现</h2><p>实现双亲委派模式的代码都在 java.lang.ClassLoader 的 loadClass() 方法中，代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> Class&lt;?&gt; loadClass(String name, <span class="keyword">boolean</span> resolve) <span class="keyword">throws</span> ClassNotFoundException</span><br><span class="line">  &#123;</span><br><span class="line">      <span class="keyword">synchronized</span> (getClassLoadingLock(name)) &#123;</span><br><span class="line">          <span class="comment">// 先从缓存查找该class对象，找到就不用重新加载</span></span><br><span class="line">          Class&lt;?&gt; c = findLoadedClass(name);</span><br><span class="line">          <span class="keyword">if</span> (c == <span class="keyword">null</span>) &#123;</span><br><span class="line">              <span class="keyword">try</span> &#123;</span><br><span class="line">                  <span class="keyword">if</span> (parent != <span class="keyword">null</span>) &#123;</span><br><span class="line">                      <span class="comment">//如果找不到，则委托给父类加载器去加载</span></span><br><span class="line">                      c = parent.loadClass(name, <span class="keyword">false</span>);</span><br><span class="line">                  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                  	<span class="comment">//如果没有父类，则委托给启动加载器去加载</span></span><br><span class="line">                      c = findBootstrapClassOrNull(name);</span><br><span class="line">                  &#125;</span><br><span class="line">              &#125; <span class="keyword">catch</span> (ClassNotFoundException e) &#123;</span><br><span class="line">                  <span class="comment">// 父类抛出 ClassNotFoundException </span></span><br><span class="line">                  <span class="comment">// 说明父类加载器无法完成加载请求</span></span><br><span class="line">              &#125;</span><br><span class="line"></span><br><span class="line">              <span class="keyword">if</span> (c == <span class="keyword">null</span>) &#123;</span><br><span class="line">                  <span class="comment">// 如果都没有找到，则通过自定义实现的findClass去查找并加载</span></span><br><span class="line">                  c = findClass(name);</span><br><span class="line">              &#125;</span><br><span class="line">          &#125;</span><br><span class="line">          <span class="keyword">if</span> (resolve) &#123;<span class="comment">//是否需要在加载时进行解析</span></span><br><span class="line">              resolveClass(c);</span><br><span class="line">          &#125;</span><br><span class="line">          <span class="keyword">return</span> c;</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>正如 loadClass 方法所展示的，当类加载请求到来时，先从缓存中查找该类对象，如果存在直接返回，如果不存在则交给该类加载去的父加载器去加载，倘若没有父加载则交给顶级启动类加载器去加载，最后倘若仍没有找到，则使用 findClass() 方法去加载。</p>
+<h2 id="2-3-双亲委派模型的破坏"><a href="#2-3-双亲委派模型的破坏" class="headerlink" title="2.3 双亲委派模型的破坏"></a>2.3 双亲委派模型的破坏</h2><p>双亲委派模型有时候也有一些问题，比如，JDBC 的实现中，JDBC 的一些接口类在 rt.jar 包中，应该由 Bootstrap 加载器来加载，但是具体的实现类又在 classpath 中数据库服务商提供的包中，上文说了，Bootstrap 只会加载自己认识的类，但是显然它不认识数据库服务商提供的类，因此无法使用。</p>
+<p>为了解决这个问题，Java 引入了线程上下文加载器（Thread Context ClassLoader）。这个类加载器可以通过 java.lang.Thread 类的 setContextClassLoader() 方法进行设置，如果创建线程的时候还没有设置，则会从父线程中继承一个，如果全局范围内都没有设置，则会使用默认的应用类加载器。</p>
+<h1 id="3-应用场景"><a href="#3-应用场景" class="headerlink" title="3 应用场景"></a>3 应用场景</h1><p>前面分析了类加载器的工作机制，下面再看看类加载器的一些典型应用场景。</p>
+<ul>
+<li><strong>加载自定义路径下的 class 文件</strong></li>
+</ul>
+<p>当 clas s文件不在 ClassPath 路径下，默认系统类加载器无法找到该 class 文件，在这种情况下我们需要实现一个自定义的 ClassLoader 来加载特定路径下的 class 文件生成 class 对象。</p>
+<ul>
+<li><strong>需要对加载的类做特殊处理</strong></li>
+</ul>
+<p>当一个 class 文件是通过网络传输并且可能会进行相应的加密操作时，需要先对 class 文件进行相应的解密后再加载到 JVM 内存中，这种情况下也需要编写自定义的 ClassLoader 并实现相应的逻辑。</p>
+<ul>
+<li><strong>实现热部署</strong></li>
+</ul>
+<p>当需要实现热部署功能时，需要实现自定义ClassLoader 的逻辑。实现一个类的热部署可以创建不同的 ClassLoader 的实例对象，然后通过这个不同的实例对象来加载同名的类。垃圾回收器会在旧的 ClassLoader 回收后，回收该加载器加载的类，实现对方法区空间的控制。</p>
+<p>参考资料：</p>
+<p>《深入理解 Java 虚拟机》</p>
+<p>《深入分析 Java Web 技术内幕》</p>
 
-        <div class="article-info info-on-right">
-          
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢大爷勒，大爷有空常来玩儿呀。<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -606,7 +257,7 @@
 		</ul>
 	</div>
 
-          
+      
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
@@ -619,119 +270,129 @@
 	</div>
 
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2018/01/09/浅谈类加载器/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/01/07/虚拟机类加载机制/" class="archive-article-date">
-  	<time datetime="2018-01-07T09:20:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-07</time>
-</a>
+<nav id="article-nav">
+  
+    <a href="/2018/01/26/Java内存分配与回收策略/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          Java 内存分配与回收策略
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/01/07/虚拟机类加载机制/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">虚拟机类加载机制</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/01/07/虚拟机类加载机制/">虚拟机类加载机制</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">类加载</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java-虚拟机//" class="article-tag-list-link color4">Java 虚拟机</a>
-        		</li>
-      		
-		</ul>
-	</div>
+        
+        
+    </div>
+</aside>
 
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/01/03/博客介绍/" class="archive-article-date">
-  	<time datetime="2018-01-03T14:30:15.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-03</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/01/03/博客介绍/">博客介绍</a>
-    </h1>
-  
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">hello word</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">介绍</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/杂谈//" class="article-tag-list-link color3">杂谈</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
   
   
-    </div></section>
   
 
-    
+  
+
+  
+
+  
+  <div id="gitment-ctn"></div> 
+<link rel="stylesheet" href="//imsun.github.io/gitment/style/default.css">
+<script src="//imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script>
+var gitment = new Gitment({
+  id: "http://yoursite.com/2018/01/09/浅谈类加载器/",
+  owner: 'KlutzyNerd',
+  repo: 'GitmentRepo',
+  oauth: {
+    client_id: 'a9a4865b484b39b0c93b',
+    client_secret: 'ca2efec482dc7aec0c98bba032f0572168519216',
+  },
+})
+gitment.render('gitment-ctn')
+</script>
+  
 
 
           </div>
@@ -754,8 +415,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
