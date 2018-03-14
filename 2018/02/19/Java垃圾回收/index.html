@@ -77,6 +77,8 @@
     			
             
     			
+            
+    			
     			<a q-on="click: openSlider(e, 'aboutme')" href="javascript:void(0)">关于我</a>
     			
             
@@ -401,22 +403,27 @@
   
 
   
-  <div id="gitment-ctn"></div> 
-<link rel="stylesheet" href="//imsun.github.io/gitment/style/default.css">
-<script src="//imsun.github.io/gitment/dist/gitment.browser.js"></script>
+
+  
+  <div id="gitment-ctn">
+<div id="gitalk-ctn"></div> 
+</div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
 <script>
-var gitment = new Gitment({
+var gitalk = new Gitalk({
   id: "http://yoursite.com/2018/02/19/Java垃圾回收/",
-  owner: 'KlutzyNerd',
+  clientID: 'a9a4865b484b39b0c93b',
+  clientSecret: 'ca2efec482dc7aec0c98bba032f0572168519216',
   repo: 'GitmentRepo',
-  oauth: {
-    client_id: 'a9a4865b484b39b0c93b',
-    client_secret: 'ca2efec482dc7aec0c98bba032f0572168519216',
-  },
+  owner: 'KlutzyNerd',
+  admin: 'KlutzyNerd',
+  distractionFreeMode: true
 })
-gitment.render('gitment-ctn')
+gitalk.render('gitalk-ctn')
 </script>
   
+
 
 
           </div>
@@ -467,6 +474,8 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
       
     
       
+    
+      
       
       
     
@@ -477,6 +486,8 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
     
       
       <li style="width: 50%" q-on="click: openSlider(e, 'innerArchive')"><a href="javascript:void(0)" q-class="active:innerArchive">所有文章</a></li>
+      
+        
       
         
       
@@ -549,11 +560,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">类加载</a>
+                <a href="javascript:void(0)" class="js-tag color5">存储引擎</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">存储引擎</a>
+                <a href="javascript:void(0)" class="js-tag color4">类加载</a>
               </li>
             
             <div class="clearfix"></div>
