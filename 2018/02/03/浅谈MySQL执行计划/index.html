@@ -19,7 +19,7 @@
 <meta property="og:image" content="http://yoursite.com/2018/02/03/浅谈MySQL执行计划/SQL执行过程.png">
 <meta property="og:image" content="http://yoursite.com/2018/02/03/浅谈MySQL执行计划/3.1.1.png">
 <meta property="og:image" content="http://yoursite.com/2018/02/03/浅谈MySQL执行计划/3.2.1.png">
-<meta property="og:updated_time" content="2018-03-04T05:15:52.969Z">
+<meta property="og:updated_time" content="2018-03-16T11:07:03.226Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="浅谈 MySQL 执行计划">
 <meta name="twitter:description" content="MySQL执行计划的一些知识点">
@@ -257,47 +257,60 @@
 <p> id | select_type | table | partitions | type | possible_keys | key  | key_len | ref  | rows | filtered | Extra</p>
 <p>我们来一一介绍这些属性是什么意思，并给出每个属性的可选值，以及可选值的意义。</p>
 <ul>
-<li><p><strong>id</strong><br>表示查询中select操作表的顺序,按顺序从大到依次执行。</p>
-</li>
-<li><p><strong>select_type :</strong><br>该表示选择的类型,可选值有: SIMPLE：简单查询(不适用union和子查询的)，PRIMARY: 最外层的查询，UNION: UNION中的第二个或者后面的SELECT语句, DEPENDENT UNION: UNION中的第二个或者后面的SELECT语句，依赖于外部查询, UNION RESULT: UNION结果，SUBQUERY: 子查询中的第一个SELECT语句，DERIVED： 派生表的SELECT(FROM子句的子查询)。</p>
-</li>
-<li><p><strong>table :</strong><br>表示该语句查询的表。</p>
-</li>
-<li><p><strong>partitions：</strong></p>
+<li><strong>id</strong></li>
+</ul>
+<p>表示查询中select操作表的顺序,按顺序从大到依次执行。</p>
+<ul>
+<li><strong>select_type :</strong></li>
+</ul>
+<p>该表示选择的类型,可选值有: SIMPLE：简单查询(不适用union和子查询的)，PRIMARY: 最外层的查询，UNION: UNION中的第二个或者后面的SELECT语句, DEPENDENT UNION: UNION中的第二个或者后面的 SELECT 语句，依赖于外部查询, UNION RESULT: UNION结果，SUBQUERY: 子查询中的第一个 SELECT 语句，DERIVED： 派生表的SELECT(FROM子句的子查询)。</p>
+<ul>
+<li><strong>table :</strong></li>
+</ul>
+<p>表示该语句查询的表。</p>
+<ul>
+<li><strong>partitions：</strong></li>
+</ul>
 <p>分区中的记录将被查询相匹配。显示此列仅在使用分区关键字。该值为NULL对于非分区表。</p>
-</li>
-<li><p><strong>type :</strong><br>该属性表示访问类型,有很多种访问类型。<br>最常见的其中包括以下几种: ALL(全表扫描), index(索引扫描),range(范围扫描),ref (非唯一索引扫描),eq_ref(唯一索引扫描,),(const)常数引用, 访问速度依次由慢到快。</p>
+<ul>
+<li><strong>type :</strong></li>
+</ul>
+<p>该属性表示访问类型,有很多种访问类型。<br>最常见的其中包括以下几种: ALL (全表扫描), index (索引扫描), range (范围扫描), ref  (非唯一索引扫描),eq_ref (唯一索引扫描,), (const)常数引用, 访问速度依次由慢到快。</p>
 <blockquote>
 <p>其中 : range(范围)常见与 between and …, 大于 and 小于这种情况。</p>
 <p>提示 : 慢 SQL 是否走索引,走了什么索引,也就可以通过该属性查看</p>
 </blockquote>
-</li>
-</ul>
 <ul>
-<li><p><strong>possible_keys :</strong><br>顾名思义,该属性给出了,该查询语句,可能走的索引,(如某些字段上索引的名字)这里提供的只是参考,而不是实际走的索引,也就导致会有 possible_Keys 不为 null, key 为空的现象。</p>
-</li>
-<li><p><strong>key :</strong> </p>
+<li><strong>possible_keys :</strong></li>
+</ul>
+<p>顾名思义,该属性给出了,该查询语句,可能走的索引,(如某些字段上索引的名字)这里提供的只是参考,而不是实际走的索引,也就导致会有 possible_Keys 不为 null, key 为空的现象。</p>
+<ul>
+<li><strong>key :</strong> </li>
+</ul>
 <p>显示MySQL实际使用的索引,其中就包括主键索引(PRIMARY),或者自建索引的名字。</p>
-</li>
-<li><p><strong>key_len :</strong></p>
-<p> 表示索引所使用的字节数。</p>
-</li>
-<li><p><strong>ref :</strong><br>连接匹配条件,如果走主键索引的话,该值为: const, 全表扫描的话,为null值。</p>
-</li>
-<li><p><strong>rows :</strong><br>扫描行数,也就是说，需要扫描多少行,采能获取目标行数,一般情况下会大于返回行数。通常情况下,rows越小,效率越高, 也就有大部分SQL优化，都是在减少这个值的大小。</p>
+<ul>
+<li><strong>key_len :</strong></li>
+</ul>
+<p>表示索引所使用的字节数。</p>
+<ul>
+<li><strong>ref :</strong></li>
+</ul>
+<p>连接匹配条件,如果走主键索引的话,该值为: const, 全表扫描的话,为 null 值。</p>
+<ul>
+<li><strong>rows :</strong></li>
+</ul>
+<p>扫描行数,也就是说，需要扫描多少行,采能获取目标行数,一般情况下会大于返回行数。通常情况下,rows 越小,效率越高, 也就有大部分 SQL 优化，都是在减少这个值的大小。</p>
 <blockquote>
 <p>注意: 理想情况下扫描的行数与实际返回行数理论上是一致的,但这种情况及其少,如关联查询,扫描的行数就会比返回行数大大增加)</p>
 </blockquote>
-</li>
-</ul>
 <ul>
-<li><p><strong>filtered：</strong></p>
-<p>它指返回结果的行占需要读到的行(rows列的值)的百分比。filtered是个非常有用的值，因为对于join操作，前一个表的结果集大小直接影响了循环的次数。</p>
-</li>
-<li><p><strong>Extra：</strong> </p>
-<p> 这个属性非常重要,该属性中包括执行SQL时的真实情况信息,如上面所属,使用到的是”using where”，表示使用where筛选得到的值,常用的有: “Using temporary”: 使用临时表 “using filesort”: 使用文件排序。</p>
-</li>
+<li><strong>filtered：</strong></li>
 </ul>
+<p>它指返回结果的行占需要读到的行(rows列的值)的百分比。filtered 是个非常有用的值，因为对于join操作，前一个表的结果集大小直接影响了循环的次数。</p>
+<ul>
+<li><strong>Extra：</strong> </li>
+</ul>
+<p>这个属性非常重要,该属性中包括执行SQL时的真实情况信息,如上面所属,使用到的是”using where”，表示使用where筛选得到的值,常用的有: “Using temporary”: 使用临时表 “using filesort”: 使用文件排序。</p>
 <p>看到这里,我们应该已经发现,在第一步中,我们的这条 SQL</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">select * from city </span><br><span class="line">where name=&apos;Paris&apos;;</span><br></pre></td></tr></table></figure>
 <p>是没有走索引的,而且还是全表扫描,在数据量少的情况下,问题还不会特别突出,如果数据量比较大,这可是个会造成生产事故的慢查询。如果使用索引又是怎么样的呢？</p>
@@ -339,7 +352,7 @@
 </tr>
 </tbody>
 </table>
-<p>可以看到，预估的扫描行数从4188变成了1，极大的提高了查询效率。</p>
+<p>可以看到，预估的扫描行数从 4188 变成了 1，极大的提高了查询效率。</p>
 <p>参考资料：</p>
 <p>《高性能 MySQL》</p>
 <p><a href="http://blog.csdn.net/mr253727942/article/details/51201222" target="_blank" rel="noopener">http://blog.csdn.net/mr253727942/article/details/51201222</a></p>
@@ -618,15 +631,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">内存回收与分配</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">垃圾回收</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">垃圾收集器</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Nginx</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">配置</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">内存回收与分配</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -646,11 +667,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Java虚拟机</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">介绍</a>
+                <a href="javascript:void(0)" class="js-tag color5">执行计划</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -658,7 +675,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">执行计划</a>
+                <a href="javascript:void(0)" class="js-tag color3">介绍</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Java虚拟机</a>
               </li>
              
               <li class="article-tag-list-item">

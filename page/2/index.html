@@ -157,6 +157,94 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-虚拟机类加载机制" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/01/07/虚拟机类加载机制/">虚拟机类加载机制</a>
+    </h1>
+  
+
+        
+        <a href="/2018/01/07/虚拟机类加载机制/" class="archive-article-date">
+  	<time datetime="2018-01-07T09:20:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-07</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>最近在《深入分析 Java Web 技术内幕》看到了虚拟机的类加载器解析，发现跟以前看到的《深入理解 Java 虚拟机》中所说的不一致，今天正好有空，再把这一部分的内容看看吧。</p>
+<p>我们知道 Java 语言，最终会被编译成为 Class 文件，Class 文件最终都需要加载到虚拟机中之后才能运行和使用。那么虚拟机如何加载这些 Class 文件？Class 文件中的信息进入到虚拟机后会发生什么变化？这些都需要了解到虚拟机类加载机制之后才能回答。</p>
+        
+          <a class="article-more-a" href="/2018/01/07/虚拟机类加载机制/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">类加载</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Java-虚拟机//" class="article-tag-list-link color4">Java 虚拟机</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/01/07/虚拟机类加载机制/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-博客介绍" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -193,11 +281,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">介绍</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">hello word</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">hello word</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">介绍</a>
         		</li>
       		
 		</ul>
@@ -341,15 +429,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">内存回收与分配</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">垃圾回收</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">垃圾收集器</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Nginx</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">配置</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">内存回收与分配</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -369,11 +465,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Java虚拟机</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">介绍</a>
+                <a href="javascript:void(0)" class="js-tag color5">执行计划</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -381,7 +473,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">执行计划</a>
+                <a href="javascript:void(0)" class="js-tag color3">介绍</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Java虚拟机</a>
               </li>
              
               <li class="article-tag-list-item">

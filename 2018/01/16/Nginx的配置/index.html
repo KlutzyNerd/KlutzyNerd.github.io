@@ -6,18 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives: 2018/2 | 核桃的博客</title>
+  <title>Nginx 的配置 | 核桃的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="非知名大学水货烟酒僧一枚">
-<meta property="og:type" content="website">
-<meta property="og:title" content="核桃的博客">
-<meta property="og:url" content="http://yoursite.com/archives/2018/02/index.html">
+  <meta name="description" content="最近开始学习 Nginx ，准备用 Nginx 进行反向代理以及负载均衡。但是第一步配置就卡住了，差了一下网上大多都讲的是 Nginx 的安装，好像很少讲怎么配置的。 这篇博客我准备记录下自己在网上找到的和书上的关于 Nginx 配置的内容，以供将来查阅吧。">
+<meta name="keywords" content="Nginx,配置">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Nginx 的配置">
+<meta property="og:url" content="http://yoursite.com/2018/01/16/Nginx的配置/index.html">
 <meta property="og:site_name" content="核桃的博客">
-<meta property="og:description" content="非知名大学水货烟酒僧一枚">
+<meta property="og:description" content="最近开始学习 Nginx ，准备用 Nginx 进行反向代理以及负载均衡。但是第一步配置就卡住了，差了一下网上大多都讲的是 Nginx 的安装，好像很少讲怎么配置的。 这篇博客我准备记录下自己在网上找到的和书上的关于 Nginx 配置的内容，以供将来查阅吧。">
 <meta property="og:locale" content="klutzynerd.dev@gmail.com">
+<meta property="og:updated_time" content="2018-03-17T08:22:04.608Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="核桃的博客">
-<meta name="twitter:description" content="非知名大学水货烟酒僧一枚">
+<meta name="twitter:title" content="Nginx 的配置">
+<meta name="twitter:description" content="最近开始学习 Nginx ，准备用 Nginx 进行反向代理以及负载均衡。但是第一步配置就卡住了，差了一下网上大多都讲的是 Nginx 的安装，好像很少讲怎么配置的。 这篇博客我准备记录下自己在网上找到的和书上的关于 Nginx 配置的内容，以供将来查阅吧。">
   
     <link rel="alternative" href="/atom.xml" title="核桃的博客" type="application/atom+xml">
   
@@ -155,226 +157,390 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-Nginx的配置" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Nginx 的配置
+    </h1>
+  
+
+        
+        <a href="/2018/01/16/Nginx的配置/" class="archive-article-date">
+  	<time datetime="2018-01-16T03:26:23.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-16</time>
+</a>
+        
+      </header>
     
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>最近开始学习 Nginx ，准备用 Nginx 进行反向代理以及负载均衡。但是第一步配置就卡住了，差了一下网上大多都讲的是 Nginx 的安装，好像很少讲怎么配置的。</p>
+<p>这篇博客我准备记录下自己在网上找到的和书上的关于 Nginx 配置的内容，以供将来查阅吧。</p>
+<a id="more"></a>
+<h1 id="1-Nginx-的简单介绍"><a href="#1-Nginx-的简单介绍" class="headerlink" title="1 Nginx 的简单介绍"></a>1 Nginx 的简单介绍</h1><p>在开始这篇博客之前，我们还是了解下 Nginx 是什么吧。</p>
+<blockquote>
+<p>Nginx(“engine x”)是一款是由俄罗斯的程序设计师 Igor Sysoev 所开发高性能的 Web和反向代理 服务器，也是一个 IMAP/POP3/SMTP 代理服务器。</p>
+</blockquote>
+<p>由上面的介绍我们可以了解到 Nginx 是一个类似与 Apache、Tomcat、Jetty 这样的 web 服务器，但是我们为什么要在这些里面选择 Nginx 呢？</p>
+<p>相比与其他的 web 服务器，Nginx 至少有以下优点：</p>
+<ol>
+<li><strong>作为 web 服务器：</strong> 由于 Nginx 选用了 epoll 与 kqueue 作为开发模型，相比于 Apache，Nginx 使用更少的资源，支持更多的并发连接，体现更高的效率，能够支持 10 万以上并发连接。</li>
+<li><strong>作为负载均衡服务器</strong>：Nginx 既可以在内部直接支持 Rails 和 PHP，也可以支持作为 HTTP代理服务器 对外进行服务。</li>
+<li><strong>Nginx 使用非常简单：</strong> Nginx 配置文件简单明确，各种官方和第三方提供的模块都能具有非常好的性能。支持热部署，能够在 不间断服务的情况下进行软件版本的升级。采用非常自由的 BSD 许可协议，可以自由扩展。</li>
+</ol>
+<p>看到了 Nginx 这么多的优势，是不是迫不及待要体验下了呢，赶紧安装一个吧。Nginx 的安装也非常简单，网上有很多的教程，本文就不再赘述。</p>
+<p>#2 Nginx 配置文件 </p>
+<p>Nginx 的配置都在 nginx.conf 文件中，这个文件在我们按照目录之下，linux 环境可以</p>
+<p>用 locate nginx.conf 命令来查找。找到这个文件后，可以用 vim 打开，我的 nginx.conf 配置如下：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#   * Official Russian Documentation: http://nginx.org/ru/docs/</span></span><br><span class="line"></span><br><span class="line"><span class="attribute">user</span> nginx;</span><br><span class="line"><span class="attribute">worker_processes</span> auto;</span><br><span class="line"><span class="attribute">error_log</span> /var/log/nginx/error.log;</span><br><span class="line"><span class="attribute">pid</span> /run/nginx.pid;</span><br><span class="line"></span><br><span class="line"><span class="comment"># Load dynamic modules. See /usr/share/nginx/README.dynamic.</span></span><br><span class="line"><span class="attribute">include</span> /usr/share/nginx/modules/<span class="regexp">*.conf</span>;</span><br><span class="line"></span><br><span class="line"><span class="section">events</span> &#123;</span><br><span class="line">    <span class="attribute">worker_connections</span> <span class="number">1024</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="section">http</span> &#123;</span><br><span class="line">    <span class="attribute">log_format</span>  main  <span class="string">'<span class="variable">$remote_addr</span> - <span class="variable">$remote_user</span> [<span class="variable">$time_local</span>] "<span class="variable">$request</span>" '</span></span><br><span class="line">                      <span class="string">'<span class="variable">$status</span> <span class="variable">$body_bytes_sent</span> "<span class="variable">$http_referer</span>" '</span></span><br><span class="line">                      <span class="string">'"<span class="variable">$http_user_agent</span>" "<span class="variable">$http_x_forwarded_for</span>"'</span>;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">access_log</span>  /var/log/nginx/access.log  main;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">sendfile</span>            <span class="literal">on</span>;</span><br><span class="line">    <span class="attribute">tcp_nopush</span>          <span class="literal">on</span>;</span><br><span class="line"> 	<span class="attribute">tcp_nodelay</span>         <span class="literal">on</span>;</span><br><span class="line">    <span class="attribute">keepalive_timeout</span>   <span class="number">65</span>;</span><br><span class="line">    <span class="attribute">types_hash_max_size</span> <span class="number">2048</span>;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">include</span>             /etc/nginx/mime.types;</span><br><span class="line">    <span class="attribute">default_type</span>        application/octet-stream;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Load modular configuration files from the /etc/nginx/conf.d directory.</span></span><br><span class="line">    <span class="comment"># See http://nginx.org/en/docs/ngx_core_module.html#include</span></span><br><span class="line">    <span class="comment"># for more information.</span></span><br><span class="line">    <span class="attribute">include</span> /etc/nginx/conf.d/<span class="regexp">*.conf</span>;</span><br><span class="line"></span><br><span class="line">    <span class="section">server</span> &#123;</span><br><span class="line">        <span class="attribute">listen</span>       <span class="number">80</span> default_server;</span><br><span class="line">        <span class="attribute">listen</span>       [::]:<span class="number">80</span> default_server;</span><br><span class="line">        <span class="attribute">server_name</span>  _;</span><br><span class="line">        <span class="attribute">root</span>         /usr/share/nginx/html;</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Load configuration files for the default server block.</span></span><br><span class="line">        <span class="attribute">include</span> /etc/nginx/default.d/<span class="regexp">*.conf</span>;</span><br><span class="line"></span><br><span class="line">        <span class="attribute">location</span> / &#123;</span><br><span class="line">        &#125;</span><br><span class="line"> 		<span class="attribute">error_page</span> <span class="number">404</span> /<span class="number">404</span>.html;</span><br><span class="line">            <span class="attribute">location</span> = /40x.html &#123;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="attribute">error_page</span> <span class="number">500</span> <span class="number">502</span> <span class="number">503</span> <span class="number">504</span> /50x.html;</span><br><span class="line">            <span class="attribute">location</span> = /50x.html &#123;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>下面我们就逐一说明下这些配置都是什么意思。</p>
+<h1 id="3-通用语法"><a href="#3-通用语法" class="headerlink" title="3 通用语法"></a>3 通用语法</h1><h2 id="3-1-块配置项"><a href="#3-1-块配置项" class="headerlink" title="3.1 块配置项"></a>3.1 块配置项</h2><p>从上面的配置文件中我们可以看到，很多用大括号组成的内容，这就是配置文件中的块配置项，示例如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">events&#123;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">http&#123;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">upstream backend&#123;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">server&#123;</span><br><span class="line">  ...</span><br><span class="line">  location /webstatic&#123;</span><br><span class="line">    ...</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上一段代码中的 events、http、server、location、upstream 等都是块配置项，它们都有一个特点，就是用一个大括号将一系列所属的配置项全部包含进来，表示大括号内的配置同时生效。其中 events 包含 nginx 中所有处理连接的设置、server 配置服务、http 配置 HTTP 配置项，upstream 配置上游服务器。</p>
+<p>配置块还可以嵌套，内层块的直接继承外层块。上例中，server 配置的内容，location 照样会受到影响。</p>
+<h2 id="3-2-基本语法"><a href="#3-2-基本语法" class="headerlink" title="3.2 基本语法"></a>3.2 基本语法</h2><p>从上例中可以看出，最基本的配置语法如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">配置项名 配置项值1 配置项值2 ...;</span><br></pre></td></tr></table></figure>
+<p>下面进行详细的解释：</p>
+<p>首先，在行首的是配置项名称，这些名称必须是 nginx 某一模块需要的，否则，nginx 会认为是配置文件处理非法的项目名。配置项名与配置项值之间采用空格隔开。</p>
+<p>紧随其后的是配置项值，可以是数字或者字符串（也可以是正则表达式）。一个配置项名可以有很多个配置项值，这些值以空格分隔开来。</p>
+<p>最后，在行尾要加上分号。</p>
+<h2 id="3-3-配置项的注释"><a href="#3-3-配置项的注释" class="headerlink" title="3.3 配置项的注释"></a>3.3 配置项的注释</h2><p>在配置文件中注释的格式如下：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ...</span></span><br></pre></td></tr></table></figure>
+<p>注释以 # 号开头，如果我们需要把一些配置项暂时屏蔽掉，只需要加上 # 注释即可。</p>
+<h1 id="4-实战"><a href="#4-实战" class="headerlink" title="4 实战"></a>4 实战</h1><p>前面讲了这么多的理论，那么，一个标准的配置到底应该是什么样子的呢，这一节就举几个例子。</p>
+<h2 id="4-1-配置一个静态-web-服务器"><a href="#4-1-配置一个静态-web-服务器" class="headerlink" title="4.1 配置一个静态 web 服务器"></a>4.1 配置一个静态 web 服务器</h2><p>静态 web 服务器的功能主要由 ngx_http_core_module 模块实现。一个典型的静态 web 服务器会包含许多的 server 块和 location 块。如下所示：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">http&#123;</span><br><span class="line">  <span class="comment"># 开启压缩</span></span><br><span class="line">  <span class="attribute">gzip</span> <span class="literal">on</span>; </span><br><span class="line">  upstream&#123;</span><br><span class="line">    ...</span><br><span class="line">  &#125;</span><br><span class="line">  ...</span><br><span class="line">  server&#123;</span><br><span class="line">    <span class="comment"># 监听端口</span></span><br><span class="line">    <span class="attribute">listen</span> localhost:<span class="number">80</span>;</span><br><span class="line">    ...</span><br><span class="line">    <span class="attribute">location</span> /webstatic &#123;</span><br><span class="line">      <span class="attribute">if</span> ...&#123;</span><br><span class="line">        ...</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="attribute">root</span> /opt/webresource;</span><br><span class="line">      ...</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="attribute">location</span> <span class="regexp">~* .(jpg|jpeg|png|jpe|gif)</span> <span class="variable">$&#123;</span></span><br><span class="line"><span class="variable">      ...</span></span><br><span class="line"><span class="variable">    &#125;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>下面我们来一一分析这些配置。</p>
+<h3 id="4-1-1-虚拟主机与请求分发"><a href="#4-1-1-虚拟主机与请求分发" class="headerlink" title="4.1.1 虚拟主机与请求分发"></a>4.1.1 虚拟主机与请求分发</h3><p>许多时候，多个主机域名对应一个 IP 地址，Nginx 中提供了 server_name 配置项与 server 块来定义虚拟主机，每一个 server 都是一个虚拟主机，只负责请求与之对应的主机域名请求。</p>
+<ul>
+<li><strong>监听端口</strong></li>
+</ul>
+<p>语法：listen address:port [default(deprecated in 0.8.21) | default_server | [backlog=num | rcvbuf=size | sndbuf=size | accept_filter=filter | deferred | bind |ipv6only=[on|off] | ssl]];</p>
+<p>默认：listen 80；</p>
+<p>配置块：server</p>
+<p>listen 参数决定了 Nginx 如何监听端口，在 listen 后可以加 IP 地址、端口或者主机名。</p>
+<ul>
+<li><strong>主机名称</strong></li>
+</ul>
+<p>语法：server_name name[…];</p>
+<p>默认：server_name “”;</p>
+<p>配置块：server</p>
+<p>server_name 后面可以跟多个主机名称，在开始处理一个 HTTP 请求的时候，Nginx 会取出 header  头中的 Host，与每个 server 中的 server_name 相匹配，依次决定到底由哪一个 server 块来处理这个请求。优先级如下：</p>
+<ol>
+<li>首先选择所有字符串完全匹配的 server_name，如 www.test.com。</li>
+<li>其次选择通配符在前面的 server_name，如 *www.test.com。</li>
+<li>再次选择通配符在后面的 server_name，如 www.test.*。</li>
+<li>最后选择用正则表达式匹配的 server_name, 如 ~^\.test\.com$。</li>
+</ol>
+<p>如果都不匹配，则按照下列顺序选择处理的 sever 块。</p>
+<ol>
+<li>优先选择在 listen 配置项后加入 [default | default_server] 的server块。</li>
+<li>找到匹配 listen 端口的第一个 server 块。</li>
+</ol>
+<p>如果 server_name 后跟着空字符串（如 server_name “”;）,表示匹配没有 Host 这个HTTP 头部的请求。</p>
+<ul>
+<li><strong>server_names_hash_bucket_size</strong></li>
+</ul>
+<p>语法：server_names_hash_bucket_size size;</p>
+<p>默认：server_names_hash_bucket_size 32 | 64 | 128;</p>
+<p>配置块：http、server、location</p>
+<p>为了提高快速寻找到相应 server_name 的能力，Nginx 使用散列来存储 server_name。</p>
+<p>server_names_hash_bucket_size 设置了每个散列捅的内存大小。</p>
+<ul>
+<li><strong>server_names_hash_max_size</strong></li>
+</ul>
+<p>语法：server_names_hash_max_size size;</p>
+<p>默认：server_names_hash_max_size 512;</p>
+<p>配置块：http、server、location</p>
+<p>server_names_hash_max_size 会影响散列表的冲突率。server_names_hash_max_size 越大，消耗的内存就越多，但是散列冲突会降低，检索速度也更加快。</p>
+<ul>
+<li><strong>重定向主机名称的处理</strong></li>
+</ul>
+<p>语法：server_name_in_redirect on | off;</p>
+<p>默认：server_name_in_redirect on;</p>
+<p>配置块：http、server 或者 location</p>
+<p>该配置需要配合 server_name 使用。在使用 on 打开时，表示在重定向请求时会使用 server_name 里配置的第一个主机名称代替原先请求中的 Host 头部，而使用 off 关闭时，表示在重定向时使用请求本事的 Host 头部。</p>
+<ul>
+<li><strong>location</strong></li>
+</ul>
+<p>语法：location [=|~|~*|^~|@]/uri/{…}</p>
+<p>配置块：server</p>
+<p>location 会尝试根据用户请求中的 URI 来匹配上面的 /uri 表达式，如果可以匹配，就选择 location {} 块中的配置来处理用户请求。当然，匹配的方式是多样的，下面介绍 location 的匹配规则：</p>
+<ol>
+<li>= 表示把 URI 作为字符串，以便于与参数中的 uri 做完全匹配。例如：location = /{…} 只有当用户请求是 / 时，才会使用该 location 下的配置。</li>
+<li>~ 表示匹配 URI 时是字母大小写敏感的。</li>
+<li>~* 表示匹配 URI 时忽略字母大小写问题。</li>
+<li>^~  表示匹配 URI 时只需要其前半部分与 uri 参数匹配即可。例如：location ^~ /images/ {…} 以 /images/ 开始的请求都会匹配上。</li>
+<li>@ 表示仅用于 Nginx 服务内部请求之间的重定向，带有 @ 的 location 不直接处理用户请求。</li>
+</ol>
+<p>当然，在 uri 参数中是可以采用正则表达式的。</p>
+<p>注意，location 处理是有顺序的，当一个请求有可能匹配多个 location 时候，实际上这个请求会被第一个 location 处理。</p>
+<p>如果需要表达“如果不匹配……，则……”，可以在最后一个 location 中使用 / 作为参数，这样就能够表达如果不能匹配前面所有的location，则由最后一个处理。</p>
+<h3 id="4-1-2-文件路径的定义"><a href="#4-1-2-文件路径的定义" class="headerlink" title="4.1.2 文件路径的定义"></a>4.1.2 文件路径的定义</h3><p>下面介绍一下文件路径的定义配置项。</p>
+<ul>
+<li><strong>以 root 方式设置资源路径</strong></li>
+</ul>
+<p>语法： root path;</p>
+<p>默认：root html；</p>
+<p>配置块：http、server、location、if</p>
+<p>注意，请求的 URI 需要加上 location 后面的，例如：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">location</span> /img/ &#123;</span><br><span class="line">  <span class="attribute">root</span> /avatar/;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果有一个请求是 /img/avatar，那么 web 服务器会返回服务器上 /avatar/avatar/ 里面的内容。</p>
+<ul>
+<li><strong>以 alias 方式设置资源路径</strong></li>
+</ul>
+<p>语法：alias path;</p>
+<p>配置块：location;</p>
+<p>alias 也是用于设置文件路径的，与 root 不同的一点是如何解读紧跟 location 后面的 URI 参数比如上面 root 的例子用 alias 来写就是：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">location</span> /img/ &#123;</span><br><span class="line">  <span class="attribute">root</span> /avatar/img/</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用 alias 时，在 URI 向实际文件路径映射过程中的时候，已经把 location 后配置的 /conf 这部分字符串丢掉。</p>
+<ul>
+<li><strong>访问首页</strong></li>
+</ul>
+<p>语法：index file …;</p>
+<p>默认：index index.html；</p>
+<p>配置块：http、server、location</p>
+<p>注意，index 配置后可以跟许多个首页，Nginx 会按照顺序访问。</p>
+<ul>
+<li><strong>根据 HTTP 返回码重定向页面</strong></li>
+</ul>
+<p>语法：error_page code[code…] [=|=answer-code] uri | @named_location</p>
+<p>配置块：http、server、location、if</p>
+<p>当对于某个请求返回错误码时，如果匹配上了 error_page 中设置的 code，则重定向到对应的 URI 中。</p>
+<h2 id="4-2-配置一个反向代理服务器"><a href="#4-2-配置一个反向代理服务器" class="headerlink" title="4.2 配置一个反向代理服务器"></a>4.2 配置一个反向代理服务器</h2><p>反向代理是指用代理服务器来接受 internet 上的连接请求，然后将请求转发给内部网络中的上游服务器，并将从上游服务器上得到的结果返回给 internet 上请求连接的客户端。</p>
+<p>注意，当客户端发来 HTTP 请求时，Nginx 并不会立刻转发到上游服务器，而是先把用户的请求完整的接受到 Nginx 所在服务器的硬盘或者内存中，然后再向上游服务器发起连接，把缓存的客户端请求转发到上游服务器。这样做的缺点是延长了一个请求的处理时间，并增加了用于缓存请求内容的内存和磁盘空间。优点则是降低了上游服务器的负载，尽量把压力放在 Nginx 服务器上。</p>
+<h3 id="4-2-1-负载均衡的基本配置"><a href="#4-2-1-负载均衡的基本配置" class="headerlink" title="4.2.1 负载均衡的基本配置"></a>4.2.1 负载均衡的基本配置</h3><p>代理服务器一般都需要向上游服务器的集群转发请求。负载均衡就是指选择一种策略，尽量把请求平均分配到每一台上游服务器上。负载均衡主要需要配置以下配置。</p>
+<ul>
+<li><strong>upstream 块</strong></li>
+</ul>
+<p>语法：upstream name {…}</p>
+<p>配置块：http</p>
+<p>upstream 块定义了一个上游服务器的集群，便于反向代理中的 proxy_pass 使用。例如：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">upstream</span> backend &#123;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">  <span class="attribute">location</span> / &#123;</span><br><span class="line">    <span class="attribute">proxy_pass</span> http://backend;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>server</strong></li>
+</ul>
+<p>语法：server name [parameters];</p>
+<p>配置块：upstream</p>
+<p>server 配置项指定了一台上游服务器的名字，这个名字可以是域名、IP 地址端口、UNIX 句柄等，其后跟的参数如下：</p>
+<p>weight=number：设置向这台上游服务器转发的权重，默认为 1.</p>
+<p>max_fails=number：与 fail_timeout配合使用，fail_timeout 时间内，失败次数超过 number 则认为在当前 fail_timeout 时间内这台撒谎个女友服务器不可用。默认为 1.</p>
+<p>fail_timeout=time：如上，默认为 10s。</p>
+<p>down：表示所在的上游服务器永久下线，只在使用 ip_hash 配置项的时候才有用。</p>
+<p>backup：在使用 ip_hash  的时候该配置无效。表示上游服务器只是备份服务器，只有所有非备份服务器全部失效之后才会向所在的上游服务器转发请求。</p>
+<p>例如：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">upstream</span> backend &#123;</span><br><span class="line">  <span class="attribute">server</span> backend1.example.com weight=<span class="number">5</span>;</span><br><span class="line">  <span class="attribute">server</span> <span class="number">127.0.0.1:8080</span> max_fails=<span class="number">3</span> fail_timeout=<span class="number">30s</span>;</span><br><span class="line">  <span class="attribute">server</span> unix:/tmp/backend3;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>ip_hash</strong></li>
+</ul>
+<p>语法：ip_hash;</p>
+<p>配置块：upstream</p>
+<p>通过 ip_hash 可以保证某一个用户的请求始终落到固定的一台上游服务器上。ip_hash 不可与 weight 同时使用。如果 upstream 集群中有一台上游服务器不可用，不能直接删除该配置，而是需要 down 参数标识，确保转发策略的一贯性。</p>
+<p>例如：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">upstream</span> backend &#123;</span><br><span class="line">  ip_hash;</span><br><span class="line">  <span class="attribute">server</span> backend1.example.com;</span><br><span class="line">  <span class="attribute">server</span> backend2.example.com down;</span><br><span class="line">  <span class="attribute">server</span> backend3.example.com; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="4-2-2-反向代理的基本配置"><a href="#4-2-2-反向代理的基本配置" class="headerlink" title="4.2.2 反向代理的基本配置"></a>4.2.2 反向代理的基本配置</h3><ul>
+<li><strong>proxy_pass</strong></li>
+</ul>
+<p>语法：proxy_pass URI;</p>
+<p>配置块：location、if</p>
+<p>默认情况下，反向代理不会转发请求中的 Host 头部。如果需要转发，必须加上：proxy_ser_header Host $host;</p>
+<ul>
+<li><strong>proxy_method</strong></li>
+</ul>
+<p>语法：proxy_method method;</p>
+<p>配置块：http、server、location</p>
+<p>此配置表示转发时的协议方法名，例如，配置了 proxy_method POST; 则客户端发来的 GET 请求在转发的时候方法名也会改为 POST。</p>
+<p>参考文档：</p>
+<p><a href="http://www.nginx.cn/doc/" target="_blank" rel="noopener">http://www.nginx.cn/doc/</a></p>
+<p>《深入理解 Nginx》</p>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢大爷勒，大爷有空常来玩儿呀。<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
       
       
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2018" class="archive-year">2018</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/02/26/Java垃圾收集器/" class="archive-article-date">
-  	<time datetime="2018-02-26T09:31:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-02-26</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/02/26/Java垃圾收集器/">Java 垃圾收集器</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">垃圾收集器</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java-虚拟机//" class="article-tag-list-link color4">Java 虚拟机</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/02/19/Java垃圾回收/" class="archive-article-date">
-  	<time datetime="2018-02-19T05:02:23.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-02-19</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/02/19/Java垃圾回收/">Java 垃圾回收</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">垃圾回收</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java-虚拟机//" class="article-tag-list-link color4">Java 虚拟机</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/02/13/谈谈MySQL的几种常用储存引擎/" class="archive-article-date">
-  	<time datetime="2018-02-13T05:28:12.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-02-13</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/02/13/谈谈MySQL的几种常用储存引擎/">谈谈 MySQL 的几种常用储存引擎</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Nginx</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">存储引擎</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">配置</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/数据库//" class="article-tag-list-link color4">数据库</a>
+        			<a href="/categories/服务器//" class="article-tag-list-link color4">服务器</a>
         		</li>
       		
 		</ul>
 	</div>
 
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2018/01/16/Nginx的配置/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/02/03/浅谈MySQL执行计划/" class="archive-article-date">
-  	<time datetime="2018-02-03T08:35:39.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-02-03</time>
-</a>
+<nav id="article-nav">
+  
+    <a href="/2018/01/26/Java内存分配与回收策略/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          Java 内存分配与回收策略
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/01/09/浅谈类加载器/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">浅谈类加载器</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/02/03/浅谈MySQL执行计划/">浅谈 MySQL 执行计划</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">执行计划</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/数据库//" class="article-tag-list-link color4">数据库</a>
-        		</li>
-      		
-		</ul>
-	</div>
+        
+        
+    </div>
+</aside>
 
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
+
   
   
-    </div></section>
   
 
-    
+  
+
+  
+
+  
+
+  
+  <div id="gitment-ctn">
+<div id="gitalk-ctn"></div> 
+</div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script>
+var gitalk = new Gitalk({
+  id: "http://yoursite.com/2018/01/16/Nginx的配置/",
+  clientID: 'a9a4865b484b39b0c93b',
+  clientSecret: 'ca2efec482dc7aec0c98bba032f0572168519216',
+  repo: 'GitmentRepo',
+  owner: 'KlutzyNerd',
+  admin: 'KlutzyNerd',
+  distractionFreeMode: true
+})
+gitalk.render('gitalk-ctn')
+</script>
+  
+
 
 
           </div>
@@ -397,8 +563,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
