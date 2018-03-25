@@ -21,7 +21,7 @@
 <meta property="og:image" content="http://yoursite.com/2018/03/20/Redis主从复制过程与配置/3.1.1%20复制redis配置文件.png">
 <meta property="og:image" content="http://yoursite.com/2018/03/20/Redis主从复制过程与配置/3.2.1%20启动两个实例并连接第一个实例.png">
 <meta property="og:image" content="http://yoursite.com/2018/03/20/Redis主从复制过程与配置/3.2.2%20测试主从复制是否成功.png">
-<meta property="og:updated_time" content="2018-03-25T14:36:19.891Z">
+<meta property="og:updated_time" content="2018-03-25T16:07:47.119Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Redis 主从复制过程与配置">
 <meta name="twitter:description" content="一般来说，在生产环境下，我们不允许一台服务器出现问题后，服务完全不能够进行。当系统只有一台 redis 时候，一旦该 redis 挂了，会导致整个系统无法运行。这时候我们就需要采取一种方式，使得当一个 redis 挂掉之后，剩余的也能够提供服务。redis 提供了主从的备份方式。 本文是 redis 复习笔记的第三篇，将要讲到 redis 主从复制过程以及配置。">
@@ -238,19 +238,17 @@
 </ul>
 <p>服务器运行 ID 的主要作用是为了识别服务器，当从服务器断线并重新连接上一个主服务器的时候，从服务器向当前的主服务器发送之前保存的 ID。如果从服务器保存的 ID 与当前主服务器的运行 ID 相同，说明断线之前连接的就是这个服务器，主服务器可以采用部分重同步操作。相反如果 ID 不同，说明断线之前连接的不是这个服务器，主服务器将对从服务器进行完整重同步操作。</p>
 <h2 id="2-3-PSYNC-命令的过程"><a href="#2-3-PSYNC-命令的过程" class="headerlink" title="2.3 PSYNC 命令的过程"></a>2.3 PSYNC 命令的过程</h2><p>根据上面的内容，我们大致知道了 Redis 主从复制的过程，下面是这个过程的总结：</p>
-<ol>
-<li>从服务器调用 PSYNC 命令，根据是否是第一次调用 PSYNC 有两种不同的调用规则：<ul>
+<p>1、从服务器调用 PSYNC 命令，根据是否是第一次调用 PSYNC 有两种不同的调用规则：</p>
+<ul>
 <li>如果从服务器以前没有复制过任何主服务器，或者之前执行过 SLAVEOF no one 命令，那么从服务器在开始一次新的复制时，将向主服务器发送 PSYNC ？ -1 命令，主动的请求主服务器进行完整重同步。</li>
-<li>如果从服务器已经复制过某个主服务器，那么从服务器在开始一次新的复制时将向主服务器发送 PSYNC  \<runid>  \<offset> 命令：其中 runid 是上一次复制的主服务器运行 ID，而 offset 则是从服务器当前的复制偏移量，接收到这个命令的主服务器会通过这两个参数来判断应该对从服务器执行哪种同步操作。</offset></runid></li>
+<li>如果从服务器已经复制过某个主服务器，那么从服务器在开始一次新的复制时将向主服务器发送 PSYNC  &lt;runid&gt;  &lt;offset&gt; 命令：其中 runid 是上一次复制的主服务器运行 ID，而 offset 则是从服务器当前的复制偏移量，接收到这个命令的主服务器会通过这两个参数来判断应该对从服务器执行哪种同步操作。</li>
 </ul>
-</li>
-<li>收到 PSYNC 命令的主服务器会根据不同情况，向从服务器返回以下三种回复的其中一种。<ul>
-<li>如果主服务器返回 +FULLRESYNC \<runid> \<offset> 回复，那么表示主服务器将与从服务器执行完整的重同步操作：其中 runid 是这个主服务器的运行 ID，从服务器会将这个 ID 保存起来，在下一次发送 PSYNC 命令时使用；而 offset 则是从服务器当前的复制偏移量，从服务器会将这个值作为自己的初始化偏移量。</offset></runid></li>
+<p>2、收到 PSYNC 命令的主服务器会根据不同情况，向从服务器返回以下三种回复的其中一种。</p>
+<ul>
+<li>如果主服务器返回 +FULLRESYNC &lt;runid&gt;  &lt;offset&gt; 回复，那么表示主服务器将与从服务器执行完整的重同步操作：其中 runid 是这个主服务器的运行 ID，从服务器会将这个 ID 保存起来，在下一次发送 PSYNC 命令时使用；而 offset 则是从服务器当前的复制偏移量，从服务器会将这个值作为自己的初始化偏移量。</li>
 <li>如果主服务器返回 +CONTINUE 回复，那么表示主服务器将与从服务器执行部分重同步操作，从服务器只需要等待主服务器将自己缺少的那部分数据发送过来就可以了。</li>
 <li>如果主服务器返回 -ERR 回复，表示主服务器的版本低于 Redis 2.8，它识别不了 PSYNC 命令，从服务器将向主服务器发送 SYNC 命令，并与主服务器进行完整同步操作。</li>
 </ul>
-</li>
-</ol>
 <p>整个过程的流程图如下：</p>
 <p><img src="/2018/03/20/Redis主从复制过程与配置/2.3.1 PSYNC 执行过程.svg" alt="PSYNC 执行过程"></p>
 <h1 id="3-Redis-主从复制的配置"><a href="#3-Redis-主从复制的配置" class="headerlink" title="3. Redis 主从复制的配置"></a>3. Redis 主从复制的配置</h1><h2 id="3-1-启动两个-Redis-实例"><a href="#3-1-启动两个-Redis-实例" class="headerlink" title="3.1 启动两个 Redis 实例"></a>3.1 启动两个 Redis 实例</h2><p>我们要实验 Redis 主从配置，至少需要俩个 Redis 实例，Redis 可以通过配置多个配置文件来达到配置多个 Redis 实例的目的。</p>
@@ -537,6 +535,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">内存回收与分配</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">垃圾收集器</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
               </li>
              
@@ -545,11 +551,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">内存回收与分配</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">垃圾收集器</a>
+                <a href="javascript:void(0)" class="js-tag color5">垃圾回收</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -561,11 +563,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Java虚拟机</a>
+                <a href="javascript:void(0)" class="js-tag color1">Redis</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">介绍</a>
+                <a href="javascript:void(0)" class="js-tag color5">主从复制</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -577,19 +579,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Java虚拟机</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">介绍</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">执行计划</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">hello word</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Redis</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">主从复制</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -606,10 +608,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">垃圾回收</a>
               </li>
             
             <div class="clearfix"></div>
