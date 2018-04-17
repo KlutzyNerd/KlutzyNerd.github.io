@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="核桃的博客">
 <meta property="og:description" content="微信公众号开发现在已经成为了许多项目开发中不可或缺的一部分了，调用微信公众号的许多功能需要使用微信提供的接口，这些接口能够方便的调用微信的一些功能。 最近，我参与的一个项目中就要用到微信公众号的一些接口，比如公众号授权登录，获取用户的头像、昵称等信息，公众号支付等。我主要负责其中的后端，在开发中遇到了许多的问题，记录下来以供以后参考吧。">
 <meta property="og:locale" content="klutzynerd.dev@gmail.com">
-<meta property="og:updated_time" content="2018-04-09T09:35:53.738Z">
+<meta property="og:updated_time" content="2018-04-10T14:14:59.235Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="微信公众号开发遇到的坑">
 <meta name="twitter:description" content="微信公众号开发现在已经成为了许多项目开发中不可或缺的一部分了，调用微信公众号的许多功能需要使用微信提供的接口，这些接口能够方便的调用微信的一些功能。 最近，我参与的一个项目中就要用到微信公众号的一些接口，比如公众号授权登录，获取用户的头像、昵称等信息，公众号支付等。我主要负责其中的后端，在开发中遇到了许多的问题，记录下来以供以后参考吧。">
@@ -194,6 +194,11 @@
 <p>另外，在记录日志的时候也出现了一个问题，我需要将 controller 所有访问记录进行日志记录。我的想法是新建一个 aop 切面，用这个来实现日志记录，但是出现了在 JUnit 调试的时候能够记录日志，但是在放到 tomcat 服务器上的时候又不能记录日志了，经过查阅资料，发现是因为父子容器的问题，默认不使用动态类代理，所以出现了这个问题。在 springmvc 配置文件 dispatcher-servlet.xml 中加入以下配置就好了：</p>
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aop:aspectj-autoproxy</span> <span class="attr">proxy-target-class</span>=<span class="string">"true"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
 <p>注意，这个配置需要在 springmvc 的配置文件中加入，而不是 applicationContext.xml 中加入，后者中加入不起作用。</p>
+<p>相关文档：</p>
+<p>微信公众号登录：<a href="https://mp.weixin.qq.com/wiki?t=resource/res_main&amp;id=mp1421140842" target="_blank" rel="noopener">https://mp.weixin.qq.com/wiki?t=resource/res_main&amp;id=mp1421140842</a></p>
+<p>微信公众号支付：<a href="https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_1" target="_blank" rel="noopener">https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_1</a></p>
+<p>调用微信功能接口：<a href="https://mp.weixin.qq.com/wiki?t=resource/res_main&amp;id=mp1421141115" target="_blank" rel="noopener">https://mp.weixin.qq.com/wiki?t=resource/res_main&amp;id=mp1421141115</a></p>
+<p>接口签名校验：<a href="https://mp.weixin.qq.com/debug/cgi-bin/sandbox?t=jsapisign" target="_blank" rel="noopener">https://mp.weixin.qq.com/debug/cgi-bin/sandbox?t=jsapisign</a></p>
 
       
 
@@ -316,6 +321,15 @@
 
   
 <nav id="article-nav">
+  
+    <a href="/2018/04/14/epoll原理/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          epoll 原理
+        
+      </div>
+    </a>
   
   
     <a href="/2018/04/06/Redis事件驱动/" id="article-nav-older" class="article-nav-link-wrap">
@@ -462,11 +476,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">内存回收与分配</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">垃圾回收</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">内存回收与分配</a>
+                <a href="javascript:void(0)" class="js-tag color1">垃圾收集器</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Nginx</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">配置</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -478,6 +504,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Redis</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">主从复制</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">LeeCode</a>
               </li>
              
@@ -486,23 +520,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Redis</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">事件驱动</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">主从复制</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">垃圾收集器</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">事务</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">集群</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -514,6 +540,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Java虚拟机</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">介绍</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">epoll、I/O多路复用</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">hello word</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Http协议</a>
               </li>
              
@@ -522,15 +564,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">集群</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Java虚拟机</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">介绍</a>
+                <a href="javascript:void(0)" class="js-tag color5">执行计划</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -543,10 +577,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">授权</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">hello word</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -563,18 +593,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">执行计划</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Nginx</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">配置</a>
               </li>
             
             <div class="clearfix"></div>
