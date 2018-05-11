@@ -157,6 +157,94 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-ConcurrentHashMap源码分析" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/05/04/ConcurrentHashMap源码分析/">ConcurrentHashMap 源码分析</a>
+    </h1>
+  
+
+        
+        <a href="/2018/05/04/ConcurrentHashMap源码分析/" class="archive-article-date">
+  	<time datetime="2018-05-04T03:23:52.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-05-04</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>ConcurrentHashMap 是 JUC 中并发情况下的 HashMap，业务中用到的几率非常大，面试也是一个常见问题。ConcurrentHashMap 使用非常方便，但是要真正的理解它还需要从源码下手。</p>
+<p>本文是 Java 并发复习的第五篇，主要对 ConcurrentHashMap 的源码进行分析，主要是 JDK 8 中的源码。</p>
+        <!---->
+          <!--<a class="article-more-a" href="/2018/05/04/ConcurrentHashMap源码分析/#more">more >></a>-->
+        <!---->
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">ConcurrentHashMap</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Java-并发//" class="article-tag-list-link color3">Java 并发</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/05/04/ConcurrentHashMap源码分析/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Java中的并发工具类" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -179,9 +267,9 @@
       
         <p>JDK 并发包中提供了几个非常有用的并发工具类 CountDownLatch、CyclicBarrier、Semaphore 等。它们通过 AQS 提供了一种并发流程控制手段。</p>
 <p>本文是 Java 并发复习的第四篇，记录下这些并发工具类的原理以及使用场景。</p>
-        
-          <a class="article-more-a" href="/2018/05/03/Java中的并发工具类/#more">more >></a>
-        
+        <!---->
+          <!--<a class="article-more-a" href="/2018/05/03/Java中的并发工具类/#more">more >></a>-->
+        <!---->
       
 
       
@@ -275,9 +363,9 @@
       
         <p>队列同步器 AbstractQueuedSynchronizer，是用来构建锁或者其他同步组件的基础框架，通过内置的 FIFO 队列来完成资源获取的排队操作。同步器是实现锁的关键，在锁的实现中聚合同步器，利用同步器实现锁的语义。</p>
 <p>本文是 Java 并发复习笔记的第三篇，主要记录 JUC 中的队列同步器，介绍它有哪些功能，是怎么使用的。</p>
-        
-          <a class="article-more-a" href="/2018/05/01/队列同步器AQS/#more">more >></a>
-        
+        <!---->
+          <!--<a class="article-more-a" href="/2018/05/01/队列同步器AQS/#more">more >></a>-->
+        <!---->
       
 
       
@@ -363,9 +451,9 @@
       
         <p>我们在并发编程的时候，经常遇到一个问题就是怎么保持并发安全。我们知道，保持并发安全的一个重要手段就是加锁，Java 为我们提供了许多的锁的实现，通过这些组件的使用，我们能够应对不同情况的加锁需求。</p>
 <p>本文是 Java 并发复习的第二篇，主要记录下并发包中的锁的使用与一些原理。</p>
-        
-          <a class="article-more-a" href="/2018/04/25/Java中的锁/#more">more >></a>
-        
+        <!---->
+          <!--<a class="article-more-a" href="/2018/04/25/Java中的锁/#more">more >></a>-->
+        <!---->
       
 
       
@@ -455,9 +543,9 @@
       
         <p>要了解 Java 的并发，就必须要了解在虚拟机中可能会出现哪些并发的风险。要了解这些，就需要了解内存是如何分配的，这就涉及到 Java 内存模型了，很多的并发错误都是因为不了解内存模型导致的。</p>
 <p>本文是 Java 并发复习笔记的第一篇，谈谈 Java 的内存模型。</p>
-        
-          <a class="article-more-a" href="/2018/04/20/java内存模型/#more">more >></a>
-        
+        <!---->
+          <!--<a class="article-more-a" href="/2018/04/20/java内存模型/#more">more >></a>-->
+        <!---->
       
 
       
@@ -543,9 +631,9 @@
       
         <p>以前经常被人问道 select、poll、epoll 的区别，基本都是靠死记硬背的，最近正好复习 linux 相关的内容，就把这一块做个笔记吧，以后也能方便查阅。</p>
 <p>epoll 是 linux 2.6 之后新出的一种 I/O 多路复用方式，与传统的 select、poll 相比，有着很大的优势。一些开源的软件如 nginx 也采用了 epoll 的设计思路。因此，学习 epoll 对于我们在 linux 环境下编程是很有帮助的。</p>
-        
-          <a class="article-more-a" href="/2018/04/14/epoll原理/#more">more >></a>
-        
+        <!---->
+          <!--<a class="article-more-a" href="/2018/04/14/epoll原理/#more">more >></a>-->
+        <!---->
       
 
       
@@ -635,9 +723,9 @@
       
         <p>微信公众号开发现在已经成为了许多项目开发中不可或缺的一部分了，调用微信公众号的许多功能需要使用微信提供的接口，这些接口能够方便的调用微信的一些功能。</p>
 <p>最近，我参与的一个项目中就要用到微信公众号的一些接口，比如公众号授权登录，获取用户的头像、昵称等信息，公众号支付等。我主要负责其中的后端，在开发中遇到了许多的问题，记录下来以供以后参考吧。</p>
-        
-          <a class="article-more-a" href="/2018/04/09/微信公众号开发遇到的坑/#more">more >></a>
-        
+        <!---->
+          <!--<a class="article-more-a" href="/2018/04/09/微信公众号开发遇到的坑/#more">more >></a>-->
+        <!---->
       
 
       
@@ -731,9 +819,9 @@
       
         <p>众所周知，Redis 具有极快的访问速度与对高并发的高度支持，这些特性都与 Redis 事件驱动有关系。Redis 采用了 reactor 设计模式来实现文件事件处理器。</p>
 <p>本文是复习 Redis 笔记的第七篇，主要记录了 Redis 事件驱动机制以及 Reactor 设计模式的一些知识点。</p>
-        
-          <a class="article-more-a" href="/2018/04/06/Redis事件驱动/#more">more >></a>
-        
+        <!---->
+          <!--<a class="article-more-a" href="/2018/04/06/Redis事件驱动/#more">more >></a>-->
+        <!---->
       
 
       
@@ -822,9 +910,9 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>今天做到了 LeeCode 的第 233 道题，这道题让找到小于某个数的所有数中“1”出现的次数，结果想了半天没想出来，最后还是看了其他人的答案才解决的，这种数字规律的题其实挺难的，想着记录下来加深下印象吧。</p>
-        
-          <a class="article-more-a" href="/2018/04/06/Number-of-Digit-One/#more">more >></a>
-        
+        <!---->
+          <!--<a class="article-more-a" href="/2018/04/06/Number-of-Digit-One/#more">more >></a>-->
+        <!---->
       
 
       
@@ -914,9 +1002,9 @@
       
         <p>我们知道，传统的关系型数据库都提供了对事务的支持，事务必须要满足 ACID（原子性、一致性、隔离性、持久性）的特性。作为优秀的 NOSQL 数据库，Redis 也提供了对事务的支持。</p>
 <p>本文是 Redis 复习笔记的第六篇，将复习 Redis 中的事务。</p>
-        
-          <a class="article-more-a" href="/2018/04/05/Redis事务/#more">more >></a>
-        
+        <!---->
+          <!--<a class="article-more-a" href="/2018/04/05/Redis事务/#more">more >></a>-->
+        <!---->
       
 
       
@@ -955,98 +1043,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2018/04/05/Redis事务/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Redis集群" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/03/30/Redis集群/">Redis 集群</a>
-    </h1>
-  
-
-        
-        <a href="/2018/03/30/Redis集群/" class="archive-article-date">
-  	<time datetime="2018-03-30T03:06:59.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-30</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>在分布式系统中，一个 Redis 实例往往不能支撑巨大的数据量，这个时候，我们就需要一个集群的解决方案了。Redis 支持集群，并通过分片来进行数据共享，并提供复制和故障转移功能。</p>
-<p>本文是 Redis 复习笔记的第五篇，记录了 Redis 集群中的一些知识点。</p>
-        
-          <a class="article-more-a" href="/2018/03/30/Redis集群/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Redis</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">集群</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/数据库//" class="article-tag-list-link color4">数据库</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/03/30/Redis集群/">展开全文 >></a>
         </p>
       
 
@@ -1169,6 +1165,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">ConcurrentHashMap</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">CountDownLatch</a>
               </li>
              
@@ -1189,11 +1189,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">内存回收与分配</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">垃圾回收</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">垃圾收集器</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">存储过程</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1205,11 +1217,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
+                <a href="javascript:void(0)" class="js-tag color1">Nginx</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">存储过程</a>
+                <a href="javascript:void(0)" class="js-tag color3">配置</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1249,10 +1261,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">内存回收与分配</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">内存模型</a>
               </li>
              
@@ -1274,14 +1282,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">hello word</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Nginx</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">配置</a>
               </li>
              
               <li class="article-tag-list-item">

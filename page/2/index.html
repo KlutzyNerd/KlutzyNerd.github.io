@@ -157,6 +157,98 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Redis集群" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/03/30/Redis集群/">Redis 集群</a>
+    </h1>
+  
+
+        
+        <a href="/2018/03/30/Redis集群/" class="archive-article-date">
+  	<time datetime="2018-03-30T03:06:59.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-30</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在分布式系统中，一个 Redis 实例往往不能支撑巨大的数据量，这个时候，我们就需要一个集群的解决方案了。Redis 支持集群，并通过分片来进行数据共享，并提供复制和故障转移功能。</p>
+<p>本文是 Redis 复习笔记的第五篇，记录了 Redis 集群中的一些知识点。</p>
+        <!---->
+          <!--<a class="article-more-a" href="/2018/03/30/Redis集群/#more">more >></a>-->
+        <!---->
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Redis</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">集群</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/数据库//" class="article-tag-list-link color4">数据库</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/03/30/Redis集群/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Redis高可用解决方案——Sentinel" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -179,9 +271,9 @@
       
         <p>在生产环境下，我们需要数据库稳定，不会出现一个服务器下线之后整个服务无法开展的情况。这时候，我们就需要高可用的解决方案，上一篇中讲到了 Redis 不支持主——主复制结构，这时候，我们就需要一种机制，在主服务器下线之后能够选举出新的主服务器。</p>
 <p>Sentinel 就是这样一个 Redis 高可用的解决方案。本文是 Redis 复习的第四篇，将要讲到 Redis 的高可用解决方案——Sentinel。</p>
-        
-          <a class="article-more-a" href="/2018/03/25/Redis高可用解决方案——Sentinel/#more">more >></a>
-        
+        <!---->
+          <!--<a class="article-more-a" href="/2018/03/25/Redis高可用解决方案——Sentinel/#more">more >></a>-->
+        <!---->
       
 
       
@@ -275,9 +367,9 @@
       
         <p>一般来说，在生产环境下，我们不允许一台服务器出现问题后，服务完全不能够进行。当系统只有一台 redis 时候，一旦该 redis 挂了，会导致整个系统无法运行。这时候我们就需要采取一种方式，使得当一个 redis 挂掉之后，剩余的也能够提供服务。redis 提供了主从的备份方式。</p>
 <p>本文是 redis 复习笔记的第三篇，将要讲到 redis 主从复制过程以及配置。</p>
-        
-          <a class="article-more-a" href="/2018/03/20/Redis主从复制过程与配置/#more">more >></a>
-        
+        <!---->
+          <!--<a class="article-more-a" href="/2018/03/20/Redis主从复制过程与配置/#more">more >></a>-->
+        <!---->
       
 
       
@@ -367,9 +459,9 @@
       
         <p>在上文中，我们多次谈到了 Redis 中的两种数据结构，跳跃表与压缩表，许多地方都用到了它们。那么，它们到底是什么，怎么实现的呢。</p>
 <p>本文是复习 Redis 笔记第二篇，试图记录下 Redis 中的两个重要数据结构，跳跃表与压缩表。</p>
-        
-          <a class="article-more-a" href="/2018/03/15/跳跃表与压缩表/#more">more >></a>
-        
+        <!---->
+          <!--<a class="article-more-a" href="/2018/03/15/跳跃表与压缩表/#more">more >></a>-->
+        <!---->
       
 
       
@@ -459,9 +551,9 @@
       
         <p>每当我们谈到 key—value 数据库，或者内存数据库的时候，我们总是不能略过 Redis。自从 Redis 诞生以来，就一直受到广泛的关注。</p>
 <p>最近正好复习 Redis，想着做一下笔记以供将来查阅，这一系列的博客应该还有好几篇，算是一个复习的笔记吧，这第一篇就简单介绍下 Redis 吧。</p>
-        
-          <a class="article-more-a" href="/2018/03/09/浅谈Redis/#more">more >></a>
-        
+        <!---->
+          <!--<a class="article-more-a" href="/2018/03/09/浅谈Redis/#more">more >></a>-->
+        <!---->
       
 
       
@@ -550,9 +642,9 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p> HTTP 协议是重要的应用层协议，是万维网通信的基础，了解它是非常必要的。我们大都能够说出 TCP 的三次握手四次挥手之类的，但是应用层的 HTTP 协议如何工作，我们很多时候即不太熟悉了，今天正好被问道了这个问题，上网查了一下，做个记录吧。</p>
-        
-          <a class="article-more-a" href="/2018/03/07/一次Http请求经历的过程/#more">more >></a>
-        
+        <!---->
+          <!--<a class="article-more-a" href="/2018/03/07/一次Http请求经历的过程/#more">more >></a>-->
+        <!---->
       
 
       
@@ -642,9 +734,9 @@
       
         <p>最近闲来无事，准备复习下 Java 虚拟机的一些知识，可能要写一个 Java 虚拟机相关知识的好几篇博客吧。第一篇就先从主流 Java 虚拟机谈起吧。</p>
 <p>谈到 Java 虚拟机，大家都非常熟悉，因为 Java 语言就是运行在 Java 虚拟机之上的，Java 虚拟机为程序员屏蔽了操作系统的差异性，使得 Java 能够“一次编译，到处运行”。</p>
-        
-          <a class="article-more-a" href="/2018/03/03/主流的几种-Java-虚拟机/#more">more >></a>
-        
+        <!---->
+          <!--<a class="article-more-a" href="/2018/03/03/主流的几种-Java-虚拟机/#more">more >></a>-->
+        <!---->
       
 
       
@@ -734,9 +826,9 @@
       
         <p>今天被问到了 MySQL 的存储过程，才发现自己在这一块儿都忘记的差不多了，今天正好有空，就记录下 MySQL 存储过程的一些知识点吧。</p>
 <p>本文就什么是存储过程，为什么要使用存储过程，怎么使用存储过程，存储过程有那些缺陷，什么时候应该使用存储过程谈谈自己的理解。一家之言，如有错误，还望指出。</p>
-        
-          <a class="article-more-a" href="/2018/03/02/MySQL存储过程/#more">more >></a>
-        
+        <!---->
+          <!--<a class="article-more-a" href="/2018/03/02/MySQL存储过程/#more">more >></a>-->
+        <!---->
       
 
       
@@ -825,9 +917,9 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>作为 Java 程序员，我们是幸运的，因为我们不需要时刻考虑内存的回收，以免发生内存泄漏。Java 平台一个最大的优势是在于它的自动内存管理，这样可以使得 Java 的开发者不用自己去编写代码来进行内存的管理，从而从复杂的内存管理的工作抽身出来专注于业务逻辑的开发。Java 强大的垃圾收集器能够自动的帮助我们回收内存，而不需要我们显示的在代码中释放内存，我们需要做的就是把这一切交给垃圾收集器自动进行就可以了。</p>
-        
-          <a class="article-more-a" href="/2018/02/26/Java垃圾收集器/#more">more >></a>
-        
+        <!---->
+          <!--<a class="article-more-a" href="/2018/02/26/Java垃圾收集器/#more">more >></a>-->
+        <!---->
       
 
       
@@ -913,9 +1005,9 @@
       
         <p>能够自动进行垃圾回收，这是 Java 的一大优势，通过垃圾回收，虚拟机可以将堆上的对象自动回收以供下次分配，而不需要在代码中进行显示销毁对象。</p>
 <p>本文是《深入理解 Java 虚拟机》的复习笔记，记录了 Java 将要回收那些哪些对象、回收的时机、垃圾回收的算法。</p>
-        
-          <a class="article-more-a" href="/2018/02/19/Java垃圾回收/#more">more >></a>
-        
+        <!---->
+          <!--<a class="article-more-a" href="/2018/02/19/Java垃圾回收/#more">more >></a>-->
+        <!---->
       
 
       
@@ -950,98 +1042,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2018/02/19/Java垃圾回收/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-谈谈MySQL的几种常用储存引擎" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/02/13/谈谈MySQL的几种常用储存引擎/">谈谈 MySQL 的几种常用储存引擎</a>
-    </h1>
-  
-
-        
-        <a href="/2018/02/13/谈谈MySQL的几种常用储存引擎/" class="archive-article-date">
-  	<time datetime="2018-02-13T05:28:12.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-02-13</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>数据库中存储的就是一张张的关系表，所以表的设计直接关系到数据库的性能，MySQL采用独特的架构，将核心服务功能与存储引擎分离开来，使得用户可以根据不同的业务需求采用不同的存储引擎。</p>
-<p>目前 MySQL 常用的存储引擎有 InnoDB、MyISAM、MEMORY 这三种，本文试图介绍下它们的不同以及分别适用的场景。</p>
-        
-          <a class="article-more-a" href="/2018/02/13/谈谈MySQL的几种常用储存引擎/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">存储引擎</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/数据库//" class="article-tag-list-link color4">数据库</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/02/13/谈谈MySQL的几种常用储存引擎/">展开全文 >></a>
         </p>
       
 
@@ -1164,6 +1164,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">ConcurrentHashMap</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">CountDownLatch</a>
               </li>
              
@@ -1184,11 +1188,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">内存回收与分配</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">垃圾回收</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">垃圾收集器</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">存储过程</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1200,11 +1216,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
+                <a href="javascript:void(0)" class="js-tag color1">Nginx</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">存储过程</a>
+                <a href="javascript:void(0)" class="js-tag color3">配置</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1244,10 +1260,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">内存回收与分配</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">内存模型</a>
               </li>
              
@@ -1269,14 +1281,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">hello word</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Nginx</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">配置</a>
               </li>
              
               <li class="article-tag-list-item">
