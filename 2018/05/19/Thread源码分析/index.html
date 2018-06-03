@@ -6,18 +6,23 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives: 2018 | 核桃的博客</title>
+  <title>Thread源码分析 | 核桃的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="非知名大学水货烟酒僧一枚">
-<meta property="og:type" content="website">
-<meta property="og:title" content="核桃的博客">
-<meta property="og:url" content="http://yoursite.com/archives/2018/index.html">
+  <meta name="description" content="相较于其他语言，Java 对线程的支持非常好，其内部封装了许多线程的操作，使得我们能够通过简单的接口操作 Java 中国的线程。 本文是 Java 并发复习的第七篇，主要复习 Java 中 Tread 源码。">
+<meta name="keywords" content="Thread">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Thread源码分析">
+<meta property="og:url" content="http://yoursite.com/2018/05/19/Thread源码分析/index.html">
 <meta property="og:site_name" content="核桃的博客">
-<meta property="og:description" content="非知名大学水货烟酒僧一枚">
+<meta property="og:description" content="相较于其他语言，Java 对线程的支持非常好，其内部封装了许多线程的操作，使得我们能够通过简单的接口操作 Java 中国的线程。 本文是 Java 并发复习的第七篇，主要复习 Java 中 Tread 源码。">
 <meta property="og:locale" content="klutzynerd.dev@gmail.com">
+<meta property="og:image" content="http://yoursite.com/2018/05/19/Thread源码分析/Thread.svg">
+<meta property="og:image" content="http://yoursite.com/2018/05/19/Thread源码分析/线程state.svg">
+<meta property="og:updated_time" content="2018-06-03T17:33:14.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="核桃的博客">
-<meta name="twitter:description" content="非知名大学水货烟酒僧一枚">
+<meta name="twitter:title" content="Thread源码分析">
+<meta name="twitter:description" content="相较于其他语言，Java 对线程的支持非常好，其内部封装了许多线程的操作，使得我们能够通过简单的接口操作 Java 中国的线程。 本文是 Java 并发复习的第七篇，主要复习 Java 中 Tread 源码。">
+<meta name="twitter:image" content="http://yoursite.com/2018/05/19/Thread源码分析/Thread.svg">
   
     <link rel="alternative" href="/atom.xml" title="核桃的博客" type="application/atom+xml">
   
@@ -155,36 +160,101 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-Thread源码分析" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2018" class="archive-year">2018</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/05/19/Thread源码分析/" class="archive-article-date">
-  	<time datetime="2018-05-19T06:59:42.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-05-19</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/05/19/Thread源码分析/">Thread源码分析</a>
+    <h1 class="article-title" itemprop="name">
+      Thread源码分析
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2018/05/19/Thread源码分析/" class="archive-article-date">
+  	<time datetime="2018-05-19T06:59:42.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-05-19</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>相较于其他语言，Java 对线程的支持非常好，其内部封装了许多线程的操作，使得我们能够通过简单的接口操作 Java 中国的线程。</p>
+<p>本文是 Java 并发复习的第七篇，主要复习 Java 中 Tread 源码。</p>
+<a id="more"></a>
+<h1 id="1-Thread-结构"><a href="#1-Thread-结构" class="headerlink" title="1. Thread 结构"></a>1. Thread 结构</h1><p>Thread 类中的内部类以及继承关系如下图所示：</p>
+<p><img src="/2018/05/19/Thread源码分析/Thread.svg" alt="Thread"></p>
+<p>我们可以看到，Thread 类继承自 Runnable 类，其中有三个主要的内部类。Thread 的结构还是比较简单的。下面我们分别对它们进行说明。</p>
+<h1 id="2-JVM-线程状态"><a href="#2-JVM-线程状态" class="headerlink" title="2. JVM 线程状态"></a>2. JVM 线程状态</h1><p>我们首先介绍下线程的状态，在 Thread 源码中，内部枚举 State 表示线程的状态，分别由 NEW、RUNNABLE、BLOCKED、WAITING、TIMED_WAITING、TERMINATED 表示。源码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> State &#123;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * Thread state for a thread which has not yet started.</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">    	<span class="comment">// 线程刚刚创建，还未执行（没有执行 start() 方法）</span></span><br><span class="line">        NEW,</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * Thread state for a runnable thread.  A thread in the runnable</span></span><br><span class="line"><span class="comment">         * state is executing in the Java virtual machine but it may</span></span><br><span class="line"><span class="comment">         * be waiting for other resources from the operating system</span></span><br><span class="line"><span class="comment">         * such as processor.</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">    	<span class="comment">// 已经就绪可以运行的状态，此时线程是正在 JVM 中运行，但是可能在等待操作系统的资源，比如时间片。</span></span><br><span class="line">        RUNNABLE,</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * Thread state for a thread blocked waiting for a monitor lock.</span></span><br><span class="line"><span class="comment">         * A thread in the blocked state is waiting for a monitor lock</span></span><br><span class="line"><span class="comment">         * to enter a synchronized block/method or</span></span><br><span class="line"><span class="comment">         * reenter a synchronized block/method after calling</span></span><br><span class="line"><span class="comment">         * &#123;<span class="doctag">@link</span> Object#wait() Object.wait&#125;.</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">    	<span class="comment">// 阻塞等待锁。处于此状态的线程正在阻塞等待监视器锁，以进入一个同步块或者方法</span></span><br><span class="line">        BLOCKED,</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * Thread state for a waiting thread.</span></span><br><span class="line"><span class="comment">         * A thread is in the waiting state due to calling one of the</span></span><br><span class="line"><span class="comment">         * following methods:</span></span><br><span class="line"><span class="comment">         * &lt;ul&gt;</span></span><br><span class="line"><span class="comment">         *   &lt;li&gt;&#123;<span class="doctag">@link</span> Object#wait() Object.wait&#125; with no timeout&lt;/li&gt;</span></span><br><span class="line"><span class="comment">         *   &lt;li&gt;&#123;<span class="doctag">@link</span> #join() Thread.join&#125; with no timeout&lt;/li&gt;</span></span><br><span class="line"><span class="comment">         *   &lt;li&gt;&#123;<span class="doctag">@link</span> LockSupport#park() LockSupport.park&#125;&lt;/li&gt;</span></span><br><span class="line"><span class="comment">         * &lt;/ul&gt;</span></span><br><span class="line"><span class="comment">         *</span></span><br><span class="line"><span class="comment">         * &lt;p&gt;A thread in the waiting state is waiting for another thread to</span></span><br><span class="line"><span class="comment">         * perform a particular action.</span></span><br><span class="line"><span class="comment">         *</span></span><br><span class="line"><span class="comment">         * For example, a thread that has called &#123;<span class="doctag">@code</span> Object.wait()&#125;</span></span><br><span class="line"><span class="comment">         * on an object is waiting for another thread to call</span></span><br><span class="line"><span class="comment">         * &#123;<span class="doctag">@code</span> Object.notify()&#125; or &#123;<span class="doctag">@code</span> Object.notifyAll()&#125; on</span></span><br><span class="line"><span class="comment">         * that object. A thread that has called &#123;<span class="doctag">@code</span> Thread.join()&#125;</span></span><br><span class="line"><span class="comment">         * is waiting for a specified thread to terminate.</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">    	<span class="comment">// 等待。执行 Object.wait() 或者 Thread.join() 或者 LockSupport.park() 操作后，线程进入的状态。这时候需要其他线程执行特殊操作唤醒。</span></span><br><span class="line">        WAITING,</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * Thread state for a waiting thread with a specified waiting time.</span></span><br><span class="line"><span class="comment">         * A thread is in the timed waiting state due to calling one of</span></span><br><span class="line"><span class="comment">         * the following methods with a specified positive waiting time:</span></span><br><span class="line"><span class="comment">         * &lt;ul&gt;</span></span><br><span class="line"><span class="comment">         *   &lt;li&gt;&#123;<span class="doctag">@link</span> #sleep Thread.sleep&#125;&lt;/li&gt;</span></span><br><span class="line"><span class="comment">         *   &lt;li&gt;&#123;<span class="doctag">@link</span> Object#wait(long) Object.wait&#125; with timeout&lt;/li&gt;</span></span><br><span class="line"><span class="comment">         *   &lt;li&gt;&#123;<span class="doctag">@link</span> #join(long) Thread.join&#125; with timeout&lt;/li&gt;</span></span><br><span class="line"><span class="comment">         *   &lt;li&gt;&#123;<span class="doctag">@link</span> LockSupport#parkNanos LockSupport.parkNanos&#125;&lt;/li&gt;</span></span><br><span class="line"><span class="comment">         *   &lt;li&gt;&#123;<span class="doctag">@link</span> LockSupport#parkUntil LockSupport.parkUntil&#125;&lt;/li&gt;</span></span><br><span class="line"><span class="comment">         * &lt;/ul&gt;</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">    	<span class="comment">// 超时等待，调用超时等待函数后进入的状态，等待时间结束或者其他线程唤醒</span></span><br><span class="line">        TIMED_WAITING,</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * Thread state for a terminated thread.</span></span><br><span class="line"><span class="comment">         * The thread has completed execution.</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">    	<span class="comment">// 终止状态，线程执行完毕</span></span><br><span class="line">        TERMINATED;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>下图说明了它们的转化关系：</p>
+<p><img src="/2018/05/19/Thread源码分析/线程state.svg" alt="state"></p>
+<p>注意，JVM 中的状态和操作系统的线程状态并不是完全相同，其中，RUNABLE 包含了线程正在执行的状态和线程等待操作系统为它分配资源的状态。</p>
+<h1 id="3-重要的属性"><a href="#3-重要的属性" class="headerlink" title="3. 重要的属性"></a>3. 重要的属性</h1><p>Thread 类中有非常多的属性，本文只介绍比较常用的几种。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 线程名称，如果没有指定，就通过 Thread-线程序列号 命名</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">volatile</span> String name;</span><br><span class="line"><span class="comment">// 线程优先级，1-10 默认与父线程优先级相同(main 线程优先级为 5)</span></span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">int</span>            priority;</span><br><span class="line"></span><br><span class="line">   <span class="comment">/* Whether or not the thread is a daemon thread. */</span></span><br><span class="line"><span class="comment">// 是否是守护线程，默认否</span></span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">boolean</span>     daemon = <span class="keyword">false</span>;</span><br><span class="line"></span><br><span class="line">   <span class="comment">/* What will be run. */</span></span><br><span class="line"><span class="comment">// Runnable 对象，调用谁的 run 方法</span></span><br><span class="line">   <span class="keyword">private</span> Runnable target;</span><br><span class="line"></span><br><span class="line">   <span class="comment">/* The group of this thread */</span></span><br><span class="line"><span class="comment">// 线程组，内部封装了线程组名字和最大的优先级，如果没有指定，默认为父线程的线程组（main 线程的线程组为 main）</span></span><br><span class="line">   <span class="keyword">private</span> ThreadGroup group;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* ThreadLocal values pertaining to this thread. This map is maintained</span></span><br><span class="line"><span class="comment">    * by the ThreadLocal class. */</span></span><br><span class="line"><span class="comment">// 线程本地变量 map，键为当前线程。默认为空，如果采用 threadLocal，会在 set 的时候判断是否为空，如果为空才 new 一个。</span></span><br><span class="line">   ThreadLocal.ThreadLocalMap threadLocals = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">   <span class="comment">/*</span></span><br><span class="line"><span class="comment">    * InheritableThreadLocal values pertaining to this thread. This map is</span></span><br><span class="line"><span class="comment">    * maintained by the InheritableThreadLocal class.</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   ThreadLocal.ThreadLocalMap inheritableThreadLocals = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">    * Thread ID</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line"><span class="comment">// 线程 id 自动生成</span></span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">long</span> tid;</span><br></pre></td></tr></table></figure>
+<h1 id="4-主要的方法"><a href="#4-主要的方法" class="headerlink" title="4. 主要的方法"></a>4. 主要的方法</h1><h2 id="4-1-构造方法"><a href="#4-1-构造方法" class="headerlink" title="4.1 构造方法"></a>4.1 构造方法</h2><p>Thread 重载了多个构造方法，用于不同的场景，分别如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">Thread</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       init(<span class="keyword">null</span>, <span class="keyword">null</span>, <span class="string">"Thread-"</span> + nextThreadNum(), <span class="number">0</span>);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">Thread</span><span class="params">(Runnable target)</span> </span>&#123;</span><br><span class="line">       init(<span class="keyword">null</span>, target, <span class="string">"Thread-"</span> + nextThreadNum(), <span class="number">0</span>);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">Thread(Runnable target, AccessControlContext acc) &#123;</span><br><span class="line">       init(<span class="keyword">null</span>, target, <span class="string">"Thread-"</span> + nextThreadNum(), <span class="number">0</span>, acc, <span class="keyword">false</span>);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">Thread</span><span class="params">(ThreadGroup group, Runnable target)</span> </span>&#123;</span><br><span class="line">       init(group, target, <span class="string">"Thread-"</span> + nextThreadNum(), <span class="number">0</span>);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">Thread</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">       init(<span class="keyword">null</span>, <span class="keyword">null</span>, name, <span class="number">0</span>);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">Thread</span><span class="params">(ThreadGroup group, String name)</span> </span>&#123;</span><br><span class="line">       init(group, <span class="keyword">null</span>, name, <span class="number">0</span>);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">Thread</span><span class="params">(Runnable target, String name)</span> </span>&#123;</span><br><span class="line">       init(<span class="keyword">null</span>, target, name, <span class="number">0</span>);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">Thread</span><span class="params">(ThreadGroup group, Runnable target, String name)</span> </span>&#123;</span><br><span class="line">       init(group, target, name, <span class="number">0</span>);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">Thread</span><span class="params">(ThreadGroup group, Runnable target, String name, <span class="keyword">long</span> stackSize)</span> </span>&#123;</span><br><span class="line">       init(group, target, name, stackSize);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">Thread</span><span class="params">(ThreadGroup group, Runnable target, String name, <span class="keyword">long</span> stackSize, <span class="keyword">boolean</span> inheritThreadLocals)</span> </span>&#123;</span><br><span class="line">       init(group, target, name, stackSize, <span class="keyword">null</span>, inheritThreadLocals);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p>可见，它们都调用了 init 方法来实现初始化功能，下面我们看一下 init 方法的源码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">    * Initializes a Thread with the current AccessControlContext.</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@see</span> #init(ThreadGroup,Runnable,String,long,AccessControlContext,boolean)</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">(ThreadGroup g, Runnable target, String name, <span class="keyword">long</span> stackSize)</span> </span>&#123;</span><br><span class="line">       init(g, target, name, stackSize, <span class="keyword">null</span>, <span class="keyword">true</span>);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * Initializes a Thread.</span></span><br><span class="line"><span class="comment">    *</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> g the Thread group</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> target the object whose run() method gets called</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> name the name of the new Thread</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> stackSize the desired stack size for the new thread, or</span></span><br><span class="line"><span class="comment">    *        zero to indicate that this parameter is to be ignored.</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> acc the AccessControlContext to inherit, or</span></span><br><span class="line"><span class="comment">    *            AccessController.getContext() if null</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> inheritThreadLocals if &#123;<span class="doctag">@code</span> true&#125;, inherit initial values for</span></span><br><span class="line"><span class="comment">    *            inheritable thread-locals from the constructing thread</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">(ThreadGroup g, Runnable target, String name, <span class="keyword">long</span> stackSize, AccessControlContext acc, <span class="keyword">boolean</span> inheritThreadLocals)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">if</span> (name == <span class="keyword">null</span>) &#123;</span><br><span class="line">           <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException(<span class="string">"name cannot be null"</span>);</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       <span class="keyword">this</span>.name = name;</span><br><span class="line"> <span class="comment">// 新线程的父线程就是当前的线程</span></span><br><span class="line">       Thread parent = currentThread();</span><br><span class="line">       SecurityManager security = System.getSecurityManager();</span><br><span class="line">       <span class="keyword">if</span> (g == <span class="keyword">null</span>) &#123;</span><br><span class="line">           <span class="comment">/* Determine if it's an applet or not */</span></span><br><span class="line"></span><br><span class="line">           <span class="comment">/* If there is a security manager, ask the security manager</span></span><br><span class="line"><span class="comment">              what to do. */</span></span><br><span class="line">           <span class="keyword">if</span> (security != <span class="keyword">null</span>) &#123;</span><br><span class="line">               <span class="comment">// 获取当前的线程组</span></span><br><span class="line">               g = security.getThreadGroup();</span><br><span class="line">           &#125;</span><br><span class="line"></span><br><span class="line">           <span class="comment">/* If the security doesn't have a strong opinion of the matter</span></span><br><span class="line"><span class="comment">              use the parent thread group. */</span></span><br><span class="line">           <span class="keyword">if</span> (g == <span class="keyword">null</span>) &#123;</span><br><span class="line">               <span class="comment">// 如果没有指定线程组，则获取父线程的 group</span></span><br><span class="line">               g = parent.getThreadGroup();</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       <span class="comment">/* checkAccess regardless of whether or not threadgroup is</span></span><br><span class="line"><span class="comment">          explicitly passed in. */</span></span><br><span class="line">       <span class="comment">// 是否符合安全规范</span></span><br><span class="line">       g.checkAccess();</span><br><span class="line"></span><br><span class="line">       <span class="comment">/*</span></span><br><span class="line"><span class="comment">        * Do we have the required permissions?</span></span><br><span class="line"><span class="comment">        */</span></span><br><span class="line">       <span class="keyword">if</span> (security != <span class="keyword">null</span>) &#123;</span><br><span class="line">           <span class="keyword">if</span> (isCCLOverridden(getClass())) &#123;</span><br><span class="line">               security.checkPermission(SUBCLASS_IMPLEMENTATION_PERMISSION);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line"> <span class="comment">// 增加未启动线程数目</span></span><br><span class="line">       g.addUnstarted();</span><br><span class="line"></span><br><span class="line">       <span class="keyword">this</span>.group = g;</span><br><span class="line">       <span class="keyword">this</span>.daemon = parent.isDaemon();</span><br><span class="line">       <span class="comment">// 初始化为父线程的优先级</span></span><br><span class="line">       <span class="keyword">this</span>.priority = parent.getPriority();</span><br><span class="line">       <span class="keyword">if</span> (security == <span class="keyword">null</span> || isCCLOverridden(parent.getClass()))</span><br><span class="line">           <span class="keyword">this</span>.contextClassLoader = parent.getContextClassLoader();</span><br><span class="line">       <span class="keyword">else</span></span><br><span class="line">           <span class="keyword">this</span>.contextClassLoader = parent.contextClassLoader;</span><br><span class="line">       <span class="keyword">this</span>.inheritedAccessControlContext =</span><br><span class="line">               acc != <span class="keyword">null</span> ? acc : AccessController.getContext();</span><br><span class="line">       <span class="keyword">this</span>.target = target;</span><br><span class="line">       setPriority(priority);</span><br><span class="line">       <span class="comment">// 如果要继承父线程的 Thread Local</span></span><br><span class="line">       <span class="keyword">if</span> (inheritThreadLocals &amp;&amp; parent.inheritableThreadLocals != <span class="keyword">null</span>)</span><br><span class="line">           <span class="keyword">this</span>.inheritableThreadLocals =</span><br><span class="line">               ThreadLocal.createInheritedMap(parent.inheritableThreadLocals);</span><br><span class="line">       <span class="comment">/* Stash the specified stack size in case the VM cares */</span></span><br><span class="line">       <span class="keyword">this</span>.stackSize = stackSize;</span><br><span class="line"></span><br><span class="line">       <span class="comment">/* Set thread ID */</span></span><br><span class="line">       <span class="comment">// 生成 tid</span></span><br><span class="line">       tid = nextThreadID();</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p>init 方法主要是根据情况为不同的属性设置初始值。</p>
+<h2 id="4-2-start-方法"><a href="#4-2-start-方法" class="headerlink" title="4.2 start 方法"></a>4.2 start 方法</h2><p>start 方法可以说是 Thread 中最重要的方法之一了，我们启动一个新的线程就是调用的此方法，其源码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       <span class="comment">/**</span></span><br><span class="line"><span class="comment">        * This method is not invoked for the main method thread or "system"</span></span><br><span class="line"><span class="comment">        * group threads created/set up by the VM. Any new functionality added</span></span><br><span class="line"><span class="comment">        * to this method in the future may have to also be added to the VM.</span></span><br><span class="line"><span class="comment">        *</span></span><br><span class="line"><span class="comment">        * A zero status value corresponds to state "NEW".</span></span><br><span class="line"><span class="comment">        */</span></span><br><span class="line">       <span class="comment">// 如果线程状态不是刚刚新建</span></span><br><span class="line">       <span class="keyword">if</span> (threadStatus != <span class="number">0</span>)</span><br><span class="line">           <span class="keyword">throw</span> <span class="keyword">new</span> IllegalThreadStateException();</span><br><span class="line"></span><br><span class="line">       <span class="comment">/* Notify the group that this thread is about to be started</span></span><br><span class="line"><span class="comment">        * so that it can be added to the group's list of threads</span></span><br><span class="line"><span class="comment">        * and the group's unstarted count can be decremented. */</span></span><br><span class="line">       group.add(<span class="keyword">this</span>);</span><br><span class="line"></span><br><span class="line">       <span class="keyword">boolean</span> started = <span class="keyword">false</span>;</span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line">           start0();</span><br><span class="line">           started = <span class="keyword">true</span>;</span><br><span class="line">       &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">           <span class="keyword">try</span> &#123;</span><br><span class="line">               <span class="keyword">if</span> (!started) &#123;</span><br><span class="line">                   group.threadStartFailed(<span class="keyword">this</span>);</span><br><span class="line">               &#125;</span><br><span class="line">           &#125; <span class="keyword">catch</span> (Throwable ignore) &#123;</span><br><span class="line">               <span class="comment">/* do nothing. If start0 threw a Throwable then</span></span><br><span class="line"><span class="comment">                 it will be passed up the call stack */</span></span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">private</span> <span class="keyword">native</span> <span class="keyword">void</span> <span class="title">start0</span><span class="params">()</span></span>;</span><br></pre></td></tr></table></figure>
+<p>我们看到，start() 方法最终调用的是 start0() 这个本地方法，查阅 jdk 源码知道，start0() 方法映射到了 JVM_StartThread 这个方法中，在 hotspot\src\share\vm\prims\jvm.cpp 中发现，这个方法如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line">JVM_ENTRY(<span class="keyword">void</span>, JVM_StartThread(JNIEnv* env, jobject jthread))</span><br><span class="line">  JVMWrapper(<span class="string">"JVM_StartThread"</span>);</span><br><span class="line">  JavaThread *native_thread = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// We cannot hold the Threads_lock when we throw an exception,</span></span><br><span class="line">  <span class="comment">// due to rank ordering issues. Example:  we might need to grab the</span></span><br><span class="line">  <span class="comment">// Heap_lock while we construct the exception.</span></span><br><span class="line">  <span class="keyword">bool</span> throw_illegal_thread_state = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// We must release the Threads_lock before we can post a jvmti event</span></span><br><span class="line">  <span class="comment">// in Thread::start.</span></span><br><span class="line">  &#123;</span><br><span class="line">    <span class="comment">// Ensure that the C++ Thread and OSThread structures aren't freed before</span></span><br><span class="line">    <span class="comment">// we operate.</span></span><br><span class="line">    <span class="function">MutexLocker <span class="title">mu</span><span class="params">(Threads_lock)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Since JDK 5 the java.lang.Thread threadStatus is used to prevent</span></span><br><span class="line">    <span class="comment">// re-starting an already started thread, so we should usually find</span></span><br><span class="line">    <span class="comment">// that the JavaThread is null. However for a JNI attached thread</span></span><br><span class="line">    <span class="comment">// there is a small window between the Thread object being created</span></span><br><span class="line">    <span class="comment">// (with its JavaThread set) and the update to its threadStatus, so we</span></span><br><span class="line">    <span class="comment">// have to check for this</span></span><br><span class="line">    <span class="keyword">if</span> (java_lang_Thread::thread(JNIHandles::resolve_non_null(jthread)) != <span class="literal">NULL</span>) &#123;</span><br><span class="line">      throw_illegal_thread_state = <span class="literal">true</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="comment">// We could also check the stillborn flag to see if this thread was already stopped, but</span></span><br><span class="line">      <span class="comment">// for historical reasons we let the thread detect that itself when it starts running</span></span><br><span class="line"></span><br><span class="line">      jlong size =</span><br><span class="line">             java_lang_Thread::stackSize(JNIHandles::resolve_non_null(jthread));</span><br><span class="line">      <span class="comment">// Allocate the C++ Thread structure and create the native thread.  The</span></span><br><span class="line">      <span class="comment">// stack size retrieved from java is 64-bit signed, but the constructor takes</span></span><br><span class="line">      <span class="comment">// size_t (an unsigned type), which may be 32 or 64-bit depending on the platform.</span></span><br><span class="line">      <span class="comment">//  - Avoid truncating on 32-bit platforms if size is greater than UINT_MAX.</span></span><br><span class="line">      <span class="comment">//  - Avoid passing negative values which would result in really large stacks.</span></span><br><span class="line">      NOT_LP64(<span class="keyword">if</span> (size &gt; SIZE_MAX) size = SIZE_MAX;)</span><br><span class="line">      <span class="keyword">size_t</span> sz = size &gt; <span class="number">0</span> ? (<span class="keyword">size_t</span>) size : <span class="number">0</span>;</span><br><span class="line">      native_thread = <span class="keyword">new</span> JavaThread(&amp;thread_entry, sz);</span><br><span class="line"></span><br><span class="line">      <span class="comment">// At this point it may be possible that no osthread was created for the</span></span><br><span class="line">      <span class="comment">// JavaThread due to lack of memory. Check for this situation and throw</span></span><br><span class="line">      <span class="comment">// an exception if necessary. Eventually we may want to change this so</span></span><br><span class="line">      <span class="comment">// that we only grab the lock if the thread was created successfully -</span></span><br><span class="line">      <span class="comment">// then we can also do this check and throw the exception in the</span></span><br><span class="line">      <span class="comment">// JavaThread constructor.</span></span><br><span class="line">      <span class="keyword">if</span> (native_thread-&gt;osthread() != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="comment">// Note: the current thread is not being used within "prepare".</span></span><br><span class="line">        native_thread-&gt;prepare(jthread);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (throw_illegal_thread_state) &#123;</span><br><span class="line">    THROW(vmSymbols::java_lang_IllegalThreadStateException());</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  assert(native_thread != <span class="literal">NULL</span>, <span class="string">"Starting null thread?"</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (native_thread-&gt;osthread() == <span class="literal">NULL</span>) &#123;</span><br><span class="line">    <span class="comment">// No one should hold a reference to the 'native_thread'.</span></span><br><span class="line">    <span class="keyword">delete</span> native_thread;</span><br><span class="line">    <span class="keyword">if</span> (JvmtiExport::should_post_resource_exhausted()) &#123;</span><br><span class="line">      JvmtiExport::post_resource_exhausted(</span><br><span class="line">        JVMTI_RESOURCE_EXHAUSTED_OOM_ERROR | JVMTI_RESOURCE_EXHAUSTED_THREADS,</span><br><span class="line">        os::native_thread_creation_failed_msg());</span><br><span class="line">    &#125;</span><br><span class="line">    THROW_MSG(vmSymbols::java_lang_OutOfMemoryError(),</span><br><span class="line">              os::native_thread_creation_failed_msg());</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  Thread::start(native_thread);</span><br><span class="line"></span><br><span class="line">JVM_END</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">thread_entry</span><span class="params">(JavaThread* thread, TRAPS)</span> </span>&#123;</span><br><span class="line">  <span class="function">HandleMark <span class="title">hm</span><span class="params">(THREAD)</span></span>;</span><br><span class="line">  Handle obj(THREAD, thread-&gt;threadObj());</span><br><span class="line">  <span class="function">JavaValue <span class="title">result</span><span class="params">(T_VOID)</span></span>;</span><br><span class="line">  JavaCalls::call_virtual(&amp;result,</span><br><span class="line">                          obj,</span><br><span class="line">                          SystemDictionary::Thread_klass(),</span><br><span class="line">                          vmSymbols::run_method_name(),</span><br><span class="line">                          vmSymbols::void_method_signature(),</span><br><span class="line">                          THREAD);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p> 这个方法会新建一个 JavaThread 的对象，并将方法 thread_entry 传入。Java Thread 源码可以在 hotspot\src\share\vm\runtimes\thread.cpp 中找到，代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">JavaThread::JavaThread(ThreadFunction entry_point, <span class="keyword">size_t</span> stack_sz) :</span><br><span class="line">                       Thread()</span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> INCLUDE_ALL_GCS</span></span><br><span class="line">                       , _satb_mark_queue(&amp;_satb_mark_queue_set),</span><br><span class="line">                       _dirty_card_queue(&amp;_dirty_card_queue_set)</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">// INCLUDE_ALL_GCS</span></span></span><br><span class="line">&#123;</span><br><span class="line">  initialize();</span><br><span class="line">  _jni_attach_state = _not_attaching_via_jni;</span><br><span class="line">  set_entry_point(entry_point);</span><br><span class="line">  <span class="comment">// Create the native thread itself.</span></span><br><span class="line">  <span class="comment">// %note runtime_23</span></span><br><span class="line">  os::ThreadType thr_type = os::java_thread;</span><br><span class="line">  thr_type = entry_point == &amp;compiler_thread_entry ? os::compiler_thread :</span><br><span class="line">                                                     os::java_thread;</span><br><span class="line">  os::create_thread(<span class="keyword">this</span>, thr_type, stack_sz);</span><br><span class="line">  <span class="comment">// The _osthread may be NULL here because we ran out of memory (too many threads active).</span></span><br><span class="line">  <span class="comment">// We need to throw and OutOfMemoryError - however we cannot do this here because the caller</span></span><br><span class="line">  <span class="comment">// may hold a lock and all locks must be unlocked before throwing the exception (throwing</span></span><br><span class="line">  <span class="comment">// the exception consists of creating the exception object &amp; initializing it, initialization</span></span><br><span class="line">  <span class="comment">// will leave the VM via a JavaCall and then all locks must be unlocked).</span></span><br><span class="line">  <span class="comment">//</span></span><br><span class="line">  <span class="comment">// The thread is still suspended when we reach here. Thread must be explicit started</span></span><br><span class="line">  <span class="comment">// by creator! Furthermore, the thread must also explicitly be added to the Threads list</span></span><br><span class="line">  <span class="comment">// by calling Threads:add. The reason why this is not done here, is because the thread</span></span><br><span class="line">  <span class="comment">// object must be fully initialized (take a look at JVM_Start)</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个方法将 thread_entry 函数设置为属性，并调用了 os::create_thread 方法，os::create_thread 方法依据平台的不同，实现也有所差异，Linux 下的实现可以从 hotspot\src\os\linux\vm\os_linux.cpp 中找到，源码如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">bool</span> os::create_thread(Thread* thread, ThreadType thr_type,</span><br><span class="line">                       <span class="keyword">size_t</span> req_stack_size) &#123;</span><br><span class="line">  assert(thread-&gt;osthread() == <span class="literal">NULL</span>, <span class="string">"caller responsible"</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Allocate the OSThread object</span></span><br><span class="line">  OSThread* osthread = <span class="keyword">new</span> OSThread(<span class="literal">NULL</span>, <span class="literal">NULL</span>);</span><br><span class="line">  <span class="keyword">if</span> (osthread == <span class="literal">NULL</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// set the correct thread state</span></span><br><span class="line">  osthread-&gt;set_thread_type(thr_type);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Initial state is ALLOCATED but not INITIALIZED</span></span><br><span class="line">  osthread-&gt;set_state(ALLOCATED);</span><br><span class="line"></span><br><span class="line">  thread-&gt;set_osthread(osthread);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// init thread attributes</span></span><br><span class="line">  <span class="keyword">pthread_attr_t</span> attr;</span><br><span class="line">  pthread_attr_init(&amp;attr);</span><br><span class="line">  pthread_attr_setdetachstate(&amp;attr, PTHREAD_CREATE_DETACHED);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Calculate stack size if it's not specified by caller.</span></span><br><span class="line">  <span class="keyword">size_t</span> stack_size = os::Posix::get_initial_stack_size(thr_type, req_stack_size);</span><br><span class="line">  <span class="comment">// In the Linux NPTL pthread implementation the guard size mechanism</span></span><br><span class="line">  <span class="comment">// is not implemented properly. The posix standard requires adding</span></span><br><span class="line">  <span class="comment">// the size of the guard pages to the stack size, instead Linux</span></span><br><span class="line">  <span class="comment">// takes the space out of 'stacksize'. Thus we adapt the requested</span></span><br><span class="line">  <span class="comment">// stack_size by the size of the guard pages to mimick proper</span></span><br><span class="line">  <span class="comment">// behaviour. However, be careful not to end up with a size</span></span><br><span class="line">  <span class="comment">// of zero due to overflow. Don't add the guard page in that case.</span></span><br><span class="line">  <span class="keyword">size_t</span> guard_size = os::Linux::default_guard_size(thr_type);</span><br><span class="line">  <span class="keyword">if</span> (stack_size &lt;= SIZE_MAX - guard_size) &#123;</span><br><span class="line">    stack_size += guard_size;</span><br><span class="line">  &#125;</span><br><span class="line">  assert(is_aligned(stack_size, os::vm_page_size()), <span class="string">"stack_size not aligned"</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">int</span> status = pthread_attr_setstacksize(&amp;attr, stack_size);</span><br><span class="line">  assert_status(status == <span class="number">0</span>, status, <span class="string">"pthread_attr_setstacksize"</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Configure glibc guard page.</span></span><br><span class="line">  pthread_attr_setguardsize(&amp;attr, os::Linux::default_guard_size(thr_type));</span><br><span class="line"></span><br><span class="line">  ThreadState state;</span><br><span class="line"></span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">pthread_t</span> tid;</span><br><span class="line">    <span class="keyword">int</span> ret = pthread_create(&amp;tid, &amp;attr, (<span class="keyword">void</span>* (*)(<span class="keyword">void</span>*)) thread_native_entry, thread);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">char</span> buf[<span class="number">64</span>];</span><br><span class="line">    <span class="keyword">if</span> (ret == <span class="number">0</span>) &#123;</span><br><span class="line">      log_info(os, thread)(<span class="string">"Thread started (pthread id: "</span> UINTX_FORMAT <span class="string">", attributes: %s). "</span>,</span><br><span class="line">        (uintx) tid, os::Posix::describe_pthread_attr(buf, <span class="keyword">sizeof</span>(buf), &amp;attr));</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      log_warning(os, thread)(<span class="string">"Failed to start thread - pthread_create failed (%s) for attributes: %s."</span>,</span><br><span class="line">        os::errno_name(ret), os::Posix::describe_pthread_attr(buf, <span class="keyword">sizeof</span>(buf), &amp;attr));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    pthread_attr_destroy(&amp;attr);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (ret != <span class="number">0</span>) &#123;</span><br><span class="line">      <span class="comment">// Need to clean up stuff we've allocated so far</span></span><br><span class="line">      thread-&gt;set_osthread(<span class="literal">NULL</span>);</span><br><span class="line">      <span class="keyword">delete</span> osthread;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Store pthread info into the OSThread</span></span><br><span class="line">    osthread-&gt;set_pthread_id(tid);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Wait until child thread is either initialized or aborted</span></span><br><span class="line">    &#123;</span><br><span class="line">      Monitor* sync_with_child = osthread-&gt;startThread_lock();</span><br><span class="line">      <span class="function">MutexLockerEx <span class="title">ml</span><span class="params">(sync_with_child, Mutex::_no_safepoint_check_flag)</span></span>;</span><br><span class="line">      <span class="keyword">while</span> ((state = osthread-&gt;get_state()) == ALLOCATED) &#123;</span><br><span class="line">        sync_with_child-&gt;wait(Mutex::_no_safepoint_check_flag);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Aborted due to thread limit being reached</span></span><br><span class="line">  <span class="keyword">if</span> (state == ZOMBIE) &#123;</span><br><span class="line">    thread-&gt;set_osthread(<span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">delete</span> osthread;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// The thread is returned suspended (in state INITIALIZED),</span></span><br><span class="line">  <span class="comment">// and is started higher up in the call chain</span></span><br><span class="line">  assert(state == INITIALIZED, <span class="string">"race condition"</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可见，java 的线程会通过 jni 调用内核的线程实现，Linux 中是调用 pthread_create 实现的，在创建线程的时候，将 thread_native_entry 函数传入了，它的源码如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> *<span class="title">thread_native_entry</span><span class="params">(Thread *thread)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// Try to randomize the cache line index of hot stack frames.</span></span><br><span class="line">  <span class="comment">// This helps when threads of the same stack traces evict each other's</span></span><br><span class="line">  <span class="comment">// cache lines. The threads can be either from the same JVM instance, or</span></span><br><span class="line">  <span class="comment">// from different JVM instances. The benefit is especially true for</span></span><br><span class="line">  <span class="comment">// processors with hyperthreading technology.</span></span><br><span class="line">  <span class="keyword">static</span> <span class="keyword">int</span> counter = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">int</span> pid = os::current_process_id();</span><br><span class="line">  alloca(((pid ^ counter++) &amp; <span class="number">7</span>) * <span class="number">128</span>);</span><br><span class="line"></span><br><span class="line">  thread-&gt;initialize_thread_current();</span><br><span class="line"></span><br><span class="line">  OSThread* osthread = thread-&gt;osthread();</span><br><span class="line">  Monitor* sync = osthread-&gt;startThread_lock();</span><br><span class="line"></span><br><span class="line">  osthread-&gt;set_thread_id(os::current_thread_id());</span><br><span class="line"></span><br><span class="line">  log_info(os, thread)(<span class="string">"Thread is alive (tid: "</span> UINTX_FORMAT <span class="string">", pthread id: "</span> UINTX_FORMAT <span class="string">")."</span>,</span><br><span class="line">    os::current_thread_id(), (uintx) pthread_self());</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (UseNUMA) &#123;</span><br><span class="line">    <span class="keyword">int</span> lgrp_id = os::numa_get_group_id();</span><br><span class="line">    <span class="keyword">if</span> (lgrp_id != <span class="number">-1</span>) &#123;</span><br><span class="line">      thread-&gt;set_lgrp_id(lgrp_id);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// initialize signal mask for this thread</span></span><br><span class="line">  os::Linux::hotspot_sigmask(thread);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// initialize floating point control register</span></span><br><span class="line">  os::Linux::init_thread_fpu_state();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// handshaking with parent thread</span></span><br><span class="line">  &#123;</span><br><span class="line">    <span class="function">MutexLockerEx <span class="title">ml</span><span class="params">(sync, Mutex::_no_safepoint_check_flag)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// notify parent thread</span></span><br><span class="line">    osthread-&gt;set_state(INITIALIZED);</span><br><span class="line">    sync-&gt;notify_all();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// wait until os::start_thread()</span></span><br><span class="line">    <span class="keyword">while</span> (osthread-&gt;get_state() == INITIALIZED) &#123;</span><br><span class="line">      sync-&gt;wait(Mutex::_no_safepoint_check_flag);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// call one more level start routine</span></span><br><span class="line">  thread-&gt;run();</span><br><span class="line"></span><br><span class="line">  log_info(os, thread)(<span class="string">"Thread finished (tid: "</span> UINTX_FORMAT <span class="string">", pthread id: "</span> UINTX_FORMAT <span class="string">")."</span>,</span><br><span class="line">    os::current_thread_id(), (uintx) pthread_self());</span><br><span class="line"></span><br><span class="line">  <span class="comment">// If a thread has not deleted itself ("delete this") as part of its</span></span><br><span class="line">  <span class="comment">// termination sequence, we have to ensure thread-local-storage is</span></span><br><span class="line">  <span class="comment">// cleared before we actually terminate. No threads should ever be</span></span><br><span class="line">  <span class="comment">// deleted asynchronously with respect to their termination.</span></span><br><span class="line">  <span class="keyword">if</span> (Thread::current_or_null_safe() != <span class="literal">NULL</span>) &#123;</span><br><span class="line">    assert(Thread::current_or_null_safe() == thread, <span class="string">"current thread is wrong"</span>);</span><br><span class="line">    thread-&gt;clear_thread_current();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个方法是线程实际执行的方法，它会调用 JavaThread 类中的 run 方法，该方法源码如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> DTRACE_ENABLED</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Only bother with this argument setup if dtrace is available</span></span><br><span class="line"></span><br><span class="line">  <span class="meta">#<span class="meta-keyword">define</span> HOTSPOT_THREAD_PROBE_start HOTSPOT_THREAD_START</span></span><br><span class="line">  <span class="meta">#<span class="meta-keyword">define</span> HOTSPOT_THREAD_PROBE_stop HOTSPOT_THREAD_STOP</span></span><br><span class="line"></span><br><span class="line">  <span class="meta">#<span class="meta-keyword">define</span> DTRACE_THREAD_PROBE(probe, javathread)                           </span></span><br><span class="line">    &#123;                                                                      </span><br><span class="line">      <span class="function">ResourceMark <span class="title">rm</span><span class="params">(<span class="keyword">this</span>)</span></span>;                                               </span><br><span class="line">      <span class="keyword">int</span> len = <span class="number">0</span>;                                                         </span><br><span class="line">      <span class="keyword">const</span> <span class="keyword">char</span>* name = (javathread)-&gt;get_thread_name();                  </span><br><span class="line">      len = <span class="built_in">strlen</span>(name);                                                  </span><br><span class="line">      HOTSPOT_THREAD_PROBE_#<span class="meta">#probe(<span class="comment">/* probe = start, stop */</span>               </span></span><br><span class="line">        (<span class="keyword">char</span> *) name, len,                                                </span><br><span class="line">        java_lang_Thread::thread_id((javathread)-&gt;threadObj()),            </span><br><span class="line">        (<span class="keyword">uintptr_t</span>) (javathread)-&gt;osthread()-&gt;thread_id(),                 </span><br><span class="line">        java_lang_Thread::is_daemon((javathread)-&gt;threadObj()));           </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span> <span class="comment">//  ndef DTRACE_ENABLED</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// The first routine called by a new Java thread</span></span><br><span class="line"><span class="keyword">void</span> JavaThread::run() &#123;</span><br><span class="line">  <span class="comment">// initialize thread-local alloc buffer related fields</span></span><br><span class="line">  <span class="keyword">this</span>-&gt;initialize_tlab();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// used to test validity of stack trace backs</span></span><br><span class="line">  <span class="keyword">this</span>-&gt;record_base_of_stack_pointer();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Record real stack base and size.</span></span><br><span class="line">  <span class="keyword">this</span>-&gt;record_stack_base_and_size();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">this</span>-&gt;create_stack_guard_pages();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">this</span>-&gt;cache_global_variables();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Thread is now sufficient initialized to be handled by the safepoint code as being</span></span><br><span class="line">  <span class="comment">// in the VM. Change thread state from _thread_new to _thread_in_vm</span></span><br><span class="line">  ThreadStateTransition::transition_and_fence(<span class="keyword">this</span>, _thread_new, _thread_in_vm);</span><br><span class="line"></span><br><span class="line">  assert(JavaThread::current() == <span class="keyword">this</span>, <span class="string">"sanity check"</span>);</span><br><span class="line">  assert(!Thread::current()-&gt;owns_locks(), <span class="string">"sanity check"</span>);</span><br><span class="line"></span><br><span class="line">  DTRACE_THREAD_PROBE(start, <span class="keyword">this</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// This operation might block. We call that after all safepoint checks for a new thread has</span></span><br><span class="line">  <span class="comment">// been completed.</span></span><br><span class="line">  <span class="keyword">this</span>-&gt;set_active_handles(JNIHandleBlock::allocate_block());</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (JvmtiExport::should_post_thread_life()) &#123;</span><br><span class="line">    JvmtiExport::post_thread_start(<span class="keyword">this</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  EventThreadStart event;</span><br><span class="line">  <span class="keyword">if</span> (event.should_commit()) &#123;</span><br><span class="line">    event.set_thread(THREAD_TRACE_ID(<span class="keyword">this</span>));</span><br><span class="line">    event.commit();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// We call another function to do the rest so we are sure that the stack addresses used</span></span><br><span class="line">  <span class="comment">// from there will be lower than the stack base just computed</span></span><br><span class="line">  thread_main_inner();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Note, thread is no longer valid at this point!</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个方法最终回调用 thread_main_inner 方法，该方法源码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> JavaThread::thread_main_inner() &#123;</span><br><span class="line">  <span class="keyword">assert</span>(JavaThread::current() == <span class="keyword">this</span>, <span class="string">"sanity check"</span>);</span><br><span class="line">  <span class="keyword">assert</span>(<span class="keyword">this</span>-&gt;threadObj() != NULL, <span class="string">"just checking"</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Execute thread entry point unless this thread has a pending exception</span></span><br><span class="line">  <span class="comment">// or has been stopped before starting.</span></span><br><span class="line">  <span class="comment">// Note: Due to JVM_StopThread we can have pending exceptions already!</span></span><br><span class="line">  <span class="keyword">if</span> (!<span class="keyword">this</span>-&gt;has_pending_exception() &amp;&amp;</span><br><span class="line">      !java_lang_Thread::is_stillborn(<span class="keyword">this</span>-&gt;threadObj())) &#123;</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="function">ResourceMark <span class="title">rm</span><span class="params">(<span class="keyword">this</span>)</span></span>;</span><br><span class="line">      <span class="keyword">this</span>-&gt;set_native_thread_name(<span class="keyword">this</span>-&gt;get_thread_name());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function">HandleMark <span class="title">hm</span><span class="params">(<span class="keyword">this</span>)</span></span>;</span><br><span class="line">    <span class="keyword">this</span>-&gt;entry_point()(<span class="keyword">this</span>, <span class="keyword">this</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  DTRACE_THREAD_PROBE(stop, <span class="keyword">this</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">this</span>-&gt;exit(<span class="keyword">false</span>);</span><br><span class="line">  delete <span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个方法调用了 entry_point 获取了传入的 thread_entry ，而 thread_entry 会调用 JavaCalls::call_virtual 方，并将 run_method_name() 作为参数传入，查阅 hotspot\src\share\vm\class file\vmSymbols 可知:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>(run_method_name,                           <span class="string">"run"</span>)</span><br></pre></td></tr></table></figure>
+<p>可见，此方法对应着 Thread 中的 run() 方法，达到调用线程目标方法的目的。</p>
+<h2 id="4-3-run-方法"><a href="#4-3-run-方法" class="headerlink" title="4.3 run 方法"></a>4.3 run 方法</h2><p>run 方法，是线程具体执行的方法，源码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       <span class="keyword">if</span> (target != <span class="keyword">null</span>) &#123;</span><br><span class="line">           target.run();</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p>在传入 Runnable 对象的时候，调用的是 Runnable 对象中的 run 方法。也可以通过继承 Thread 重写 run 方法达到实现线程的目的。</p>
+<h2 id="4-4-join-方法"><a href="#4-4-join-方法" class="headerlink" title="4.4 join 方法"></a>4.4 join 方法</h2><p>join 方法，是等待线程结束的方法，源码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">join</span><span class="params">(<span class="keyword">long</span> millis)</span></span></span><br><span class="line"><span class="function">   <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">       <span class="keyword">long</span> base = System.currentTimeMillis();</span><br><span class="line">       <span class="keyword">long</span> now = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">       <span class="keyword">if</span> (millis &lt; <span class="number">0</span>) &#123;</span><br><span class="line">           <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"timeout value is negative"</span>);</span><br><span class="line">       &#125;</span><br><span class="line"> <span class="comment">// 如果 millis 为 0 ，线程一直等待</span></span><br><span class="line">       <span class="keyword">if</span> (millis == <span class="number">0</span>) &#123;</span><br><span class="line">           <span class="keyword">while</span> (isAlive()) &#123;</span><br><span class="line">               wait(<span class="number">0</span>);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">           <span class="keyword">while</span> (isAlive()) &#123;</span><br><span class="line">               <span class="comment">// 剩余的等待时间</span></span><br><span class="line">               <span class="keyword">long</span> delay = millis - now;</span><br><span class="line">               <span class="keyword">if</span> (delay &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">                   <span class="keyword">break</span>;</span><br><span class="line">               &#125;</span><br><span class="line">               wait(delay);</span><br><span class="line">               </span><br><span class="line">               now = System.currentTimeMillis() - base;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p>可见，join 是通过 wait 来实现的，等待的是当前的线程对象。</p>
+<h2 id="4-5-setDaemon-方法"><a href="#4-5-setDaemon-方法" class="headerlink" title="4.5 setDaemon 方法"></a>4.5 setDaemon 方法</h2><p>新建的线程默认是前台线程，如果我们需要将其修改为后台线程，需要调用此方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">setDaemon</span><span class="params">(<span class="keyword">boolean</span> on)</span> </span>&#123;</span><br><span class="line">       checkAccess();</span><br><span class="line">       <span class="keyword">if</span> (isAlive()) &#123;</span><br><span class="line">           <span class="keyword">throw</span> <span class="keyword">new</span> IllegalThreadStateException();</span><br><span class="line">       &#125;</span><br><span class="line">       daemon = on;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p>这个方法知识将 daemon 属性修改为指定属性，线程启动的时候，本地方法会检查这个属性，并响应作出不同的设置。</p>
+<p>参考资料：</p>
+<p><a href="https://www.ibm.com/developerworks/cn/java/j-lo-processthread/index.html" target="_blank" rel="noopener">https://www.ibm.com/developerworks/cn/java/j-lo-processthread/index.html</a></p>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢大爷勒，大爷有空常来玩儿呀。<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -196,7 +266,7 @@
 		</ul>
 	</div>
 
-          
+      
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
@@ -209,1481 +279,125 @@
 	</div>
 
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2018/05/19/Thread源码分析/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/05/11/Java线程池/" class="archive-article-date">
-  	<time datetime="2018-05-11T02:19:33.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-05-11</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2018/05/11/Java线程池/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Java 线程池</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/05/11/Java线程池/">Java 线程池</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">线程池</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java-并发//" class="article-tag-list-link color3">Java 并发</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/05/06/ConcurrentHashMap源码分析/" class="archive-article-date">
-  	<time datetime="2018-05-06T03:23:52.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-05-06</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/05/06/ConcurrentHashMap源码分析/">ConcurrentHashMap 源码分析</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">ConcurrentHashMap</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java-并发//" class="article-tag-list-link color3">Java 并发</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/05/03/Java中的并发工具类/" class="archive-article-date">
-  	<time datetime="2018-05-03T12:47:13.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-05-03</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/05/03/Java中的并发工具类/">Java 中的并发工具类</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">CountDownLatch</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">CyclicBarrier</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Semaphore</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java-并发//" class="article-tag-list-link color3">Java 并发</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/05/01/队列同步器AQS/" class="archive-article-date">
-  	<time datetime="2018-05-01T02:35:10.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-05-01</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/05/01/队列同步器AQS/">队列同步器 AQS</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">AQS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java-并发//" class="article-tag-list-link color3">Java 并发</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/04/25/Java中的锁/" class="archive-article-date">
-  	<time datetime="2018-04-25T13:25:21.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-25</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/04/25/Java中的锁/">Java 中的锁</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Lock</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">synchronized</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java-并发//" class="article-tag-list-link color3">Java 并发</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/04/20/java内存模型/" class="archive-article-date">
-  	<time datetime="2018-04-20T11:01:13.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-20</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/04/20/java内存模型/">Java 内存模型</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">内存模型</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java-并发//" class="article-tag-list-link color3">Java 并发</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/04/14/epoll原理/" class="archive-article-date">
-  	<time datetime="2018-04-14T02:27:51.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-14</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/04/14/epoll原理/">epoll 原理</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">epoll</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">I/O多路复用</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/I-O//" class="article-tag-list-link color4">I/O</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/04/09/微信公众号开发遇到的坑/" class="archive-article-date">
-  	<time datetime="2018-04-09T03:45:52.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-09</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/04/09/微信公众号开发遇到的坑/">微信公众号开发遇到的坑</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">公众号</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">支付</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">授权</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/第三方接口//" class="article-tag-list-link color1">第三方接口</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/04/06/Redis事件驱动/" class="archive-article-date">
-  	<time datetime="2018-04-06T05:51:11.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-06</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/04/06/Redis事件驱动/">Redis事件驱动</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Redis</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">事件驱动</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/数据库//" class="article-tag-list-link color4">数据库</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/04/06/Number-of-Digit-One/" class="archive-article-date">
-  	<time datetime="2018-04-05T16:15:54.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-06</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/04/06/Number-of-Digit-One/">Number of Digit One</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">LeeCode</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">数字规律</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/算法//" class="article-tag-list-link color3">算法</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/04/05/Redis事务/" class="archive-article-date">
-  	<time datetime="2018-04-05T09:51:29.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-05</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/04/05/Redis事务/">Redis 事务</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Redis</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">事务</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/数据库//" class="article-tag-list-link color4">数据库</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/03/30/Redis集群/" class="archive-article-date">
-  	<time datetime="2018-03-30T03:06:59.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-30</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/03/30/Redis集群/">Redis 集群</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Redis</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">集群</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/数据库//" class="article-tag-list-link color4">数据库</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/03/25/Redis高可用解决方案——Sentinel/" class="archive-article-date">
-  	<time datetime="2018-03-25T01:20:24.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-25</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/03/25/Redis高可用解决方案——Sentinel/">Redis 高可用解决方案——Sentinel</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Redis</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">高可用</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">分布式一致</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/数据库//" class="article-tag-list-link color4">数据库</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/03/20/Redis主从复制过程与配置/" class="archive-article-date">
-  	<time datetime="2018-03-20T14:36:23.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-20</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/03/20/Redis主从复制过程与配置/">Redis 主从复制过程与配置</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Redis</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">主从复制</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/数据库//" class="article-tag-list-link color4">数据库</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/03/15/跳跃表与压缩表/" class="archive-article-date">
-  	<time datetime="2018-03-15T13:31:44.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-15</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/03/15/跳跃表与压缩表/">跳跃表与压缩表</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Redis</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">数据结构</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/数据库//" class="article-tag-list-link color4">数据库</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/03/09/浅谈Redis/" class="archive-article-date">
-  	<time datetime="2018-03-09T14:49:38.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-09</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/03/09/浅谈Redis/">浅谈 Redis</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Redis</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">介绍</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/数据库//" class="article-tag-list-link color4">数据库</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/03/07/一次Http请求经历的过程/" class="archive-article-date">
-  	<time datetime="2018-03-07T12:50:52.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-07</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/03/07/一次Http请求经历的过程/">一次 Http 请求经历的过程</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Http协议</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">过程</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/计算机网络//" class="article-tag-list-link color1">计算机网络</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/03/03/主流的几种-Java-虚拟机/" class="archive-article-date">
-  	<time datetime="2018-03-03T04:07:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-03</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/03/03/主流的几种-Java-虚拟机/">主流的几种 Java 虚拟机</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Java虚拟机</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">介绍</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java-虚拟机//" class="article-tag-list-link color4">Java 虚拟机</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/03/02/MySQL存储过程/" class="archive-article-date">
-  	<time datetime="2018-03-02T08:41:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-02</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/03/02/MySQL存储过程/">MySQL 存储过程</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">存储过程</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/数据库//" class="article-tag-list-link color4">数据库</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/02/26/Java垃圾收集器/" class="archive-article-date">
-  	<time datetime="2018-02-26T09:31:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-02-26</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/02/26/Java垃圾收集器/">Java 垃圾收集器</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">垃圾收集器</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java-虚拟机//" class="article-tag-list-link color4">Java 虚拟机</a>
-        		</li>
-      		
-		</ul>
-	</div>
+        
+        
+    </div>
+</aside>
 
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/02/19/Java垃圾回收/" class="archive-article-date">
-  	<time datetime="2018-02-19T05:02:23.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-02-19</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/02/19/Java垃圾回收/">Java 垃圾回收</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">垃圾回收</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java-虚拟机//" class="article-tag-list-link color4">Java 虚拟机</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/02/13/谈谈MySQL的几种常用储存引擎/" class="archive-article-date">
-  	<time datetime="2018-02-13T05:28:12.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-02-13</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/02/13/谈谈MySQL的几种常用储存引擎/">谈谈 MySQL 的几种常用储存引擎</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">存储引擎</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/数据库//" class="article-tag-list-link color4">数据库</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/02/03/浅谈MySQL执行计划/" class="archive-article-date">
-  	<time datetime="2018-02-03T08:35:39.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-02-03</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/02/03/浅谈MySQL执行计划/">浅谈 MySQL 执行计划</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">执行计划</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/数据库//" class="article-tag-list-link color4">数据库</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/01/26/Java内存分配与回收策略/" class="archive-article-date">
-  	<time datetime="2018-01-26T01:11:30.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-26</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/01/26/Java内存分配与回收策略/">Java 内存分配与回收策略</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">内存回收与分配</a>
-        		</li>
-      		
-		</ul>
-	</div>
 
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java-虚拟机//" class="article-tag-list-link color4">Java 虚拟机</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/01/16/Nginx的配置/" class="archive-article-date">
-  	<time datetime="2018-01-16T03:26:23.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-16</time>
-</a>
-        </div>
-    	 
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/01/16/Nginx的配置/">Nginx 的配置</a>
-    </h1>
   
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Nginx</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">配置</a>
-        		</li>
-      		
-		</ul>
-	</div>
 
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/服务器//" class="article-tag-list-link color4">服务器</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/01/09/浅谈类加载器/" class="archive-article-date">
-  	<time datetime="2018-01-09T04:06:13.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-09</time>
-</a>
-        </div>
-    	 
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/01/09/浅谈类加载器/">浅谈类加载器</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">类加载</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">类加载器</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java-虚拟机//" class="article-tag-list-link color4">Java 虚拟机</a>
-        		</li>
-      		
-		</ul>
-	</div>
 
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/01/07/虚拟机类加载机制/" class="archive-article-date">
-  	<time datetime="2018-01-07T09:20:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-07</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/01/07/虚拟机类加载机制/">虚拟机类加载机制</a>
-    </h1>
   
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">类加载</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Java-虚拟机//" class="article-tag-list-link color4">Java 虚拟机</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/01/03/博客介绍/" class="archive-article-date">
-  	<time datetime="2018-01-03T14:30:15.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-03</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/01/03/博客介绍/">博客介绍</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">介绍</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">hello word</a>
-        		</li>
-      		
-		</ul>
-	</div>
 
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/杂谈//" class="article-tag-list-link color3">杂谈</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
   
-    </div></section>
+  <div id="gitment-ctn">
+<div id="gitalk-ctn"></div> 
+</div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script>
+var gitalk = new Gitalk({
+  id: "http://yoursite.com/2018/05/19/Thread源码分析/",
+  clientID: 'a9a4865b484b39b0c93b',
+  clientSecret: 'ca2efec482dc7aec0c98bba032f0572168519216',
+  repo: 'GitmentRepo',
+  owner: 'KlutzyNerd',
+  admin: 'KlutzyNerd',
+  distractionFreeMode: true
+})
+gitalk.render('gitalk-ctn')
+</script>
   
 
-    
 
 
           </div>
@@ -1706,8 +420,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
