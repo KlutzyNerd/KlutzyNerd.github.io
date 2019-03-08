@@ -6,18 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Tag: WordCount | 核桃的博客</title>
+  <title>vert.x简单使用 | 核桃的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="非知名大学水货烟酒僧一枚">
-<meta property="og:type" content="website">
-<meta property="og:title" content="核桃的博客">
-<meta property="og:url" content="http://yoursite.com/tags/WordCount/index.html">
+  <meta name="description" content="随着服务器需要处理的请求越来越多，传统服务架构已经不堪重负，由此兴起了基于时间和异步的解决方案，如Nginx和NodeJs。Vert.x框架就是这样一款基于事件和异步的框架，构建在netty之上，并扩展了很多其他的协议，是一款很值得学习的框架。 本文是vert.x的学习笔记，主要讲述了vert.x的使用。">
+<meta name="keywords" content="vert.x,web,异步">
+<meta property="og:type" content="article">
+<meta property="og:title" content="vert.x简单使用">
+<meta property="og:url" content="http://yoursite.com/2019/02/16/vert-x简单使用/index.html">
 <meta property="og:site_name" content="核桃的博客">
-<meta property="og:description" content="非知名大学水货烟酒僧一枚">
+<meta property="og:description" content="随着服务器需要处理的请求越来越多，传统服务架构已经不堪重负，由此兴起了基于时间和异步的解决方案，如Nginx和NodeJs。Vert.x框架就是这样一款基于事件和异步的框架，构建在netty之上，并扩展了很多其他的协议，是一款很值得学习的框架。 本文是vert.x的学习笔记，主要讲述了vert.x的使用。">
 <meta property="og:locale" content="klutzynerd.dev@gmail.com">
+<meta property="og:updated_time" content="2019-03-08T15:02:29.021Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="核桃的博客">
-<meta name="twitter:description" content="非知名大学水货烟酒僧一枚">
+<meta name="twitter:title" content="vert.x简单使用">
+<meta name="twitter:description" content="随着服务器需要处理的请求越来越多，传统服务架构已经不堪重负，由此兴起了基于时间和异步的解决方案，如Nginx和NodeJs。Vert.x框架就是这样一款基于事件和异步的框架，构建在netty之上，并扩展了很多其他的协议，是一款很值得学习的框架。 本文是vert.x的学习笔记，主要讲述了vert.x的使用。">
   
     <link rel="alternative" href="/atom.xml" title="核桃的博客" type="application/atom+xml">
   
@@ -155,79 +157,292 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-vert-x简单使用" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2018" class="archive-year">2018</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/08/26/Hadoop-MapReduce使用/" class="archive-article-date">
-  	<time datetime="2018-08-26T13:17:30.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-08-26</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/08/26/Hadoop-MapReduce使用/">Hadoop-MapReduce使用</a>
+    <h1 class="article-title" itemprop="name">
+      vert.x简单使用
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2019/02/16/vert-x简单使用/" class="archive-article-date">
+  	<time datetime="2019-02-16T06:58:09.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-16</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>随着服务器需要处理的请求越来越多，传统服务架构已经不堪重负，由此兴起了基于时间和异步的解决方案，如Nginx和NodeJs。Vert.x框架就是这样一款基于事件和异步的框架，构建在netty之上，并扩展了很多其他的协议，是一款很值得学习的框架。</p>
+<p>本文是vert.x的学习笔记，主要讲述了vert.x的使用。</p>
+<a id="more"></a>
+<h1 id="1-Vert-x是什么"><a href="#1-Vert-x是什么" class="headerlink" title="1. Vert.x是什么"></a>1. Vert.x是什么</h1><p><a href="https://vertx.io/" target="_blank" rel="noopener">vert.x</a>是一个事件驱动的非阻塞框架，使用vert.x可以在很少的线程中处理大量的并发请求。</p>
+<p>vert.x的最大特点在于异步，提供了事件循环（EventLoop）来掉起存储在异步任务队列中的任务，极大的降低了传统阻塞模型中线程对于操作系统的开销。因此相比于传统的阻塞模型，其能提供很大的并发量。</p>
+<p>vert.x还提供了EventBus等，通过EventBus能够非常简单的实现分布式消息，进而为分布式系统调用，微服务奠定基础。还提供落对Redis，RabbitMQ，Kafka等多种客户端的支持。</p>
+<p>另外，vert.x运行于java虚拟机上，能够支持多种编程语言，同一个应用可以选着多种编程语言同时开发。</p>
+<h1 id="2-Vert-x创建HTTP服务"><a href="#2-Vert-x创建HTTP服务" class="headerlink" title="2. Vert.x创建HTTP服务"></a>2. Vert.x创建HTTP服务</h1><p>Vert.x封装落HTTP协议的支持，因此可以非常方便的进行web开发，且不依赖于任何中间件。下面来实现一个简单的HTTPServer。</p>
+<p>vertx Http服务依赖于vertx-core，我们需要在build.gradle中添加以下依赖：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">compile <span class="string">group:</span><span class="string">'io.vertx'</span>, <span class="string">name:</span> <span class="string">'vertx-core'</span>, <span class="string">version:</span> <span class="string">'3.5.3'</span></span><br></pre></td></tr></table></figure>
+<p>我们可以创建一个简单的http服务，代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SimpleHttpServer</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Vertx vertx = Vertx.vertx();</span><br><span class="line">        <span class="comment">//创建一个httpserver</span></span><br><span class="line">        HttpServer server = vertx.createHttpServer();</span><br><span class="line"></span><br><span class="line">        server.requestHandler(request-&gt;&#123;</span><br><span class="line">            <span class="comment">//获取response对象</span></span><br><span class="line">            HttpServerResponse response = request.response();</span><br><span class="line">            <span class="comment">//设置响应头</span></span><br><span class="line">            response.putHeader(<span class="string">"Content-type"</span>, <span class="string">"text/html;charset=utf-8"</span>);</span><br><span class="line">            <span class="comment">//响应数据</span></span><br><span class="line">            response.end(<span class="string">"Hello Vert.x"</span>);</span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="comment">//监听端口</span></span><br><span class="line">        server.listen(<span class="number">8899</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>访问localhost:8899就能够看到我们发送的响应了，比起传统的HTTPserver的复杂操作，vert.x十几行代码就能够开启一个简单的HTTP服务。</p>
+<p>不过上面的HTTPserver所有的代码都在main方法中，这显然不是优雅的方式。Vert.x推荐为每一个应用创建一个Verticle，然后通过Vert.x核心接口，部署Verticle模块。多个Verticle模块之间通过EventBus相互调用。</p>
+<p>下面我们就创建一个Verticle模块并部署到Vertx中运行，实现步骤如下：</p>
+<ol>
+<li>创建一个类，继承AbstractVerticle</li>
+<li>重写start方法和stop方法，在start中处理业务逻辑，在stop中释放资源</li>
+<li>在main方法中部署Verticle模块</li>
+<li>启动服务</li>
+</ol>
+<p>代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">VerticleHttpServer</span> <span class="keyword">extends</span> <span class="title">AbstractVerticle</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        vertx.createHttpServer().requestHandler(req -&gt; &#123;</span><br><span class="line">            <span class="comment">//获取到response对象</span></span><br><span class="line">            req.response()</span><br><span class="line">                    <span class="comment">//设置响应头</span></span><br><span class="line">                    .putHeader(<span class="string">"content-type"</span>, <span class="string">"text/plain"</span>)</span><br><span class="line">                    <span class="comment">//响应数据</span></span><br><span class="line">                    .end(<span class="string">"Hello from Vert.x!"</span>);</span><br><span class="line">        &#125;).listen(<span class="number">8899</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        VerticleHttpServer server = <span class="keyword">new</span> VerticleHttpServer();</span><br><span class="line">        Vertx vertx = Vertx.vertx();</span><br><span class="line">        <span class="comment">//部署Verticle，会调用其start方法</span></span><br><span class="line">        vertx.deployVerticle(server);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="3-Vert-x路由"><a href="#3-Vert-x路由" class="headerlink" title="3. Vert.x路由"></a>3. Vert.x路由</h1><p>Vert.x提供了web开发组件vertx-web，提供了一堆web开发中的常用功能，比如参数封装，路由，国际化，认证和授权，session和cookie以及模板等，可以非常方便的进行web开发。</p>
+<p>路由是web开发的最基础也是最常用的功能，Vert.x提供了强大的路由功能，包括正则匹配，二级路由等。</p>
+<p>首先需要在项目中引入vertx-web的依赖，如下：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">compile <span class="string">group:</span><span class="string">'io.vertx'</span>, <span class="string">name:</span><span class="string">'vertx-web'</span>,<span class="string">version:</span><span class="string">'3.5.2'</span></span><br></pre></td></tr></table></figure>
+<p>vertx创建一个简单路由的过程如下：</p>
+<ol>
+<li>Router.router(vertx) 方法创建路由</li>
+<li>监听指定的地址，传入处理方法</li>
+<li>将请求交给路由处理</li>
+</ol>
+<p>代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SimpleRouter</span> <span class="keyword">extends</span> <span class="title">AbstractVerticle</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="comment">//创建router对象</span></span><br><span class="line">        Router router = Router.router(vertx);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//监听地址</span></span><br><span class="line">        router.route(<span class="string">"/index"</span>)</span><br><span class="line">                <span class="comment">//handler 方法</span></span><br><span class="line">                .handler(req-&gt;&#123;</span><br><span class="line">                    req.response().end(<span class="string">"hello"</span>);</span><br><span class="line">                &#125;);</span><br><span class="line">        <span class="comment">//限制http请求方法</span></span><br><span class="line">        router.route(HttpMethod.POST, <span class="string">"/post"</span>)</span><br><span class="line">                .handler(req-&gt;&#123;</span><br><span class="line">                    req.response().end(<span class="string">"post"</span>);</span><br><span class="line">                &#125;);</span><br><span class="line"></span><br><span class="line">        Router restApi = Router.router(vertx);</span><br><span class="line">        restApi.get(<span class="string">"/:id"</span>).handler(req-&gt;&#123;</span><br><span class="line">            <span class="comment">//获取url拼接的参数</span></span><br><span class="line">            String name = req.request().getParam(<span class="string">"name"</span>);</span><br><span class="line">            <span class="comment">//获取路径参数</span></span><br><span class="line">            String id = req.request().getParam(<span class="string">"id"</span>);</span><br><span class="line">            req.response()</span><br><span class="line">                    .end(<span class="string">"your id:"</span>+id+<span class="string">" your name:"</span>+name);</span><br><span class="line">        &#125;);</span><br><span class="line">        restApi.post(<span class="string">"/"</span>).handler(req-&gt;&#123;</span><br><span class="line">            <span class="comment">//获取body参数</span></span><br><span class="line">            String body = req.getBodyAsString();</span><br><span class="line">            req.response().end(<span class="string">"you send:"</span>+body);</span><br><span class="line"><span class="comment">//            req.next(); //调用下一个匹配规则</span></span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="comment">//挂载二级路由</span></span><br><span class="line">        router.mountSubRouter(<span class="string">"/rest"</span>, restApi);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        vertx.createHttpServer().requestHandler(router::accept).listen(<span class="number">8899</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Vertx.vertx().deployVerticle(<span class="keyword">new</span> SimpleRouter());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="4-Vert-x访问数据库"><a href="#4-Vert-x访问数据库" class="headerlink" title="4. Vert.x访问数据库"></a>4. Vert.x访问数据库</h1><p>vert.x提供异步访问数据库的api，使用vert.x操作数据库非常简单，下面我们以访问MySQL为例。</p>
+<p>首先需要引入vertx-jdbc-client和mysql-connect-java包。</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">compile <span class="string">group:</span> <span class="string">'io.vertx'</span>, <span class="string">name:</span> <span class="string">'vertx-jdbc-client'</span>, <span class="string">version:</span> <span class="string">'3.6.0'</span></span><br><span class="line">compile <span class="string">group:</span> <span class="string">'mysql'</span>, <span class="string">name:</span> <span class="string">'mysql-connector-java'</span>, <span class="string">version:</span> <span class="string">'8.0.13'</span></span><br></pre></td></tr></table></figure>
+<p>vertx-jdbc实际上是对jdbc接口的封装，因此可以操作所有的数据库。代码如下：</p>
+<p><strong>JdbcUtils</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JdbcUtils</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> JDBCClient dbClient;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> JDBCClient <span class="title">getDbClient</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> dbClient;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> JsonObject config;</span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        <span class="comment">//读取配置文件</span></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">byte</span>[] bytes = Files.readAllBytes(Paths.get(<span class="string">"db.json"</span>));</span><br><span class="line">            config = <span class="keyword">new</span> JsonObject(<span class="keyword">new</span> String(bytes));</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">JdbcUtils</span><span class="params">(Vertx vertx, String dsName)</span></span>&#123;</span><br><span class="line">        JsonObject dbConfig = config.getJsonObject(dsName);</span><br><span class="line">        <span class="keyword">if</span>(dbConfig==<span class="keyword">null</span>)&#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"没有找到指定的数据源"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        dbClient = JDBCClient.createShared(vertx, dbConfig);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">JdbcUtils</span><span class="params">(Vertx vertx)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>(vertx, <span class="string">"default"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>Verticle</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JdbcTestVerticle</span> <span class="keyword">extends</span> <span class="title">AbstractVerticle</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="comment">//获取到数据库连接的客户端</span></span><br><span class="line">        JDBCClient jdbcClient = <span class="keyword">new</span> JdbcUtils(vertx).getDbClient();</span><br><span class="line">        String sql = <span class="string">"select * from t_user where age &gt; ?"</span>;</span><br><span class="line">        <span class="comment">//构造函数</span></span><br><span class="line">        JsonArray params = <span class="keyword">new</span> JsonArray().add(<span class="number">18</span>);</span><br><span class="line">        <span class="comment">//执行查询</span></span><br><span class="line">        jdbcClient.queryWithParams(sql, params, res-&gt;&#123;</span><br><span class="line">            <span class="keyword">if</span>(res.succeeded())&#123;</span><br><span class="line">                <span class="comment">//获取到查询的结果，vertx对ResultSet进行了封装</span></span><br><span class="line">                ResultSet resultSet = res.result();</span><br><span class="line">                <span class="comment">//将ResultSet转换为List&lt;JsonObject&gt;</span></span><br><span class="line">                List&lt;JsonObject&gt; rows = resultSet.getRows() ;</span><br><span class="line">                System.out.println(rows);</span><br><span class="line">            &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                System.out.println(<span class="string">"查询数据库出错"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Vertx vertx = Vertx.vertx();</span><br><span class="line">        vertx.deployVerticle(<span class="keyword">new</span> JdbcTestVerticle());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>db.json 配置方式可以参考vertx官方文档，本文的如下：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"default"</span>: &#123;</span><br><span class="line">    <span class="attr">"url"</span>: <span class="string">"jdbc:mysql://localhost:3306/vertx_test"</span>,</span><br><span class="line">    <span class="attr">"driver_class"</span>: <span class="string">"com.mysql.cj.jdbc.Driver"</span>,</span><br><span class="line">    <span class="attr">"user"</span>: <span class="string">"root"</span>,</span><br><span class="line">    <span class="attr">"password"</span>: <span class="string">"root"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"prod"</span>: &#123;</span><br><span class="line">    <span class="attr">"url"</span>: <span class="string">"jdbc:mysql://localhost:3306/vertx_test"</span>,</span><br><span class="line">    <span class="attr">"driver_class"</span>: <span class="string">"com.mysql.cj.jdbc.Driver"</span>,</span><br><span class="line">    <span class="attr">"user"</span>: <span class="string">"root"</span>,</span><br><span class="line">    <span class="attr">"password"</span>: <span class="string">"root"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="5-Vert-x事件总线（EventBus）"><a href="#5-Vert-x事件总线（EventBus）" class="headerlink" title="5. Vert.x事件总线（EventBus）"></a>5. Vert.x事件总线（EventBus）</h1><p>EventBus是vertx中扶着应用系统消息传递的模块，vertx各个模块之间的相互调用就是通过EventBus实现的，因此各个Verticle之间高度解耦。</p>
+<p>Event Bus类似于消息队列，每条消息在Event Bus中都有一个地址，发送者向这个地址发送消息，接收者从这个地址中接受消息。</p>
+<p>Event Bus独立于应用系统，使用TCP协议进行通信。因此，在任何应用中，只要能够创建TCP连接，都可以通过Event Bus连接到vertx实例，因此，vertx对分布式支持非常好。</p>
+<h2 id="5-1-Event-Bus接口"><a href="#5-1-Event-Bus接口" class="headerlink" title="5.1 Event Bus接口"></a>5.1 Event Bus接口</h2><p>Event Bus对外提供的api如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@VertxGen</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">EventBus</span> <span class="keyword">extends</span> <span class="title">Measured</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * 发送message到address中</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="meta">@Fluent</span></span><br><span class="line">  <span class="function">EventBus <span class="title">send</span><span class="params">(String address, Object message)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * 发送消息，回复之后调用reply</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="meta">@Fluent</span></span><br><span class="line">  &lt;T&gt; <span class="function">EventBus <span class="title">send</span><span class="params">(String address, Object message, Handler&lt;AsyncResult&lt;Message&lt;T&gt;&gt;&gt; replyHandler)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Fluent</span></span><br><span class="line">  <span class="function">EventBus <span class="title">send</span><span class="params">(String address, Object message, DeliveryOptions options)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Fluent</span></span><br><span class="line">  &lt;T&gt; <span class="function">EventBus <span class="title">send</span><span class="params">(String address, Object message, DeliveryOptions options, Handler&lt;AsyncResult&lt;Message&lt;T&gt;&gt;&gt; replyHandler)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Fluent</span></span><br><span class="line">  <span class="function">EventBus <span class="title">publish</span><span class="params">(String address, Object message)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Fluent</span></span><br><span class="line">  <span class="function">EventBus <span class="title">publish</span><span class="params">(String address, Object message, DeliveryOptions options)</span></span>;</span><br><span class="line"></span><br><span class="line">  &lt;T&gt; <span class="function">MessageConsumer&lt;T&gt; <span class="title">consumer</span><span class="params">(String address)</span></span>;</span><br><span class="line"></span><br><span class="line">  &lt;T&gt; <span class="function">MessageConsumer&lt;T&gt; <span class="title">consumer</span><span class="params">(String address, Handler&lt;Message&lt;T&gt;&gt; handler)</span></span>;</span><br><span class="line"></span><br><span class="line">  &lt;T&gt; <span class="function">MessageConsumer&lt;T&gt; <span class="title">localConsumer</span><span class="params">(String address)</span></span>;</span><br><span class="line"></span><br><span class="line">  &lt;T&gt; <span class="function">MessageConsumer&lt;T&gt; <span class="title">localConsumer</span><span class="params">(String address, Handler&lt;Message&lt;T&gt;&gt; handler)</span></span>;</span><br><span class="line"></span><br><span class="line">  &lt;T&gt; <span class="function">MessageProducer&lt;T&gt; <span class="title">sender</span><span class="params">(String address)</span></span>;</span><br><span class="line"></span><br><span class="line">  &lt;T&gt; <span class="function">MessageProducer&lt;T&gt; <span class="title">sender</span><span class="params">(String address, DeliveryOptions options)</span></span>;</span><br><span class="line"></span><br><span class="line">  &lt;T&gt; <span class="function">MessageProducer&lt;T&gt; <span class="title">publisher</span><span class="params">(String address)</span></span>;</span><br><span class="line"></span><br><span class="line">  &lt;T&gt; <span class="function">MessageProducer&lt;T&gt; <span class="title">publisher</span><span class="params">(String address, DeliveryOptions options)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@GenIgnore</span>(GenIgnore.PERMITTED_TYPE)</span><br><span class="line">  <span class="function">EventBus <span class="title">registerCodec</span><span class="params">(MessageCodec codec)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@GenIgnore</span>(GenIgnore.PERMITTED_TYPE)</span><br><span class="line">  <span class="function">EventBus <span class="title">unregisterCodec</span><span class="params">(String name)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@GenIgnore</span></span><br><span class="line">  &lt;T&gt; <span class="function">EventBus <span class="title">registerDefaultCodec</span><span class="params">(Class&lt;T&gt; clazz, MessageCodec&lt;T, ?&gt; codec)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@GenIgnore</span></span><br><span class="line">  <span class="function">EventBus <span class="title">unregisterDefaultCodec</span><span class="params">(Class clazz)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@GenIgnore</span></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">start</span><span class="params">(Handler&lt;AsyncResult&lt;Void&gt;&gt; completionHandler)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@GenIgnore</span></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">close</span><span class="params">(Handler&lt;AsyncResult&lt;Void&gt;&gt; completionHandler)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Fluent</span></span><br><span class="line">  &lt;T&gt; <span class="function">EventBus <span class="title">addOutboundInterceptor</span><span class="params">(Handler&lt;DeliveryContext&lt;T&gt;&gt; interceptor)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Fluent</span></span><br><span class="line">  &lt;T&gt; <span class="function">EventBus <span class="title">removeOutboundInterceptor</span><span class="params">(Handler&lt;DeliveryContext&lt;T&gt;&gt; interceptor)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Fluent</span></span><br><span class="line">  &lt;T&gt; <span class="function">EventBus <span class="title">addInboundInterceptor</span><span class="params">(Handler&lt;DeliveryContext&lt;T&gt;&gt; interceptor)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Fluent</span></span><br><span class="line">  &lt;T&gt; <span class="function">EventBus <span class="title">removeInboundInterceptor</span><span class="params">(Handler&lt;DeliveryContext&lt;T&gt;&gt; interceptor)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过vertx.eventBus就可以获取eventBus。</p>
+<h2 id="5-2-发送和订阅消息"><a href="#5-2-发送和订阅消息" class="headerlink" title="5.2 发送和订阅消息"></a>5.2 发送和订阅消息</h2><p>从上面的接口我们可以看到，发布消息有两个方法，分别是publish和send，其中publish将消息发送到一个地址上，所有订阅这个address的消费者都能够接收到这个消息，这和消息队列的发布订阅模式类似。还有一个是send方法，是点对点模式，这种方式发布的消息只能由一个消费者接受到。</p>
+<p>对于订阅消息，只有一个consumer方法，方法的声明如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;T&gt; <span class="function">MessageConsumer&lt;T&gt; <span class="title">consumer</span><span class="params">(String address, Handler&lt;Message&lt;T&gt;&gt; handler)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>这个方法订阅address上的消息，并在消息返回后调用handler。</p>
+<p>如果需要通过其他语言调用vert.x模块，可以通过发送TCP请求，连接到Event Bus，Event Bus协议如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">&lt;Length: uInt32&gt;&lt;&#123;</span><br><span class="line"> </span><br><span class="line">  type: String,</span><br><span class="line"> </span><br><span class="line">  address: String,</span><br><span class="line"> </span><br><span class="line">  (replyAddress: String)?,</span><br><span class="line"> </span><br><span class="line">  headers: JsonObject,</span><br><span class="line"> </span><br><span class="line">  body: JsonObject</span><br><span class="line"> </span><br><span class="line">&#125;: JsonObject&gt;</span><br></pre></td></tr></table></figure>
+<p>下面，我们通过一个简单的远程服务调用的demo来讲述Event Bus的通信，代码如下：</p>
+<p>首先我们需要引用远程调用相关的包，在build.gradle中添加以下内容：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">compile <span class="string">group:</span> <span class="string">'io.vertx'</span>, <span class="string">name:</span> <span class="string">'vertx-codegen'</span>, <span class="string">version:</span> <span class="string">'3.6.3'</span></span><br><span class="line">compile <span class="string">group:</span> <span class="string">'io.vertx'</span>, <span class="string">name:</span> <span class="string">'vertx-service-proxy'</span>, <span class="string">version:</span> <span class="string">'3.6.3'</span></span><br><span class="line">compile <span class="string">group:</span> <span class="string">'io.vertx'</span>, <span class="string">name:</span> <span class="string">'vertx-hazelcast'</span>, <span class="string">version:</span> <span class="string">'3.6.3'</span></span><br></pre></td></tr></table></figure>
+<p>因为我们这里需要vertx帮我们自动生成代理类，需要在build.gradle中添加以下生成脚本：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">ask annotationProcessing(<span class="string">type:</span> JavaCompile, <span class="string">group:</span> <span class="string">'build'</span>) &#123; <span class="comment">// codegen</span></span><br><span class="line">    source = sourceSets.main.java</span><br><span class="line">    classpath = configurations.compile + configurations.compileOnly</span><br><span class="line">    destinationDir = project.file(<span class="string">'src/main/generated'</span>)</span><br><span class="line">    options.compilerArgs = [</span><br><span class="line">            <span class="string">"-proc:only"</span>,</span><br><span class="line">            <span class="string">"-processor"</span>, <span class="string">"io.vertx.codegen.CodeGenProcessor"</span>,</span><br><span class="line">            <span class="string">"-Acodegen.output=$&#123;project.projectDir&#125;/src/main"</span></span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">compileJava &#123;</span><br><span class="line">    targetCompatibility = <span class="number">1.8</span></span><br><span class="line">    sourceCompatibility = <span class="number">1.8</span></span><br><span class="line"></span><br><span class="line">    dependsOn annotationProcessing</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">sourceSets &#123;</span><br><span class="line">    main &#123;</span><br><span class="line">        java &#123;</span><br><span class="line">            srcDirs += <span class="string">'src/main/generated'</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后我们需要编写一个Service接口：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ProxyGen</span></span><br><span class="line"><span class="meta">@VertxGen</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Service</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">sayHello</span><span class="params">(String name, JsonObject ETF, Handler&lt;AsyncResult&lt;JsonObject&gt;&gt; resultHandler)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个接口中只有一个方法，就是sayHello方法，这个方法是其他verticle调用的方法，其中@ProxyGen和@VertxGen两个注解是生成代码的注解。</p>
+<p>Service的实现类很简单，只需要实现sayHello方法即可，代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ServiceImpl</span> <span class="keyword">implements</span> <span class="title">Service</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sayHello</span><span class="params">(String name, JsonObject ETF, Handler&lt;AsyncResult&lt;JsonObject&gt;&gt; resultHandler)</span> </span>&#123;</span><br><span class="line">        resultHandler.handle(Future.succeededFuture(ETF.put(<span class="string">"msg"</span>, <span class="string">"Success"</span>)));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>另外，为了能够使得vertx codegen找到我们的类，我们需要在包中加入package-info，并添加@ModuleGen注解。代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ModuleGen</span>(groupPackage = <span class="string">"bus"</span>, name=<span class="string">"HelloVerticle"</span>)</span><br><span class="line"><span class="keyword">package</span> bus;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> io.vertx.codegen.annotations.ModuleGen;</span><br></pre></td></tr></table></figure>
+<p>这个注解标志者让vertx找当前包下面的Verticle并生成。</p>
+<p>HelloVerticle代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloVerticle</span> <span class="keyword">extends</span> <span class="title">AbstractVerticle</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        Service service = <span class="keyword">new</span> ServiceImpl();</span><br><span class="line">        <span class="keyword">new</span> ServiceBinder(vertx).setAddress(<span class="string">"service.demo.helloverticle"</span>).register(Service.class, service);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        VertxOptions options = <span class="keyword">new</span> VertxOptions()</span><br><span class="line">                .setClustered(<span class="keyword">true</span>)</span><br><span class="line">                .setClusterHost(<span class="string">"127.0.0.1"</span>);</span><br><span class="line">        Vertx.clusteredVertx(options, resultHandler-&gt;&#123;</span><br><span class="line">            Vertx vertx = resultHandler.result();</span><br><span class="line">            vertx.deployVerticle(<span class="keyword">new</span> HelloVerticle());</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们在start方法中将Service注册到一个唯一的地址中去，在main方法中注册当前的Verticle，这样就能够创建一个服务的提供者了。</p>
+<p>创建了服务的提供者后，需要创建服务的调用者，服务调用者可以通过EventBus直接调用方法和通过代理类调用方法两种方式，我们主意来讲述。</p>
+<p><strong>通过EventBus调用</strong></p>
+<p>通过EventBus调用非常简单，只需要调用EventBus中的send方法即可，这种调用方式不依赖任何的接口，可以实现跨语言调用，代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 监听http请求，并通过verticle来处理请求</span></span><br><span class="line"><span class="comment"> * 可以通过EventBus调用其他微服务组件，本例如此</span></span><br><span class="line"><span class="comment"> * 这种调用方式不依赖任何的接口，可以实现跨语言调用</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">EBVerticle</span> <span class="keyword">extends</span> <span class="title">AbstractVerticle</span> </span>&#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        HttpServer httpServer = vertx.createHttpServer();</span><br><span class="line">        httpServer.requestHandler(req-&gt;&#123;</span><br><span class="line"></span><br><span class="line">            <span class="comment">//通过action参数配置需要走哪个方法</span></span><br><span class="line">            DeliveryOptions options = <span class="keyword">new</span> DeliveryOptions().addHeader(<span class="string">"action"</span>, <span class="string">"sayHello"</span>);</span><br><span class="line">            <span class="comment">//给方法传入的参数</span></span><br><span class="line"></span><br><span class="line">            JsonObject config = <span class="keyword">new</span> JsonObject() .put(<span class="string">"ETF"</span>, <span class="keyword">new</span> JsonObject().put(<span class="string">"name"</span>,<span class="string">"tom"</span>)).put(<span class="string">"name"</span>,<span class="string">"tom"</span>);</span><br><span class="line"></span><br><span class="line">            <span class="comment">//通过eventbus调用方法</span></span><br><span class="line">            vertx.eventBus().&lt;JsonObject&gt;send(<span class="string">"service.demo.helloverticle"</span>, config, options, res-&gt;&#123;</span><br><span class="line">                <span class="comment">//响应数据</span></span><br><span class="line">                req.response()</span><br><span class="line">                        .putHeader(<span class="string">"Content-type"</span>, <span class="string">"text/html;charset=utf-8"</span>)</span><br><span class="line">                        .end(res.result().body().getString(<span class="string">"msg"</span>));</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;);</span><br><span class="line">        httpServer.listen(<span class="number">8899</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        VertxOptions options = <span class="keyword">new</span> VertxOptions()</span><br><span class="line">                .setClustered(<span class="keyword">true</span>)</span><br><span class="line">                .setClusterHost(<span class="string">"localhost"</span>);</span><br><span class="line">        Vertx.clusteredVertx(options, resultHandler-&gt;&#123;</span><br><span class="line">            Vertx vertx = resultHandler.result();</span><br><span class="line">            vertx.deployVerticle(<span class="keyword">new</span> EBVerticle());</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这段代码比较简单，就是通过EventBus的send方法将请求发送过去即可。</p>
+<p><strong>通过代理类调用</strong></p>
+<p>可以通过ServiceProxyBuilder获取到当前的代理类，获取的是自动生成的ServiceVertxEBproxy代理类，这个代理继承于Service，可以直接调用其sayHello方法，代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">**</span><br><span class="line"> * 通过代理类调用，比较简单，但是不能跨语言</span><br><span class="line"> */</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ProxyVerticle</span> <span class="keyword">extends</span> <span class="title">AbstractVerticle</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        HttpServer httpServer = vertx.createHttpServer();</span><br><span class="line">        httpServer.requestHandler(req-&gt;&#123;</span><br><span class="line">            <span class="comment">//获取生成的代理类</span></span><br><span class="line">            Service service = <span class="keyword">new</span> ServiceProxyBuilder(vertx).setAddress(<span class="string">"service.demo.helloverticle"</span>).build(Service.class);</span><br><span class="line">            System.out.println(service.getClass());</span><br><span class="line">            service.sayHello(<span class="string">"tom"</span>, <span class="keyword">new</span> JsonObject(), res-&gt;&#123;</span><br><span class="line">                req.response()</span><br><span class="line">                        .putHeader(<span class="string">"Content-type"</span>,<span class="string">"text/html;charset=utf-8"</span>)</span><br><span class="line">                        .end(res.result().getString(<span class="string">"msg"</span>));</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;);</span><br><span class="line">        httpServer.listen(<span class="number">8899</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        VertxOptions options = <span class="keyword">new</span> VertxOptions();</span><br><span class="line">        options.setClustered(<span class="keyword">true</span>)</span><br><span class="line">                .setClusterHost(<span class="string">"127.0.0.1"</span>);</span><br><span class="line">        Vertx.clusteredVertx(options, resultHandler-&gt;&#123;</span><br><span class="line">            Vertx vertx = resultHandler.result();</span><br><span class="line">            vertx.deployVerticle(<span class="keyword">new</span> ProxyVerticle());</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个的代码也很简单，获取到代理的Service之后，调用其方法即可。</p>
+<p>本文只是对vertx中几个基本特性的学习，vertx还提供了很多其他的特性，比如权限管理，数据库连接池，微服务等特性，后面有时间再写吧。</p>
+<p>参考资料：</p>
+<p><a href="https://vertx.io/docs/" target="_blank" rel="noopener">https://vertx.io/docs/</a></p>
+<p><a href="https://blog.csdn.net/king_kgh/article/details/80772657" target="_blank" rel="noopener">https://blog.csdn.net/king_kgh/article/details/80772657</a></p>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢大爷勒，大爷有空常来玩儿呀。<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Hadoop</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">vert.x</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">MapReduce</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">web</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">WordCount</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">异步</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/大数据//" class="article-tag-list-link color4">大数据</a>
+        			<a href="/categories/框架//" class="article-tag-list-link color3">框架</a>
         		</li>
       		
 		</ul>
 	</div>
 
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/02/16/vert-x简单使用/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
   
   
-    </div></section>
+    <a href="/2019/02/08/八大排序算法/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">八大排序算法</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
+  
   
 
-    
+  
+
+  
+
+  
+
+  
+  <div id="gitment-ctn">
+<div id="gitalk-ctn"></div> 
+</div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script>
+var gitalk = new Gitalk({
+  id: "http://yoursite.com/2019/02/16/vert-x简单使用/",
+  clientID: 'a9a4865b484b39b0c93b',
+  clientSecret: 'ca2efec482dc7aec0c98bba032f0572168519216',
+  repo: 'GitmentRepo',
+  owner: 'KlutzyNerd',
+  admin: 'KlutzyNerd',
+  distractionFreeMode: true
+})
+gitalk.render('gitalk-ctn')
+</script>
+  
+
 
 
           </div>
@@ -250,9 +465,9 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: false,
 		toc_hide_index: true,
